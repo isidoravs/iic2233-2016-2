@@ -1,4 +1,4 @@
-# Repositorio de { escribe tu usuario }
+# Repositorio de Isidora Vizcaya
 
 Este es el repositorio que utilizarás durante el resto del curso. Tanto profesores como ayudantes tienen acceso a este. **Debes darle un buen uso y solo con fines académicos.**
 
@@ -12,7 +12,7 @@ Por favor, completa los siguientes campos:
 
 | N° Alumno | Nombre | Mail UC |
 | :-: | :-: | :-: |
-| 123456789 | Nombre Apellido | correo@uc.cl |
+| 15633144 | Isidora Vizcaya | isvizcaya@uc.cl |
 
 # Sobre las entregas
 
