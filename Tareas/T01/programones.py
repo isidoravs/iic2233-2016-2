@@ -24,11 +24,9 @@ class Programon:
         self.iv = random.randint(0, 15)  # generados al instanciar
         self.ev = random.randint(0, 65535)
         self.batallas = []  # alamacena datos de las batallas, para mostrarlas
+        self.original_hp = self.hp
+        self.visto_capturado = 0
         self.set_moves()  # actualiza moves a sus pp y power base
-
-    def set_unique_id(self):
-        # de alguna manera decidir el id unico por jugador
-        pass
 
     def set_moves(self):  # resetea a valores base
         base_moves = jsonToDict("datos/programonMoves.json")
@@ -40,9 +38,31 @@ class Programon:
                     break
         self.moves = new_moves
 
-    def evolucionar(self):
-        # evlucion
-        pass
+    def evolucionar(self, PC):
+        # actualizar info en PC RR
+        subevolucion = self.name
+        for evolucion in PC.base_programones:
+            if evolucion["id"] == self.evolve_to:
+                # mismo programon pero con distintas caracteristicas, unique_id se mantiene
+                self.id = evolucion["id"]
+                self.tipo = evolucion["type"]
+                self.hp = evolucion["hp"]
+                self.name = evolucion["name"]
+                self.special_defense = evolucion["special_defense"]
+                self.special_attack = evolucion["special_attack"]
+                self.defense = evolucion["defense"]
+                self.speed = evolucion["speed"]
+                self.attack = evolucion["attack"]
+                self.moves = evolucion["moves"]
+                self.set_moves()
+                if evolveLevel in evolucion.keys():
+                    self.evolve_level = evolucion["evolveLevel"]
+                    self.evolve_to = evolucion["evolveTo"]
+                else:
+                    self.evolve_level = -1
+                    self.evolve_to = -1
+        print(">>> {} evoluciona a {} <<<\nSe ha actualizado la informacion en tu Progradex y en "
+              "el PC".format(subevolucion, self.name))
 
     def resumen_batallas(self, nombre_programon):
         # muestra el resumen de batallas
@@ -64,33 +84,34 @@ class Programon:
         special_attack_base = info_base["special_attack"]
         hp_base = info_base["hp"]
 
-        self.defense = calculo_stats(defense_base, self.iv, self.ev, self.nivel)
-        self.attack = calculo_stats(attack_base, self.iv, self.ev, self.nivel)
-        self.speed = calculo_stats(speed_base, self.iv, self.ev, self.nivel)
-        self.special_defense = calculo_stats(special_defense_base, self.iv, self.ev, self.nivel)
-        self.special_attack = calculo_stats(special_attack_base, self.iv, self.ev, self.nivel)
-        self.hp = calculo_stats(hp_base, self.iv, self.ev, self.nivel) + self.nivel + 5
+        self.defense = calculo_stats(defense_base, self.iv, self.ev, self.level)
+        self.attack = calculo_stats(attack_base, self.iv, self.ev, self.level)
+        self.speed = calculo_stats(speed_base, self.iv, self.ev, self.level)
+        self.special_defense = calculo_stats(special_defense_base, self.iv, self.ev, self.level)
+        self.special_attack = calculo_stats(special_attack_base, self.iv, self.ev, self.level)
+        self.hp = calculo_stats(hp_base, self.iv, self.ev, self.level) + self.level + 5
 
     def atacar(self, entrenador): # "jugador" o "trainer"
         if entrenador == "jugador":
-            # antes sacar las opciones de pp = 0 RR
-            print("\n".join("[{}]: {}".format(i + 1, self.moves[i]["name"]) for i in range(len(self.moves)))) # RR
-            ataque_jugador = input("Ingresa el numero de movimiento para atacar: ")
+            print("\n Movimientos de {} (hp = {})".format(self.name, self.hp))
+            print("\n".join("[{}]: {}".format(i + 1, self.moves[i]["name"]) for i in range(len(self.moves))))
 
             while True:
-                ataque_jugador = input("Ingresa el numero de movimiento para atacar: ")
+                ataque_jugador = input("Ingresa el numero de movimiento para atacar:\n> ")
                 if ataque_jugador.isdigit():
-                    if int(ataque_jugador)-1 not in range(len(self.moves)):
+                    if int(ataque_jugador) - 1 not in range(len(self.moves)):
                         print("Ingrese un numero de movimiento valido")
                     else:
                         break
                 else:
                     print("Ingrese el numero del movimiento a usar")
 
-            move_chosen = self.moves[ataque_jugador - 1]  # diccionario de la base
+            move_chosen = self.moves[int(ataque_jugador) - 1]
 
         if entrenador == "trainer":
-            move_chosen = random.choices(self.moves)
+            move_chosen = random.choice(self.moves)
+
+        print("{} ataca con {}".format(self.name, move_chosen["name"]))
 
         # probabilidad de acertar
         prob = int(move_chosen["accuracy"] * 100)
@@ -111,6 +132,8 @@ class Programon:
             print(self.name,"no ha acertado el ataque")
             return None
 
+if __name__ == "__main__":
+    print("Module being run directly")
 
 
 

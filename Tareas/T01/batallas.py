@@ -23,158 +23,300 @@ class ProgramonMoves:  # o ataques
 
 
 class Batalla:
-    def __init__(self, city_name, jugador, oponente, equipo_jugador, equipo_oponente, salvaje):  # salvaje es True o False
+    def __init__(self, city_name, jugador, oponente, equipo_oponente, PC, salvaje):  # salvaje: True o False
         self.city_name = city_name
         self.jugador = jugador
         self.oponente = oponente
-        self.equipo_jugador = equipo_jugador
+        self.equipo_jugador = jugador.equipo
         self.equipo_oponente = equipo_oponente
         self.capturable = salvaje
-        self.elegidos_jugador = []
+        self.PC = PC
+        self.elegidos_jugador = [self.equipo_jugador[0]]
         self.disponibles_jugador = list(self.equipo_jugador)
-        self.elegidos_oponente = []
+        self.elegidos_oponente = [self.equipo_oponente[0]]
         self.disponibles_oponente = list(self.equipo_oponente)
-        self.pelear(self.equipo_jugador[0], self.equipo_oponente[0], False)  # siempre comienza con el primero del equipo
-        # revisar como implementar bien esta forma de capturable (tal vez mejor afuera en el menu)
-        # if batalla.capturable: o algo asi RR
+        self.pelear(self.equipo_jugador[0], self.equipo_oponente[0], False)
 
     def pelear(self, programon_jugador, programon_oponente, final_batalla, ganador=None):
         # caso base
         if final_batalla:
-            print("~ Final de la batalla ~")
-            if ganador == "jugador":
-                # programones suben de nivel
-                base_programones = jsonToDict("datos/programones.json")
-                for programon in self.elegidos_jugador:
-                    if programon.hp > 0:
-                        programon.level += 1
-                        if programon.level == programon.evolve_level:
-                            programon.evolucionar()
-
-                        # RESTORE PP Y HP RR
-
-                        # calculo de nuevos stats
-                        programon.actualizar_stats(base_programones)
-
-                # jugador gana 200 yenes
-                self.jugador.yenes += 200
-
-                # medalla si es contra lider
-                if self.trainer.trainer_type == "leader":
-                    print("Felicitaciones! Derrotaste al lider del gimnasio, toma una medalla en reconocimiento.")
-
-                    first_time = True
-                    for medal in self.jugador.medals:
-                        if medal[0] == self.city_name:
-                            first_time = False
-                            medal[1] += 1
-
-                    if first_time:
-                        self.jugador.medals.append([self.city_name, 1])
-
-            if ganador == "oponente":
-                print("Has perdido la batalla, pierdes 100 yenes.")
-                self.jugador.yenes -= 100
-
-            # restore pp y hp de cada programon : ENTRENADOR
-            for i in range(len(self.equipo_oponente)):
-                self.equipo_oponente[i].hp = self.oponente.programon_original_hp[i]
-                self.equipo_oponente[i].moves = self.oponente.programon_original_moves[i]
-
+            self.terminar_batalla(ganador)
             return
 
-        # llamada recursiva (no se si funcione) RR (sino usar ciclos)
-        self.elegidos_jugador.append(programon_jugador)
-        self.elegidos_oponente.append(programon_oponente)
+        # llamada recursiva
+        if programon_jugador not in self.elegidos_jugador:
+            programon_jugador.original_hp = programon_jugador.hp
+            self.elegidos_jugador.append(programon_jugador)
+
+        if programon_oponente not in self.elegidos_oponente:
+            programon_oponente.original_hp = programon_oponente.hp
+            self.elegidos_oponente.append(programon_oponente)
+
         final_pelea = None
         while final_pelea is None:
-            final_pelea = self.turno_pelea(programon_jugador, programon_oponente)  # retorna perdedor o None
+            # retorna perdedor, pierde_turno, cobarde, capturado o None
+            final_pelea = self.turno_pelea(programon_jugador, programon_oponente)
 
-        if final_pelea == "jugador":
+        if final_pelea == "capturado":
+            self.pelear(programon_jugador, programon_oponente, True, "jugador")
+
+        elif final_pelea == "pierde_turno":
+            programon_proximo = proximo_a_pelear(programon_jugador, "jugador", True)
+            if programon_proximo is not None:
+                print("Has escogido a {} como tu proximo programon para pelear".format(programon_proximo.name))
+            self.pelear(programon_proximo, programon_oponente, False)
+
+        elif final_pelea == "cobarde":
+            self.pelear(programon_jugador, programon_oponente, True, "oponente")
+
+        elif final_pelea == "jugador":
             programon_proximo = self.proximo_a_pelear(programon_jugador, final_pelea, False)  # cambiar si puede
             if programon_proximo is not None:
-                self.pelear(programon_proximo, programon_oponente, False)  # recursivo (o hacer return?) RR
+                print("Has escogido a {} como tu proximo programon para pelear".format(programon_proximo.name))
+                self.pelear(programon_proximo, programon_oponente, False)  # recursivo
             else:
                 self.pelear(programon_jugador, programon_oponente, True, "oponente")  # llega al caso base
 
-        if final_pelea == "oponente":
-            programon_proximo = self.proximo_a_pelear(programon_oponente, final_pelea, False)
-            if programon_proximo is not None:
-                self.pelear(programon_proximo, programon_oponente, False)
+        elif final_pelea == "oponente":
+            if self.capturable:
+                print("¡Has derrotado al programon salvaje!\n... pero como no lo has capturado "
+                      "con una prograbola, escapa")
+            else:  # oponente es un trainer
+                programon_proximo = self.proximo_a_pelear(programon_oponente, final_pelea, False)
+                if programon_proximo is not None:
+                    print("{} ha escogido a {} como su proximo programon para pelear".format(self.oponente.name,
+                                                                                             programon_proximo.name))
+                    self.pelear(programon_jugador, programon_proximo, False)
+                else:
+                    self.pelear(programon_jugador, programon_oponente, True, "jugador")
+
+    def menu_batalla(self, programon_jugador, programon_oponente):
+        ubicacion = self.city_name
+        if self.city_name is None:
+            ubicacion = "la hierba"
+        print("""
+    ~ Menu Batalla ~
+        1: ¡Pelear!
+        2: Cambiar programon
+        3: Volver a {}""".format(ubicacion))
+
+        if self.capturable:
+            print("        4: Lanzar una prograbola a {}".format(programon_oponente.name))
+        eleccion = input("\nIngrese una opcion:\n >")
+        while eleccion not in ["1", "2", "3"]:
+            if eleccion == "4" and self.capturable:  # unico caso que se permite otra opcion
+                break
+            print("{0} no es una opcion valida".format(eleccion))
+            eleccion = input("Ingrese una opcion:\n >")
+
+        if eleccion == "1":
+            return  "pelea"
+        elif eleccion == "2":
+            if len(self.disponibles_jugador) == 1:
+                print("{} es tu unico programon en condiciones para pelear! "
+                      "No puedes hacer cambio.".format(programon_jugador.name))
+                self.menu_batalla(programon_jugador, programon_oponente)
+                return
             else:
-                self.pelear(programon_jugador, programon_oponente, True, "ganador")
+                return "cambio"
+        elif eleccion == "3":
+            print("¡Te has retirado!")
+            return "cobarde"
+        elif eleccion == "4":
+            if self.jugador.prograbolas == 0:
+                print("No tienes prograbolas para capturar a este programon")
+                return
+            capturado = self.atrapar_programon_salvaje(programon_oponente)  # capturado es True o False
+            if capturado:
+                return "capturado"
+            else:
+                print("Continua la batalla...")
+                return "no capturado"
 
+    def turno_pelea(self, programon_jugador, programon_oponente):
 
-    def turno_pelea(self, programon_jugador, programon_oponente):  # falta prints que digan lo que pasa RR
+        # ARREGALR ACA RR
         if programon_jugador.speed >= programon_oponente.speed:
-            result = programon_jugador.atacar("jugador")  # parametro es el entrenador del programon
-            atacante_gano = resultado_ataque(result, programon_jugador, programon_oponente)
-            if atacante_gano:
-                return "oponente"
+            opcion_menu = self.menu_batalla(programon_jugador, programon_oponente)
+            if opcion_menu == "cambio":
+                return "pierde_turno"
+            elif opcion_menu == "cobarde":
+                return "cobarde"
+            elif opcion_menu == "capturado":
+                return "capturado"
             else:
-                print("Es el turno de {}".format(programon_oponente.name))  # programon_oponente no perdio
+                if programon_jugador.hp == programon_jugador.original_hp and \
+                                programon_oponente.hp == programon_oponente.original_hp:
+                    print("{} ({}) es mas rapido y comienza el turno!".format(programon_jugador.name,
+                                                                              self.jugador.unique_name))
+                result = programon_jugador.atacar("jugador")  # parametro es el entrenador del programon
+                atacante_gano = resultado_ataque(result, programon_jugador, programon_oponente, self.PC)
+                if atacante_gano:
+                    return "oponente"
+                else:
+                    print("Es el turno de {}".format(programon_oponente.name))  # programon_oponente no perdio
 
-            result = programon_oponente.atacar("trainer")
-            atacante_gano = resultado_ataque(result, programon_oponente, programon_jugador)
-            if atacante_gano:
-                return "jugador"
-            else:
-                print("Es el turno de {}".format(programon_jugador.name))
+                result = programon_oponente.atacar("trainer")
+                atacante_gano = resultado_ataque(result, programon_oponente, programon_jugador, self.PC)
+                if atacante_gano:
+                    return "jugador"
+                else:
+                    print("Es el turno de {}".format(programon_jugador.name))
 
-            return None
+                return
 
         else:
+            if programon_jugador.hp == programon_jugador.original_hp and \
+                            programon_oponente.hp == programon_oponente.original_hp:
+                if self.capturable:
+                    print("{} es mas rapido y comienza el turno!".format(programon_oponente.name))
+                else:
+                    print("{} ({}) es mas rapido y comienza el turno!".format(programon_oponente.name,
+                                                                              self.oponente.name))
             result = programon_oponente.atacar("trainer")
-            atacante_gano = resultado_ataque(result, programon_oponente, programon_jugador)
+            atacante_gano = resultado_ataque(result, programon_oponente, programon_jugador, self.PC)
             if atacante_gano:
                 return "jugador"
             else:
                 print("Es el turno de {}".format(programon_jugador.name))  # programon_jugador no perdio
-
-            result = programon_jugador.atacar("jugador")  # parametro es el entrenador del programon
-            atacante_gano = resultado_ataque(result, programon_jugador, programon_oponente)
-            if atacante_gano:
-                return "oponente"
+            opcion_menu = self.menu_batalla(programon_jugador, programon_oponente)
+            if opcion_menu == "cambio":
+                return "pierde_turno"
+            elif opcion_menu == "cobarde":
+                return "cobarde"
+            elif opcion_menu == "capturado":
+                return "capturado"
             else:
-                print("Es el turno de {}".format(programon_oponente.name))
+                result = programon_jugador.atacar("jugador")  # parametro es el entrenador del programon
+                atacante_gano = resultado_ataque(result, programon_jugador, programon_oponente, self.PC)
+                if atacante_gano:
+                    return "oponente"
+                else:
+                    print("Es el turno de {}".format(programon_oponente.name))
 
-            return None
+                return
 
-
-    def proximo_a_pelear(self, programon_actual, entrenador, solo_cambio):  # solo_cambio = True si no ha perdido aun
-        if solo_cambio:
-            pass  # implementar opcion de cambiar por gusto RR
-        else:
-            if entrenador == "jugador":
+    def proximo_a_pelear(self, programon_actual, entrenador, solo_cambio):
+        if entrenador == "jugador":
+            if not solo_cambio:  # solo_cambio = True si no ha perdido aun
                 self.disponibles_jugador.remove(programon_actual)
-                if len(self.disponibles_jugador) == 0:
-                    print("Has perdido! Tus programones no estan en condiciones para pelear")
-                    return None
-                print("{} no se encuentra en codiciones para pelear\n Tu equipo:".format(programon_actual.name))
-                display = "\n".join("[{}]: {}".format(i + 1, self.disponibles_jugador[i].name) for i in
-                                    range(len(self.disponibles_jugador)))
-                print(display)
-                opcion = input("Escoge un programon para la siguiente pelea: ")
-                while True:
-                    opcion = input("Escoge un programon para la siguiente pelea: ")
-                    if opcion.isdigit():
-                        if int(opcion) - 1 not in range(len(self.disponibles_jugador)):
-                            print("Ingresa un numero de programon valido")
-                        else:
-                            break  # RR
+                print("{} no se encuentra en codiciones para pelear".format(programon_actual.name))
+
+            if len(self.disponibles_jugador) == 0:
+                print("Ninguno de tus programones no estan en condiciones para pelear")
+                return None
+
+            print("Tu equipo:".format(programon_actual.name))
+            display = "\n".join("[{}]: {}".format(i + 1, self.disponibles_jugador[i].name) for i in
+                                range(len(self.disponibles_jugador)))
+            print(display)
+            opcion = input("Escoge un programon para el siguiente turno: ")
+            while True:
+                opcion = input("Escoge un programon para el siguiente turno: ")
+                if opcion.isdigit():
+                    if int(opcion) - 1 not in range(len(self.disponibles_jugador)):
+                        print("Ingresa un numero de programon valido")
                     else:
-                        print("Ingrese el numero del programon a pelear")
+                        break
+                else:
+                    print("Ingrese el numero del programon a pelear")
 
-                return self.disponibles_jugador[opcion - 1]
+            return self.disponibles_jugador[opcion - 1]
 
-            if entrenador == "oponente":
-                self.disponibles_oponente.remove(programon_actual)
-                if len(self.disponibles_oponente) == 0:
-                    print("Felicidades! Le has ganado al entrenador, sus programones no "
-                          "estan en condiciones para pelear")
-                    return None
-                return self.disponibles_oponente[0]
+        if entrenador == "oponente":
+            self.disponibles_oponente.remove(programon_actual)
+            if len(self.disponibles_oponente) == 0:
+                print("Felicidades! Le has ganado al entrenador, sus programones no "
+                      "estan en condiciones para pelear")
+                return None
+            return self.disponibles_oponente[0]
 
+    def terminar_batalla(self, ganador):
+        print("\n~ Final de la batalla ~")
+        base_moves = jsonToDict("datos/programonMoves.json")
+
+        if ganador == "jugador":
+            if self.capturable:
+                print("Te encuentras nuevamente en la hierba")
+            # programones suben de nivel
+            for programon in self.elegidos_jugador:
+                # restore move pp
+                for programon_move in programon.moves:
+                    for original_move in base_moves:
+                        if programon_move["name"] == original_move["name"]:
+                            programon_move["pp"] = original_move["pp"]
+
+                # subir nivel, restore hp, actualizar stats
+                if programon.hp > 0:
+                    programon.level += 1
+                    programon.hp = programon.original_hp
+                    if programon.level == programon.evolve_level:
+                        programon.evolucionar()  # Falta entregarle el PC
+                        # agregar a Progradex
+                        self.jugador.progradex.programones_capturados.append(programon)
+                    else:
+                        programon.actualizar_stats(self.PC.base_programones)  # evolucionar() tb actualiza stats
+
+                else:
+                    programon.hp = programon.original_hp
+            # jugador gana 200 yenes
+            self.jugador.yenes += 200
+            # medalla si es contra lider
+            if not self.capturable and self.trainer.trainer_type == "leader":
+                print("Felicitaciones! Derrotaste al lider del gimnasio, toma una medalla en reconocimiento.")
+
+                first_time = True
+                for medal in self.jugador.medals:
+                    if medal[0] == self.city_name:
+                        first_time = False
+                        medal[1] += 1
+
+                if first_time:
+                    self.jugador.medals.append([self.city_name, 1])
+
+        if ganador == "oponente":
+            if not self.capturable:
+                print("Has perdido la batalla, pierdes 100 yenes.")
+                self.jugador.yenes -= 100
+            else:
+                print("Te encuentras nuevamente en la hierba")
+
+        if not self.capturable:
+            # restore pp y hp de cada programon : ENTRENADOR
+            for programon in self.elegidos_oponente:
+                programon.hp = programon.original_hp
+                for programon_move in programon.moves:
+                    for original_move in base_moves:
+                        if programon_move["name"] == original_move["name"]:
+                            programon_move["pp"] = original_move["pp"]
+
+        # restore pp y hp de cada programon : JUGADOR
+        for programon in self.elegidos_jugador:
+            programon.hp = programon.original_hp
+            for programon_move in programon.moves:
+                for original_move in base_moves:
+                    if programon_move["name"] == original_move["name"]:
+                        programon_move["pp"] = original_move["pp"]
+
+        return
+
+    def atrapar_programon_salvaje(self, programon_salvaje):
+        print("Lanzas una prograbola a {}".format(programon_salvaje.name))
+        self.jugador.prograbolas -= 1
+        probabilidad = 0.2 + ((programon_salvaje.original_hp - programon_salvaje.hp) * 0.8) \
+                             / programon_salvaje.original_hp
+        azar = random.randint(1,100)
+        if azar <= (probabilidad * 100):
+            # actualizar info en Progradex y PC RR
+            print("¡Ya esta!\n{} atrapado".format(programon_salvaje.name))
+            # programon salvaje estaba en vistos > capturados
+            self.jugador.progradex.programones_vistos.remove(programon_salvaje)
+            self.jugador.progradex.programones_capturados.append(programon_salvaje)
+            print("Se ha actualizando tu informacion en la Progradex")
+            return True
+        else:
+            print("¡{} se ha escapado!\nTu prograbola no ha podido capturarlo".format(programon_salvaje.name))
+            return False
 
 
 def calculo_stats(base, iv, ev, nivel):
@@ -182,34 +324,35 @@ def calculo_stats(base, iv, ev, nivel):
     return new_stat
 
 
-def resultado_ataque(result, programon_ataca, programon_defiende):
+def resultado_ataque(result, programon_ataca, programon_defiende, PC):
     harm = 0
     if result is not None:
-        harm = calculo_harm(programon_ataca, programon_defiende, result[0], result[1])
+        harm = calculo_harm(programon_ataca, programon_defiende, result[0], result[1], PC)
     programon_defiende.hp -= harm
+    print("{} ha hecho {} daño a {}".format(programon_ataca.name, harm, programon_defiende.name))
 
     atacante_gano = False
     if programon_defiende.hp <= 0:
         print("{} ha perdido!".format(programon_defiende.name))
         atacante_gano = True
 
-    if len(programon_oponente.moves) == 0:
+    if len(programon_defiende.moves) == 0:
         print("{} se ha quedado sin movimientos!".format(programon_defiende.name))
         atacante_gano = True
 
     return atacante_gano
 
 
-def calculo_harm(programon_ataca, programon_defiende, base_move, type_move):
-    category = dictToJson("datos/moveCategories.json")
-    bonus_tipo = dictToJson("datos/types.json")
+def calculo_harm(programon_ataca, programon_defiende, base_move, type_move, PC):
+    category = jsonToDict("datos/moveCategories.json")
+    bonus_tipo = jsonToDict("datos/types.json")
 
     if type_move in category["physical_moves"]:  # lista con los ataques normales
-        harm1 = ((2 * programon_ataca.nivel + 10) / 250) * (programon_ataca.attack /
-                                                            programon_defiende.defensa) * base_move + 2
+        harm1 = ((2 * programon_ataca.level + 10) / 250) * (programon_ataca.attack /
+                                                            programon_defiende.defense) * base_move + 2
 
     if type_move in category["special_moves"]:
-        harm1 = ((2 * programon_ataca.nivel + 10) / 250) * (programon_ataca.special_attack /
+        harm1 = ((2 * programon_ataca.level + 10) / 250) * (programon_ataca.special_attack /
                                                             programon_defiende.special_defense) * base_move + 2
     # STAB
     if type_move == programon_ataca.tipo:
@@ -224,9 +367,8 @@ def calculo_harm(programon_ataca, programon_defiende, base_move, type_move):
         valor_tipo = combinacion[programon_defiende.tipo]
 
     # critico
-    base_programones = jsonToDict("datos/programones.json")
     info_base = {}
-    for dicc in base_programones:
+    for dicc in PC.base_programones:
         if dicc["id"] == programon_ataca.ide:
             info_base = dicc
             break
@@ -247,7 +389,5 @@ def calculo_harm(programon_ataca, programon_defiende, base_move, type_move):
     return math.floor(harm)
 
 
-
-
-
-
+if __name__ == "__main__":
+    print("Module being run directly")
