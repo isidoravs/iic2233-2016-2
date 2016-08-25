@@ -10,15 +10,15 @@ diccionario['sintagma'] = sintagmas
 diccionario['adjetivo'] = adjs
 diccionario['adverbio'] = advs
 
-def crear_sujeto(dicc, complemento_directo=False, palabras_anterior=[]):
+def crear_sujeto(diccionario, complemento_directo=False, palabras_anterior=[]):
     palabras = []
-    sustantivo = random.choice(dicc["sustantivo"])
+    sustantivo = random.choice(diccionario["sustantivo"])
     while sustantivo in palabras_anterior:
-        sustantivo = random.choice(dicc["sustantivo"])
+        sustantivo = random.choice(diccionario["sustantivo"])
 
-    articulo = random.choice(dicc["articulo"])
+    articulo = random.choice(diccionario["articulo"])
     while articulo in palabras_anterior:
-        articulo = random.choice(dicc["articulo"])
+        articulo = random.choice(diccionario["articulo"])
 
     palabras.append(articulo)
     palabras.append(sustantivo)
@@ -28,15 +28,15 @@ def crear_sujeto(dicc, complemento_directo=False, palabras_anterior=[]):
 
     azar_adjetivo = random.randint(1,3)
     if azar_adjetivo == 1:
-        adjetivo = random.choice(dicc["adjetivo"])
+        adjetivo = random.choice(diccionario["adjetivo"])
         while adjetivo in palabras_anterior:
-            adjetivo = random.choice(dicc["adjetivo"])
+            adjetivo = random.choice(diccionario["adjetivo"])
         palabras.insert(1, adjetivo)  # antes del sujeto
 
     if azar_adjetivo == 2:
-        adjetivo = random.choice(dicc["adjetivo"])
+        adjetivo = random.choice(diccionario["adjetivo"])
         while adjetivo in palabras_anterior:
-            adjetivo = random.choice(dicc["adjetivo"])
+            adjetivo = random.choice(diccionario["adjetivo"])
         palabras.insert(2, adjetivo)  # despues del sujeto
 
     if not complemento_directo:
@@ -46,9 +46,9 @@ def crear_sujeto(dicc, complemento_directo=False, palabras_anterior=[]):
         oracion = " ".join(palabras)
 
     if azar_sintagma <= prob_sintagma:
-        sintagma = random.choice(dicc["sintagma"])
+        sintagma = random.choice(diccionario["sintagma"])
         while sintagma in palabras_anterior:
-            sintagma = random.choice(dicc["sintagma"])
+            sintagma = random.choice(diccionario["sintagma"])
         oracion += ", {},".format(sintagma)
 
     return (palabras, oracion)
@@ -130,16 +130,23 @@ def armar_oracion(diccionario, oraciones):
         used_words.append(sujeto[0] + predicado[0])
         print(sujeto[1] + " " + predicado[1])
 
-armar_oracion(diccionario, 10)
+        if (i + 1) % 10 == 0:
+            ultimas = []
+            k = len(used_words) - 1
+            while len(ultimas) < 15:
+                anterior = used_words[k]
+                while anterior != []:
+                    ultimas.append(anterior.pop())
+                    if len(ultimas) == 15:
+                        break
+                k -= 1
 
+            for palabra in ultimas:
+                key_aleatoria = random.choice(diccionario.keys())
+                diccionario[key_aleatoria].append(palabra)
 
-
-
-
-
-
-
-
-
-
-
+oraciones = input("Cantidad de oraciones:")
+while not oraciones.isdigit():
+    print("Invalido")
+    oraciones = input("Cantidad de oraciones:")
+armar_oracion(diccionario, int(oraciones))
