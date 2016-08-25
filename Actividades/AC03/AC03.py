@@ -142,8 +142,9 @@ def armar_oracion(diccionario, oraciones):
                 k -= 1
 
             for palabra in ultimas:
-                key_aleatoria = random.choice(diccionario.keys())
-                diccionario[key_aleatoria].append(palabra)
+                key_aleatoria = random.choice(["sustantivo", "verbos", "articulo", "sintagma", "adjetivo", "adverbio"])
+                if key_aleatoria != "verbos":
+                    diccionario[key_aleatoria].append(palabra)
 
 oraciones = input("Cantidad de oraciones:")
 while not oraciones.isdigit():
