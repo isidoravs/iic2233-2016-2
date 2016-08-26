@@ -95,7 +95,7 @@ class Programon:
         self.special_attack = calculo_stats(special_attack_base, self.iv, self.ev, self.level)
         self.hp = calculo_stats(hp_base, self.iv, self.ev, self.level) + self.level + 5
 
-    def atacar(self, entrenador): # "jugador" o "trainer"
+    def atacar(self, entrenador):  # "jugador" o "trainer"
         if entrenador == "jugador":
             print("\n Movimientos de {} (hp = {})".format(self.name, self.hp))
             print("\n".join("[{}]: {} (pp = {})".format(i + 1, self.moves[i]["name"], self.moves[i]["pp"])
@@ -120,7 +120,7 @@ class Programon:
 
         # probabilidad de acertar
         prob = int(move_chosen["accuracy"] * 100)
-        azar = random.randint(1,100)
+        azar = random.randint(1, 100)
         if azar <= prob:
             # puntos de poder
             for movimiento in self.moves:
@@ -134,7 +134,7 @@ class Programon:
             return [base_move, type_move]
 
         else:
-            print(self.name,"no ha acertado el ataque")
+            print(self.name, "no ha acertado el ataque")
             return None
 
     def __str__(self):
@@ -159,7 +159,7 @@ class Programon:
                     for evolucion in base:
                         if programon["evolveTo"] == evolucion["id"]:
                             display += " Evolve to: {} (in level {})".format(evolucion["name"],
-                                                                                      programon["evolveLevel"])
+                                                                             programon["evolveLevel"])
                 else:
                     break
         return display

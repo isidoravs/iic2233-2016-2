@@ -14,7 +14,7 @@ class Jugador:
         self.prograbolas = 10
         self.location = Ciudad("Pallet Town", 0, PC)  # objeto de la clase Ciudad o None
         self.location_id = 0
-        if primer_programon == None:  # cargar datos
+        if primer_programon is None:  # cargar datos
             self.equipo = []
         else:
             self.equipo = [primer_programon]

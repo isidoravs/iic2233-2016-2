@@ -9,17 +9,6 @@ class Trainer:  # leader es un tipo de trainer (mismos atributos)
         self.trainer_type = trainer_type  # "leader" o "trainer"
         self.name = name
         self.programon_squad = programon_squad
-        self.programon_original_hp = [programon.hp for programon in self.programon_squad]
-        self.programon_original_moves = [programon.moves for programon in self.programon_squad]
-
-
-class ProgramonMoves:  # o ataques
-    def __init__(self, power_points, accuracy, move_type, base_power, name):
-        self.name = name
-        self.power_points = power_points
-        self.accuracy = accuracy
-        self.move_type = move_type
-        self.power = base_power
 
 
 class Batalla:
@@ -136,7 +125,7 @@ class Batalla:
             eleccion = input("Ingrese una opcion:\n >")
 
         if eleccion == "1":
-            return  "pelea"
+            return "pelea"
         elif eleccion == "2":
             if len(self.disponibles_jugador) == 1:
                 print("{} es tu unico programon en condiciones para pelear! "
@@ -160,7 +149,6 @@ class Batalla:
                 return "no capturado"
 
     def turno_pelea(self, programon_jugador, programon_oponente):
-
         if programon_jugador.speed >= programon_oponente.speed:
             opcion_menu = self.menu_batalla(programon_jugador, programon_oponente)
             if opcion_menu == "cambio":
@@ -208,15 +196,19 @@ class Batalla:
                 return "jugador"
             else:
                 print("\nEs el turno de {} (hp = {} | nivel = {})".format(programon_jugador.name,
-                                                                              programon_jugador.hp,
-                                                                              programon_jugador.level))
+                                                                          programon_jugador.hp,
+                                                                          programon_jugador.level))
+
             opcion_menu = self.menu_batalla(programon_jugador, programon_oponente)
             if opcion_menu == "cambio":
                 return "pierde_turno"
+
             elif opcion_menu == "cobarde":
                 return "cobarde"
+
             elif opcion_menu == "capturado":
                 return "capturado"
+
             else:
                 result = programon_jugador.atacar("jugador")  # parametro es el entrenador del programon
                 atacante_gano = resultado_ataque(result, programon_jugador, programon_oponente, self.PC)
@@ -341,9 +333,10 @@ class Batalla:
     def atrapar_programon_salvaje(self, programon_salvaje):
         print("Lanzas una prograbola a {}".format(programon_salvaje.name))
         self.jugador.prograbolas -= 1
-        probabilidad = 0.2 + ((programon_salvaje.original_hp - programon_salvaje.hp) * 0.8) \
-                             / programon_salvaje.original_hp
-        azar = random.randint(1,100)
+        probabilidad = 0.2 + ((programon_salvaje.original_hp - programon_salvaje.hp)
+                              * 0.8) / programon_salvaje.original_hp
+
+        azar = random.randint(1, 100)
         if azar <= (probabilidad * 100):
             print("¡Ya esta!\n{} atrapado".format(programon_salvaje.name))
             # programon salvaje estaba en vistos > capturados

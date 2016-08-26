@@ -62,7 +62,7 @@ class Ciudad:
                             evolve_to = base["evolveTo"]
 
                         trainer_squad.append(Programon(programon["id"], base["name"], base["moves"], base["type"],
-                                                      programon["level"], stats, evolve_level, evolve_to))
+                                                       programon["level"], stats, evolve_level, evolve_to))
             self.trainers.append(Trainer("trainer", dicc_trainer["name"], trainer_squad))
         return
 
@@ -82,7 +82,6 @@ class Ciudad:
             return
         else:
             self.opciones_ciudad(int(eleccion), jugador)
-
 
     def opciones_ciudad(self, eleccion, jugador):
         if eleccion == 1:
@@ -188,7 +187,7 @@ class Gimnasio:
         if beated_trainers == len(jugador.batallas[self.city_name]):
             print("Felicitaciones! Le has ganado a todos los entrenadores, es tu turno de enfrentarte al lider.")
             print("\n ~ Batalla contra {} ~".format(self.leader.name))
-            batalla = Batalla(self.city_name, jugador, self.leader, self.leader.programon_squad, PC, False)
+            Batalla(self.city_name, jugador, self.leader, self.leader.programon_squad, PC, False)
 
         else:
             print(" ~ Trainers ~ ")
@@ -206,8 +205,8 @@ class Gimnasio:
                     print("Ingrese el numero del entrenador a batallar")
 
             print("\n ~ Batalla contra {} ~".format(self.trainers[int(contrincante) - 1].name))
-            batalla = Batalla(self.city_name, jugador, self.trainers[int(contrincante) - 1],
-                              self.trainers[int(contrincante) - 1].programon_squad, PC, False)
+            Batalla(self.city_name, jugador, self.trainers[int(contrincante) - 1],
+                    self.trainers[int(contrincante) - 1].programon_squad, PC, False)
         return
 
 
@@ -265,17 +264,17 @@ class Mapa:
             self.location_name = ""
             print("Te encuentras en la hierba...")
 
-            azar = random.randint(1,100)
+            azar = random.randint(1, 100)
             if azar <= 35:
                 programon_salvaje = self.generar_programon_salvaje()
                 programon_salvaje.unique_id = len(self.PC.programones[self.jugador.unique_name])  # unique_name
                 print("¡Ha aparecido un {} salvaje (nivel {})!".format(programon_salvaje.name,
-                                                                                programon_salvaje.level))
+                                                                       programon_salvaje.level))
                 programon_salvaje.visto_capturado = self.ide
                 programon_salvaje.unique_id = len(self.jugador.progradex.programones_vistos +
                                                   self.jugador.progradex.programones_capturados)
                 print("\n ~ Comienza la batalla ~")
-                batalla = Batalla(None, self.jugador, programon_salvaje, [programon_salvaje], self.PC, True)
+                Batalla(None, self.jugador, programon_salvaje, [programon_salvaje], self.PC, True)
             else:
                 print("... no ocurre nada en especial, continua tu camino.")
             return

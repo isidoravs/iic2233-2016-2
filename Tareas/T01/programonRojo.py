@@ -1,5 +1,6 @@
 # sistema principal
 import sys
+import math
 from jsonReader import jsonToDict, dictToJson
 from programones import Programon
 from jugador import Jugador, Progradex
@@ -55,9 +56,10 @@ class ProgramonRojo:
 
             for pro in jug["programones_vistos"]:
                 # el resto de los parametros no son necesarios
-                old_visto = Programon(pro["ide"], pro["name"], pro["moves"], pro["tipo"], 0, [0,0,0,0,0,0])
+                old_visto = Programon(pro["ide"], pro["name"], pro["moves"], pro["tipo"], 0, [0, 0, 0, 0, 0, 0])
                 old_visto.visto_capturado = pro["visto_capturado"]
                 old_player.progradex.programones_vistos.append(old_visto)
+        return
 
     def log_in(self):
         success = False
@@ -87,7 +89,6 @@ class ProgramonRojo:
             if count == len(self.jugadores):
                 break
 
-
         new_password = input("Ingrese su nueva contraseña: ")
         new_id = len(self.jugadores)
 
@@ -116,6 +117,7 @@ class ProgramonRojo:
         self.player = new_player
         return
 
+
 class PCBastian:
     def __init__(self, programonRojo):  # juego es objeto de la clase ProgramonRojo
         self.base_programones = jsonToDict("datos/programones.json")  # lista con (151) diccionarios
@@ -133,12 +135,10 @@ class PCBastian:
         nombre_jugador = input("Ingrese su nombre de usuario: ")
         clave_jugador = input("Ingrese su clave: ")
 
-        login_successful = False
-        while not login_successful:
+        while True:
             if jugador.unique_name == nombre_jugador and jugador.password == clave_jugador:
                 print("Log in exitoso. {}, a continuacion podras cambiar los programones de "
                       "tu equipo.".format(jugador.unique_name))
-                login_successful = True
                 self.cambiar_equipo(jugador)
                 return
             else:
@@ -150,6 +150,7 @@ class PCBastian:
                 else:
                     nombre_jugador = input("Ingrese su nombre de usuario: ")
                     clave_jugador = input("Ingrese su clave: ")
+        return
 
     def cambiar_equipo(self, jugador):
         no_equipo = list(self.programones[jugador.unique_name])
@@ -165,7 +166,7 @@ class PCBastian:
             if no_equipo[i].unique_id != -1:
                 disponibles.append(no_equipo[i])
 
-        if disponibles == []:
+        if len(disponibles) == 0:
             print("No hay programones disponibles para cambiar")
             return
 
@@ -189,8 +190,6 @@ class PCBastian:
             else:
                 print("Ingrese el numero de programon a cambiar / agregar")
 
-
-
         agregar = disponibles[int(new_programon) - 1]
         # cambio programon
         jugador.equipo[int(remove) - 1] = agregar
@@ -204,12 +203,12 @@ class Menu:
         self.programonRojo = programonRojo
         self.PC = PC
         self.options = {
-                        "1": self.opcion_progradex,
-                        "2": self.opcion_caminar,
-                        "3": self.opcion_datos_jugador,
-                        "4": self.opcion_consulta,
-                        "5": self.salir,
-                        }
+            "1": self.opcion_progradex,
+            "2": self.opcion_caminar,
+            "3": self.opcion_datos_jugador,
+            "4": self.opcion_consulta,
+            "5": self.salir,
+        }
 
     def display_menu(self):
         print("""
@@ -220,6 +219,7 @@ class Menu:
     4: Consultas
     5: Salir
             """)
+        return
 
     def run(self):
         while True:
@@ -237,6 +237,7 @@ class Menu:
                     funcionalidad()
                 else:
                     print("{0} no es una opcion valida".format(eleccion))
+        return
 
     def opcion_progradex(self):
         print(" --- PROGRADEX --- ")
@@ -326,16 +327,47 @@ class Menu:
             return
 
         if eleccion == "2":
-            print("NO IMPLEMENTADO")
+            resumen_batallas = {}  # diccionario {"name1": [ganadas, jugadas], "name2": [ganadas, jugadas] ... }
+            for jugador in self.PC.programones:
+                for programon in self.PC.programones[jugador]:
+                    if len(programon.batallas) != 0:
+                        if programon.name not in resumen_batallas.keys():
+                            resumen_batallas[programon.name] = [0, 0]
+                        for batalla in programon.batallas:
+                            if batalla[1] == "ganador":
+                                resumen_batallas[programon.name][0] += 1
+                                resumen_batallas[programon.name][1] += 1
+
+                            if batalla[1] == "perdedor":
+                                resumen_batallas[programon.name][1] += 1
+            ranking = []
+            for especie in resumen_batallas:
+                if resumen_batallas[especie][1] >= 10:
+                    porcentaje_victoria = math.floor(resumen_batallas[especie][0] * 100 / resumen_batallas[especie][1])
+                    ranking.append([resumen_batallas[especie], porcentaje_victoria])
+
+            if len(ranking) == 0:
+                print("Ningun programon ha participado en mas de 10 batallas para definir un ranking")
+            else:
+                i = 0
+                display = ""
+                ranking.sort(key=lambda x: x[1], reverse=True)
+                while i < 10 and i < len(ranking):
+                    display += "\n > {} ({}%)".format(ranking[i][0], ranking[i][1])
+                    i += 1
+
+                print("Ranking de los {} programones con mayor porcentaje de batallas ganadas".format(i))
+                print("(solo considera los que han participado en mas de 10 batallas)")
+                print(display)
+
             opcion = input("[ ENTER ] para volver al menu")
             while opcion != "":
                 opcion = input("[ ENTER ] para volver al menu")
             return
 
         if eleccion == "3":
-            # arreglar RR
             info_jugador = " -- {} --\n Yenes: {}\n".format(self.programonRojo.player.unique_name,
-                                                          self.programonRojo.player.yenes)
+                                                            self.programonRojo.player.yenes)
             if len(self.programonRojo.player.medals) == 0:
                 info_jugador += "Medallas: 0"
             else:

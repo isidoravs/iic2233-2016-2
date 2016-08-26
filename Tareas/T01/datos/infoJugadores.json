@@ -1,83 +1,79 @@
 {
    "0": {
+      "yenes": 9951500,
       "programones_vistos": [
          {
-            "visto_capturado": 12,
-            "ide": 121,
-            "tipo": "water",
             "moves": [
                "water gun",
                "swift"
             ],
-            "name": "Starmie"
+            "ide": 121,
+            "visto_capturado": 12,
+            "name": "Starmie",
+            "tipo": "water"
          },
          {
-            "visto_capturado": 6,
-            "ide": 54,
-            "tipo": "water",
             "moves": [
                "scratch",
                "confusion"
             ],
-            "name": "Psyduck"
+            "ide": 54,
+            "visto_capturado": 6,
+            "name": "Psyduck",
+            "tipo": "water"
          },
          {
-            "visto_capturado": 5,
-            "ide": 148,
-            "tipo": "dragon",
             "moves": [
                "twister",
                "slam"
             ],
-            "name": "Dragonair"
+            "ide": 148,
+            "visto_capturado": 5,
+            "name": "Dragonair",
+            "tipo": "dragon"
          },
          {
-            "visto_capturado": 4,
-            "ide": 67,
-            "tipo": "fighting",
             "moves": [
                "low kick",
                "karate chop",
                "low kick"
             ],
-            "name": "Machoke"
+            "ide": 67,
+            "visto_capturado": 4,
+            "name": "Machoke",
+            "tipo": "fighting"
          },
          {
-            "visto_capturado": 7,
-            "ide": 43,
-            "tipo": "grass",
             "moves": [
                "snore",
                "razor leaf"
             ],
-            "name": "Oddish"
+            "ide": 43,
+            "visto_capturado": 7,
+            "name": "Oddish",
+            "tipo": "grass"
          }
+      ],
+      "medals": [
+         "Cerulean City",
+         "Cerulean City"
       ],
       "equipo": [
          1,
-         19,
          5,
          16,
          18,
-         24
+         24,
+         19
       ],
+      "location_id": 12,
+      "password": "iv",
       "unique_name": "isidora",
-      "prograbolas": 73,
       "programones_PC": [
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 60,
             "visto_capturado": 7,
-            "ide": 47,
-            "special_attack": 60,
-            "moves": [
-               "scratch",
-               "slash"
-            ],
-            "level": 24,
-            "special_defense": 80,
-            "speed": 30,
-            "ev": 53409,
             "batallas": [
                [
                   "Swimmer",
@@ -104,29 +100,28 @@
                   "perdedor"
                ]
             ],
+            "special_defense": 80,
             "attack": 95,
             "unique_id": 1,
+            "ide": 47,
+            "level": 24,
+            "iv": 3,
             "defense": 80,
-            "name": "Parasect",
-            "hp": 60,
             "tipo": "bug",
-            "iv": 3
+            "ev": 53409,
+            "name": "Parasect",
+            "speed": 30,
+            "moves": [
+               "scratch",
+               "slash"
+            ],
+            "evolve_to": -1,
+            "special_attack": 60
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 67,
             "visto_capturado": 2,
-            "ide": 40,
-            "special_attack": 30,
-            "moves": [
-               "snore",
-               "mega punch",
-               "water pulse"
-            ],
-            "level": 14,
-            "special_defense": 23,
-            "speed": 21,
-            "ev": 2705,
             "batallas": [
                [
                   "Psychic",
@@ -153,55 +148,56 @@
                   "perdedor"
                ]
             ],
+            "special_defense": 23,
             "attack": 28,
             "unique_id": 2,
+            "ide": 40,
+            "level": 14,
+            "iv": 9,
             "defense": 21,
-            "name": "Wigglytuff",
-            "hp": 67,
             "tipo": "normal",
-            "iv": 9
+            "ev": 2705,
+            "name": "Wigglytuff",
+            "speed": 21,
+            "moves": [
+               "snore",
+               "mega punch",
+               "water pulse"
+            ],
+            "evolve_to": -1,
+            "special_attack": 30
          },
          {
             "evolve_level": 16,
-            "evolve_to": 33,
+            "hp": 3,
             "visto_capturado": 1,
-            "ide": 32,
-            "special_attack": 40,
-            "moves": [
-               "peck"
-            ],
-            "level": 5,
-            "special_defense": 40,
-            "speed": 41,
-            "ev": 29221,
             "batallas": [
                [
                   "Staryu",
                   "perdedor"
                ]
             ],
+            "special_defense": 40,
             "attack": 47,
             "unique_id": 3,
+            "ide": 32,
+            "level": 5,
+            "iv": 3,
             "defense": 52,
-            "name": "Nidoran",
-            "hp": 3,
             "tipo": "poison",
-            "iv": 3
+            "ev": 29221,
+            "name": "Nidoran",
+            "speed": 41,
+            "moves": [
+               "peck"
+            ],
+            "evolve_to": 33,
+            "special_attack": 40
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 48,
             "visto_capturado": 3,
-            "ide": 113,
-            "special_attack": 11,
-            "moves": [
-               "pound",
-               "egg bomb"
-            ],
-            "level": 6,
-            "special_defense": 19,
-            "speed": 13,
-            "ev": 19403,
             "batallas": [
                [
                   "Psychic",
@@ -220,29 +216,28 @@
                   "perdedor"
                ]
             ],
+            "special_defense": 19,
             "attack": 7,
             "unique_id": 4,
+            "ide": 113,
+            "level": 6,
+            "iv": 2,
             "defense": 7,
-            "name": "Chansey",
-            "hp": 48,
             "tipo": "normal",
-            "iv": 2
+            "ev": 19403,
+            "name": "Chansey",
+            "speed": 13,
+            "moves": [
+               "pound",
+               "egg bomb"
+            ],
+            "evolve_to": -1,
+            "special_attack": 11
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 75,
             "visto_capturado": 10,
-            "ide": 65,
-            "special_attack": 84,
-            "moves": [
-               "confusion",
-               "psybeam",
-               "psychic"
-            ],
-            "level": 24,
-            "special_defense": 60,
-            "speed": 77,
-            "ev": 48914,
             "batallas": [
                [
                   "Staryu",
@@ -265,28 +260,29 @@
                   "ganador"
                ]
             ],
+            "special_defense": 60,
             "attack": 44,
             "unique_id": 5,
+            "ide": 65,
+            "level": 24,
+            "iv": 4,
             "defense": 41,
-            "name": "Alakazam",
-            "hp": 75,
             "tipo": "psychic",
-            "iv": 4
+            "ev": 48914,
+            "name": "Alakazam",
+            "speed": 77,
+            "moves": [
+               "confusion",
+               "psybeam",
+               "psychic"
+            ],
+            "evolve_to": -1,
+            "special_attack": 84
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 69,
             "visto_capturado": 15,
-            "ide": 120,
-            "special_attack": 57,
-            "moves": [
-               "water gun",
-               "swift"
-            ],
-            "level": 33,
-            "special_defense": 47,
-            "speed": 67,
-            "ev": 5901,
             "batallas": [
                [
                   "Charmeleon",
@@ -313,53 +309,53 @@
                   "ganador"
                ]
             ],
+            "special_defense": 47,
             "attack": 40,
             "unique_id": 16,
+            "ide": 120,
+            "level": 33,
+            "iv": 0,
             "defense": 47,
-            "name": "Staryu",
-            "hp": 69,
             "tipo": "water",
-            "iv": 0
+            "ev": 5901,
+            "name": "Staryu",
+            "speed": 67,
+            "moves": [
+               "water gun",
+               "swift"
+            ],
+            "evolve_to": -1,
+            "special_attack": 57
          },
          {
             "evolve_level": 36,
-            "evolve_to": 6,
+            "hp": 3,
             "visto_capturado": 15,
+            "batallas": [],
+            "special_defense": 65,
+            "attack": 64,
+            "unique_id": -1,
             "ide": 5,
-            "special_attack": 80,
+            "level": 35,
+            "iv": 3,
+            "defense": 58,
+            "tipo": "fire",
+            "ev": 3056,
+            "name": "Charmeleon",
+            "speed": 80,
             "moves": [
                "scratch",
                "ember",
                "metal claw",
                "flamethrower"
             ],
-            "level": 35,
-            "special_defense": 65,
-            "speed": 80,
-            "ev": 3056,
-            "batallas": [],
-            "attack": 64,
-            "unique_id": -1,
-            "defense": 58,
-            "name": "Charmeleon",
-            "hp": 3,
-            "tipo": "fire",
-            "iv": 3
+            "evolve_to": 6,
+            "special_attack": 80
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 95,
             "visto_capturado": 13,
-            "ide": 59,
-            "special_attack": 70,
-            "moves": [
-               "bite",
-               "ember"
-            ],
-            "level": 25,
-            "special_defense": 60,
-            "speed": 67,
-            "ev": 41567,
             "batallas": [
                [
                   "Misty",
@@ -374,30 +370,28 @@
                   "ganador"
                ]
             ],
+            "special_defense": 60,
             "attack": 75,
             "unique_id": 18,
+            "ide": 59,
+            "level": 25,
+            "iv": 5,
             "defense": 60,
-            "name": "Arcanine",
-            "hp": 95,
             "tipo": "fire",
-            "iv": 5
+            "ev": 41567,
+            "name": "Arcanine",
+            "speed": 67,
+            "moves": [
+               "bite",
+               "ember"
+            ],
+            "evolve_to": -1,
+            "special_attack": 70
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 78,
             "visto_capturado": 7,
-            "ide": 6,
-            "special_attack": 109,
-            "moves": [
-               "flamethrower",
-               "wing attack",
-               "slash",
-               "metal claw"
-            ],
-            "level": 36,
-            "special_defense": 85,
-            "speed": 100,
-            "ev": 12684,
             "batallas": [
                [
                   "Starmie",
@@ -420,162 +414,201 @@
                   "intercambio"
                ]
             ],
+            "special_defense": 85,
             "attack": 84,
             "unique_id": 24,
+            "ide": 6,
+            "level": 36,
+            "iv": 14,
             "defense": 78,
-            "name": "Charizard",
-            "hp": 78,
             "tipo": "fire",
-            "iv": 14
+            "ev": 12684,
+            "name": "Charizard",
+            "speed": 100,
+            "moves": [
+               "flamethrower",
+               "wing attack",
+               "slash",
+               "metal claw"
+            ],
+            "evolve_to": -1,
+            "special_attack": 109
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 15,
             "visto_capturado": 5,
+            "batallas": [],
+            "special_defense": 110,
+            "attack": 130,
+            "unique_id": 25,
             "ide": 136,
-            "special_attack": 95,
+            "level": 11,
+            "iv": 8,
+            "defense": 60,
+            "tipo": "fire",
+            "ev": 7235,
+            "name": "Flareon",
+            "speed": 65,
             "moves": [
                "flamethrower",
                "ember",
                "bite",
                "smog"
             ],
-            "level": 11,
-            "special_defense": 110,
-            "speed": 65,
-            "ev": 7235,
-            "batallas": [],
-            "attack": 130,
-            "unique_id": 25,
-            "defense": 60,
-            "name": "Flareon",
-            "hp": 15,
-            "tipo": "fire",
-            "iv": 8
+            "evolve_to": -1,
+            "special_attack": 95
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 50,
             "visto_capturado": 7,
+            "batallas": [],
+            "special_defense": 85,
+            "attack": 75,
+            "unique_id": 12,
             "ide": 121,
-            "special_attack": 100,
+            "level": 6,
+            "iv": 5,
+            "defense": 85,
+            "tipo": "water",
+            "ev": 13732,
+            "name": "Starmie",
+            "speed": 115,
             "moves": [
                "water gun",
                "swift"
             ],
-            "level": 6,
-            "special_defense": 85,
-            "speed": 115,
-            "ev": 13732,
-            "batallas": [],
-            "attack": 75,
-            "unique_id": 12,
-            "defense": 85,
-            "name": "Starmie",
-            "hp": 50,
-            "tipo": "water",
-            "iv": 5
+            "evolve_to": -1,
+            "special_attack": 100
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 36,
             "visto_capturado": 3,
+            "batallas": [],
+            "special_defense": 50,
+            "attack": 70,
+            "unique_id": 14,
             "ide": 58,
-            "special_attack": 70,
+            "level": 4,
+            "iv": 9,
+            "defense": 45,
+            "tipo": "fire",
+            "ev": 59425,
+            "name": "Growlithe",
+            "speed": 60,
             "moves": [
                "heat wave",
                "overheat",
                "flame wheel"
             ],
-            "level": 4,
-            "special_defense": 50,
-            "speed": 60,
-            "ev": 59425,
-            "batallas": [],
-            "attack": 70,
-            "unique_id": 14,
-            "defense": 45,
-            "name": "Growlithe",
-            "hp": 36,
-            "tipo": "fire",
-            "iv": 9
+            "evolve_to": -1,
+            "special_attack": 70
          },
          {
             "evolve_level": 16,
-            "evolve_to": 2,
+            "hp": 14,
             "visto_capturado": 1,
+            "batallas": [],
+            "special_defense": 65,
+            "attack": 49,
+            "unique_id": 15,
             "ide": 1,
-            "special_attack": 65,
+            "level": 4,
+            "iv": 15,
+            "defense": 49,
+            "tipo": "grass",
+            "ev": 5149,
+            "name": "Bulbasaur",
+            "speed": 45,
             "moves": [
                "tackle",
                "vine whip"
             ],
-            "level": 4,
-            "special_defense": 65,
-            "speed": 45,
-            "ev": 5149,
-            "batallas": [],
-            "attack": 49,
-            "unique_id": 15,
-            "defense": 49,
-            "name": "Bulbasaur",
-            "hp": 14,
-            "tipo": "grass",
-            "iv": 15
+            "evolve_to": 2,
+            "special_attack": 65
          },
          {
             "evolve_level": 32,
-            "evolve_to": 3,
+            "hp": 34,
             "visto_capturado": 3,
+            "batallas": [],
+            "special_defense": 80,
+            "attack": 62,
+            "unique_id": 17,
             "ide": 2,
-            "special_attack": 80,
+            "level": 3,
+            "iv": 9,
+            "defense": 63,
+            "tipo": "grass",
+            "ev": 18887,
+            "name": "Ivysaur",
+            "speed": 60,
             "moves": [
                "tackle",
                "vine whip",
                "razor leaf"
             ],
-            "level": 3,
-            "special_defense": 80,
-            "speed": 60,
-            "ev": 18887,
-            "batallas": [],
-            "attack": 62,
-            "unique_id": 17,
-            "defense": 63,
-            "name": "Ivysaur",
-            "hp": 34,
-            "tipo": "grass",
-            "iv": 9
+            "evolve_to": 3,
+            "special_attack": 80
          },
          {
             "evolve_level": 22,
-            "evolve_to": 24,
+            "hp": 35,
             "visto_capturado": 10,
+            "batallas": [],
+            "special_defense": 54,
+            "attack": 60,
+            "unique_id": 19,
             "ide": 23,
-            "special_attack": 40,
+            "level": 21,
+            "iv": 14,
+            "defense": 44,
+            "tipo": "poison",
+            "ev": 39066,
+            "name": "Ekans",
+            "speed": 55,
             "moves": [
                "poison sting",
                "bite"
             ],
-            "level": 21,
-            "special_defense": 54,
-            "speed": 55,
-            "ev": 39066,
-            "batallas": [],
-            "attack": 60,
-            "unique_id": 19,
-            "defense": 44,
-            "name": "Ekans",
-            "hp": 35,
-            "tipo": "poison",
-            "iv": 14
+            "evolve_to": 24,
+            "special_attack": 40
          }
       ],
+      "prograbolas": 73,
       "batallas": {
-         "Pewter City": [
+         "Cerulean City": [
+            [
+               "Swimmer",
+               3
+            ],
             [
                "Jr Trainer",
                1
+            ]
+         ],
+         "Viridian City": [
+            [
+               "BlackBelt",
+               1,
+               0
+            ],
+            [
+               "CoolTrainer",
+               0,
+               0
+            ],
+            [
+               "BlackBelt",
+               1,
+               0
+            ],
+            [
+               "CoolTrainer",
+               0,
+               0
             ]
          ],
          "Saffron City": [
@@ -596,116 +629,87 @@
                0
             ]
          ],
-         "Viridian City": [
-            [
-               "BlackBelt",
-               1,
-               0
-            ],
-            [
-               "CoolTrainer",
-               0,
-               0
-            ],
-            [
-               "BlackBelt",
-               1,
-               0
-            ],
-            [
-               "CoolTrainer",
-               0,
-               0
-            ]
-         ],
-         "Cerulean City": [
-            [
-               "Swimmer",
-               3
-            ],
+         "Pewter City": [
             [
                "Jr Trainer",
                1
             ]
          ]
-      },
-      "yenes": 9951500,
-      "password": "iv",
-      "medals": [
-         "Cerulean City",
-         "Cerulean City"
-      ],
-      "location_id": 12
+      }
    },
    "1": {
+      "yenes": 900,
       "programones_vistos": [
          {
-            "visto_capturado": 4,
-            "ide": 67,
-            "tipo": "fighting",
             "moves": [
                "low kick",
                "karate chop",
                "low kick"
             ],
-            "name": "Machoke"
+            "ide": 67,
+            "visto_capturado": 4,
+            "name": "Machoke",
+            "tipo": "fighting"
          }
       ],
+      "medals": [],
       "equipo": [
          0,
          0
       ],
+      "location_id": 1,
+      "password": "pablo",
       "unique_name": "pablo garces",
-      "prograbolas": 6,
       "programones_PC": [
          {
             "evolve_level": 16,
-            "evolve_to": 5,
+            "hp": 24,
             "visto_capturado": 0,
+            "batallas": [],
+            "special_defense": 14,
+            "attack": 15,
+            "unique_id": 0,
             "ide": 4,
-            "special_attack": 16,
+            "level": 6,
+            "iv": 4,
+            "defense": 14,
+            "tipo": "fire",
+            "ev": 52585,
+            "name": "Charmander",
+            "speed": 16,
             "moves": [
                "scratch",
                "ember",
                "metal claw"
             ],
-            "level": 6,
-            "special_defense": 14,
-            "speed": 16,
-            "ev": 52585,
-            "batallas": [],
-            "attack": 15,
-            "unique_id": 0,
-            "defense": 14,
-            "name": "Charmander",
-            "hp": 24,
-            "tipo": "fire",
-            "iv": 4
+            "evolve_to": 5,
+            "special_attack": 16
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 33,
             "visto_capturado": 1,
+            "batallas": [],
+            "special_defense": 65,
+            "attack": 55,
+            "unique_id": 0,
             "ide": 133,
-            "special_attack": 45,
+            "level": 3,
+            "iv": 7,
+            "defense": 50,
+            "tipo": "normal",
+            "ev": 48842,
+            "name": "Eevee",
+            "speed": 55,
             "moves": [
                "tackle",
                "bite"
             ],
-            "level": 3,
-            "special_defense": 65,
-            "speed": 55,
-            "ev": 48842,
-            "batallas": [],
-            "attack": 55,
-            "unique_id": 0,
-            "defense": 50,
-            "name": "Eevee",
-            "hp": 33,
-            "tipo": "normal",
-            "iv": 7
+            "evolve_to": -1,
+            "special_attack": 45
          }
       ],
+      "prograbolas": 6,
       "batallas": {
          "Viridian City": [
             [
@@ -725,81 +729,81 @@
                0
             ]
          ]
-      },
-      "yenes": 900,
-      "password": "pablo",
-      "medals": [],
-      "location_id": 1
+      }
    },
    "2": {
+      "yenes": 900,
       "programones_vistos": [
          {
-            "visto_capturado": 4,
-            "ide": 67,
-            "tipo": "fighting",
             "moves": [
                "low kick",
                "karate chop",
                "low kick"
             ],
-            "name": "Machoke"
+            "ide": 67,
+            "visto_capturado": 4,
+            "name": "Machoke",
+            "tipo": "fighting"
          }
       ],
+      "medals": [],
       "equipo": [
          0,
          0
       ],
+      "location_id": 2,
+      "password": "isi",
       "unique_name": "ninibacan",
-      "prograbolas": 5,
       "programones_PC": [
          {
             "evolve_level": 16,
-            "evolve_to": 5,
+            "hp": 24,
             "visto_capturado": 0,
+            "batallas": [],
+            "special_defense": 14,
+            "attack": 15,
+            "unique_id": 0,
             "ide": 4,
-            "special_attack": 16,
+            "level": 6,
+            "iv": 6,
+            "defense": 14,
+            "tipo": "fire",
+            "ev": 46617,
+            "name": "Charmander",
+            "speed": 16,
             "moves": [
                "scratch",
                "ember",
                "metal claw"
             ],
-            "level": 6,
-            "special_defense": 14,
-            "speed": 16,
-            "ev": 46617,
-            "batallas": [],
-            "attack": 15,
-            "unique_id": 0,
-            "defense": 14,
-            "name": "Charmander",
-            "hp": 24,
-            "tipo": "fire",
-            "iv": 6
+            "evolve_to": 5,
+            "special_attack": 16
          },
          {
             "evolve_level": -1,
-            "evolve_to": -1,
+            "hp": 55,
             "visto_capturado": 2,
+            "batallas": [],
+            "special_defense": 90,
+            "attack": 80,
+            "unique_id": 0,
             "ide": 45,
-            "special_attack": 100,
+            "level": 5,
+            "iv": 11,
+            "defense": 85,
+            "tipo": "grass",
+            "ev": 40800,
+            "name": "Vileplume",
+            "speed": 50,
             "moves": [
                "snore",
                "razor leaf"
             ],
-            "level": 5,
-            "special_defense": 90,
-            "speed": 50,
-            "ev": 40800,
-            "batallas": [],
-            "attack": 80,
-            "unique_id": 0,
-            "defense": 85,
-            "name": "Vileplume",
-            "hp": 55,
-            "tipo": "grass",
-            "iv": 11
+            "evolve_to": -1,
+            "special_attack": 100
          }
       ],
+      "prograbolas": 5,
       "batallas": {
          "Viridian City": [
             [
@@ -819,10 +823,602 @@
                0
             ]
          ]
-      },
-      "yenes": 900,
-      "password": "isi",
+      }
+   },
+   "3": {
+      "yenes": 100000000,
+      "programones_vistos": [
+         {
+            "moves": [
+               "low kick",
+               "karate chop",
+               "low kick"
+            ],
+            "ide": 67,
+            "visto_capturado": 4,
+            "name": "Machoke",
+            "tipo": "fighting"
+         },
+         {
+            "moves": [
+               "scratch"
+            ],
+            "ide": 50,
+            "visto_capturado": 8,
+            "name": "Diglett",
+            "tipo": "ground"
+         },
+         {
+            "moves": [
+               "scratch",
+               "poison sting"
+            ],
+            "ide": 27,
+            "visto_capturado": 8,
+            "name": "Sandshrew",
+            "tipo": "ground"
+         },
+         {
+            "moves": [
+               "low kick",
+               "karate chop",
+               "low kick"
+            ],
+            "ide": 67,
+            "visto_capturado": 4,
+            "name": "Machoke",
+            "tipo": "fighting"
+         },
+         {
+            "moves": [
+               "constrict",
+               "bite",
+               "water gun",
+               "mud shot"
+            ],
+            "ide": 138,
+            "visto_capturado": 5,
+            "name": "Omanyte",
+            "tipo": "rock"
+         },
+         {
+            "moves": [
+               "scratch"
+            ],
+            "ide": 50,
+            "visto_capturado": 8,
+            "name": "Diglett",
+            "tipo": "ground"
+         },
+         {
+            "moves": [
+               "scratch",
+               "poison sting"
+            ],
+            "ide": 27,
+            "visto_capturado": 8,
+            "name": "Sandshrew",
+            "tipo": "ground"
+         },
+         {
+            "moves": [
+               "tackle",
+               "rock throw"
+            ],
+            "ide": 74,
+            "visto_capturado": 8,
+            "name": "Geodude",
+            "tipo": "rock"
+         },
+         {
+            "moves": [
+               "iron tail",
+               "rock throw",
+               "dragonbreath",
+               "slam"
+            ],
+            "ide": 95,
+            "visto_capturado": 8,
+            "name": "Onix",
+            "tipo": "rock"
+         },
+         {
+            "moves": [
+               "psychic",
+               "fire punch"
+            ],
+            "ide": 63,
+            "visto_capturado": 9,
+            "name": "Abra",
+            "tipo": "psychic"
+         },
+         {
+            "moves": [
+               "low kick",
+               "karate chop",
+               "low kick"
+            ],
+            "ide": 67,
+            "visto_capturado": 4,
+            "name": "Machoke",
+            "tipo": "fighting"
+         },
+         {
+            "moves": [
+               "tackle",
+               "vine whip"
+            ],
+            "ide": 1,
+            "visto_capturado": 1,
+            "name": "Bulbasaur",
+            "tipo": "grass"
+         }
+      ],
       "medals": [],
-      "location_id": 2
+      "equipo": [
+         17,
+         2,
+         3,
+         7,
+         16,
+         10
+      ],
+      "location_id": 4,
+      "password": "iv",
+      "unique_name": "sofia",
+      "programones_PC": [
+         {
+            "evolve_level": 16,
+            "hp": 25,
+            "visto_capturado": 0,
+            "batallas": [
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Jynx",
+                  "ganador"
+               ],
+               [
+                  "Jr Trainer",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Clefairy",
+                  "perdedor"
+               ],
+               [
+                  "Jr Trainer",
+                  "perdedor"
+               ],
+               [
+                  "Brock",
+                  "perdedor"
+               ],
+               [
+                  "Abra",
+                  "perdedor"
+               ],
+               [
+                  "Magnemite",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Ditto",
+                  "perdedor"
+               ]
+            ],
+            "special_defense": 17,
+            "attack": 15,
+            "unique_id": 0,
+            "ide": 1,
+            "level": 6,
+            "iv": 6,
+            "defense": 15,
+            "tipo": "grass",
+            "ev": 56889,
+            "name": "Bulbasaur",
+            "speed": 14,
+            "moves": [
+               "tackle",
+               "vine whip"
+            ],
+            "evolve_to": 2,
+            "special_attack": 17
+         },
+         {
+            "evolve_level": -1,
+            "hp": 32,
+            "visto_capturado": 3,
+            "batallas": [
+               [
+                  "Meowth",
+                  "ganador"
+               ],
+               [
+                  "Jr Trainer",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Tauros",
+                  "perdedor"
+               ],
+               [
+                  "Clefairy",
+                  "perdedor"
+               ],
+               [
+                  "Paras",
+                  "perdedor"
+               ],
+               [
+                  "Jr Trainer",
+                  "perdedor"
+               ],
+               [
+                  "Brock",
+                  "perdedor"
+               ],
+               [
+                  "Abra",
+                  "perdedor"
+               ],
+               [
+                  "Magnemite",
+                  "ganador"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Ditto",
+                  "perdedor"
+               ]
+            ],
+            "special_defense": 24,
+            "attack": 17,
+            "unique_id": 2,
+            "ide": 124,
+            "level": 8,
+            "iv": 9,
+            "defense": 15,
+            "tipo": "ice",
+            "ev": 21913,
+            "name": "Jynx",
+            "speed": 24,
+            "moves": [
+               "body slam",
+               "blizzard",
+               "powder snow",
+               "ice punch"
+            ],
+            "evolve_to": -1,
+            "special_attack": 27
+         },
+         {
+            "evolve_level": 28,
+            "hp": 40,
+            "visto_capturado": 5,
+            "batallas": [
+               [
+                  "Jr Trainer",
+                  "intercambio"
+               ],
+               [
+                  "Jr Trainer",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Tauros",
+                  "ganador"
+               ],
+               [
+                  "Paras",
+                  "ganador"
+               ],
+               [
+                  "Jr Trainer",
+                  "perdedor"
+               ],
+               [
+                  "Brock",
+                  "perdedor"
+               ],
+               [
+                  "Abra",
+                  "perdedor"
+               ],
+               [
+                  "Spearow",
+                  "perdedor"
+               ],
+               [
+                  "Magnemite",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Ditto",
+                  "ganador"
+               ]
+            ],
+            "special_defense": 23,
+            "attack": 25,
+            "unique_id": 3,
+            "ide": 52,
+            "level": 12,
+            "iv": 13,
+            "defense": 22,
+            "tipo": "normal",
+            "ev": 41627,
+            "name": "Meowth",
+            "speed": 35,
+            "moves": [
+               "scratch",
+               "bite"
+            ],
+            "evolve_to": 53,
+            "special_attack": 23
+         },
+         {
+            "evolve_level": -1,
+            "hp": 29,
+            "visto_capturado": 3,
+            "batallas": [
+               [
+                  "Clefairy",
+                  "ganador"
+               ],
+               [
+                  "Paras",
+                  "perdedor"
+               ],
+               [
+                  "Brock",
+                  "perdedor"
+               ],
+               [
+                  "Abra",
+                  "perdedor"
+               ],
+               [
+                  "Magnemite",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ],
+               [
+                  "Ditto",
+                  "perdedor"
+               ]
+            ],
+            "special_defense": 18,
+            "attack": 21,
+            "unique_id": 7,
+            "ide": 128,
+            "level": 6,
+            "iv": 10,
+            "defense": 21,
+            "tipo": "normal",
+            "ev": 59594,
+            "name": "Tauros",
+            "speed": 23,
+            "moves": [
+               "tackle",
+               "horn attack"
+            ],
+            "evolve_to": -1,
+            "special_attack": 14
+         },
+         {
+            "evolve_level": -1,
+            "hp": 15,
+            "visto_capturado": 1,
+            "batallas": [
+               [
+                  "Brock",
+                  "perdedor"
+               ],
+               [
+                  "Abra",
+                  "perdedor"
+               ],
+               [
+                  "Spearow",
+                  "ganador"
+               ],
+               [
+                  "Magnemite",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ]
+            ],
+            "special_defense": 8,
+            "attack": 7,
+            "unique_id": 8,
+            "ide": 35,
+            "level": 2,
+            "iv": 7,
+            "defense": 7,
+            "tipo": "fairy",
+            "ev": 24325,
+            "name": "Clefairy",
+            "speed": 7,
+            "moves": [
+               "thunderpunch",
+               "snore"
+            ],
+            "evolve_to": -1,
+            "special_attack": 8
+         },
+         {
+            "evolve_level": 24,
+            "hp": 24,
+            "visto_capturado": 6,
+            "batallas": [
+               [
+                  "Jr Trainer",
+                  "ganador"
+               ],
+               [
+                  "Brock",
+                  "perdedor"
+               ],
+               [
+                  "Abra",
+                  "perdedor"
+               ],
+               [
+                  "Spearow",
+                  "perdedor"
+               ],
+               [
+                  "Magnemite",
+                  "perdedor"
+               ],
+               [
+                  "BlackBelt",
+                  "perdedor"
+               ]
+            ],
+            "special_defense": 14,
+            "attack": 16,
+            "unique_id": 10,
+            "ide": 46,
+            "level": 7,
+            "iv": 0,
+            "defense": 14,
+            "tipo": "bug",
+            "ev": 14992,
+            "name": "Paras",
+            "speed": 10,
+            "moves": [
+               "scratch"
+            ],
+            "evolve_to": 47,
+            "special_attack": 13
+         },
+         {
+            "evolve_level": 20,
+            "hp": 25,
+            "visto_capturado": 7,
+            "batallas": [],
+            "special_defense": 31,
+            "attack": 60,
+            "unique_id": 16,
+            "ide": 21,
+            "level": 12,
+            "iv": 0,
+            "defense": 30,
+            "tipo": "normal",
+            "ev": 5628,
+            "name": "Spearow",
+            "speed": 70,
+            "moves": [
+               "peck"
+            ],
+            "evolve_to": 22,
+            "special_attack": 31
+         },
+         {
+            "evolve_level": 30,
+            "hp": 21,
+            "visto_capturado": 5,
+            "batallas": [],
+            "special_defense": 55,
+            "attack": 35,
+            "unique_id": 17,
+            "ide": 81,
+            "level": 7,
+            "iv": 15,
+            "defense": 70,
+            "tipo": "electric",
+            "ev": 9730,
+            "name": "Magnemite",
+            "speed": 45,
+            "moves": [
+               "tackle",
+               "thundershock",
+               "spark"
+            ],
+            "evolve_to": 82,
+            "special_attack": 95
+         },
+         {
+            "evolve_level": -1,
+            "hp": 20,
+            "visto_capturado": 2,
+            "batallas": [],
+            "special_defense": 48,
+            "attack": 48,
+            "unique_id": 20,
+            "ide": 132,
+            "level": 5,
+            "iv": 15,
+            "defense": 48,
+            "tipo": "normal",
+            "ev": 26787,
+            "name": "Ditto",
+            "speed": 48,
+            "moves": [
+               "tackle"
+            ],
+            "evolve_to": -1,
+            "special_attack": 48
+         }
+      ],
+      "prograbolas": 99986,
+      "batallas": {
+         "Viridian City": [
+            [
+               "BlackBelt",
+               0
+            ],
+            [
+               "CoolTrainer",
+               0
+            ],
+            [
+               "PokeManiac",
+               0
+            ],
+            [
+               "Engineer",
+               0
+            ]
+         ],
+         "Pewter City": [
+            [
+               "Jr Trainer",
+               1
+            ]
+         ]
+      }
    }
 }
