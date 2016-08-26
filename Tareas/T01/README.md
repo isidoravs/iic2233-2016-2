@@ -24,4 +24,16 @@ Para la opción de consultas se da la opción de "Batalla por Programon" que mue
 
 * jugador.py
 
-Módulo que contiene la clase **Jugador** y **Progradex**, siendo este último un implemento que tiene cada jugador
+Módulo que contiene la clase **Jugador** y **Progradex**, siendo este último un implemento que tiene cada jugador. Importa la función *jsonToDict* y la clase **Ciudad** del módulo *ciudades.py*.
+
+### Jugador
+Clase que asigna todos los atributos de los jugadores: unique\_id, unique\_name, password, yenes, prograbolas, equipo (lista con objetos de la clase **Programon**), medallas, batallas (diccionario en que sus keys son los nombres de las ciudades y sus respectivos values una lista de listas de la forma: [<nombre entrenador>, <victorias>]). Además un atributo que posee es el *location\_id* que es un integer que determina la ubicación del jugador en el mapa. Ésta puede ir desde 0 (Ciudad, Pallet Town) hasta 32 (Ciudad, Cinnabar Island). Por lo tanto, una cualidad importante es que si '*location\_id* % 4' es igual a 0, el jugador se encuentra en una ciudad y por lo tanto su atributo *location* es un objeto de la clase **Ciudad**, de otra forma se encuentra en la hierba y *location* es None. Por último, el atributo *progradex* es un objeto de la clase **Progradex**.
+
+En esta clase se sobrecarga el método '__str__' para mostrar la información del jugador cuando éste lo necesite.
+
+### Progradex
+Clase que contiene a los programones (objetos de la clase **Programon**) vistos y capturados del jugador en dos listas distintas. Su método *show\_programones* mencionado antes, muestra toda la información (al hacer print() al objeto) de los programones capturados y únicamente el nombre, id y tipo de los programones vistos (además de la última vez que fueron vistos, número de ruta o ciudad).
+
+* ciudades.py
+
+Módulo 
