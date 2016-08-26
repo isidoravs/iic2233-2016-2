@@ -3,11 +3,15 @@
 
 Para poder modelar un sistema de batallas entre programones que se nos pidió en la tarea, cree 6 **modulos** que explicaré a continuación con sus respectivos conjuntos de clases y funciones (separados por sus relaciones y tipos en común).
 
-* main.py
+```
+main.py
+```
 
 Módulo principal (ejecutable) que contiene el menú en el cuál el usuario puede registarse / ingresar o salir del sistema. Para este módulo se utiliza la librería *sys* y se importan las clases **ProgramonRojo**, **PCBastian** y **Menu**, que se explican en el próximo módulo. Las clases anteriores se utilizan para cargar los datos y permitir el ingreso de los usuarios al juego; una vez ingresados se despliega el menú principal de Programon Rojo.
 
-* programonRojo.py
+```
+programonRojo.py
+```
 
 Módulo que contiene las clases principales del juego, que manejan el funcionamiento de éste. Este módulo utiliza las librerías *sys* y *math*, además de importar las clases **Programon**, **Ciudad**, **Mapa**, **Jugador** y **Progradex** para las distintas interacciones entre el sistema principal y estas. Por último, desde el módulo **jsonReader** se importan las funciones *jsonToDict* y *dictToJson* para la carga/almacenamiento de datos.
 
@@ -22,7 +26,9 @@ Clase que permite al usuario acceder a las distintas funcionalidades del juego. 
 
 Para la opción de consultas se da la opción de "Batalla por Programon" que muestra todos los resultados de los enfrentamientos contra un oponente al introducir el nombre del programon. Esta opción muestra el nombre del oponente y el resultado: "ganador", "perdedor" o "intercambio" (en caso de que haya sido cambiado antes de perder contra otro programón). Otra opción de consultas es "Ranking de programones" que imprime los mejores 10 porcentajes de batallas ganadas por especie de programón (como deben haber batallado en más de 10 batallas para entrar en el ranking, pueden ser menos de 10 porcentajes). La última opción de consulta es "Jugador" que amplía la opción 3. del menú principal, dado que muestra todos sus programones (con stats) y todas las batallas en que éstos se han visto involucrados.
 
-* jugador.py
+```
+jugador.py
+```
 
 Módulo que contiene la clase **Jugador** y **Progradex**, siendo este último un implemento que tiene cada jugador. Importa la función *jsonToDict* y la clase **Ciudad** del módulo *ciudades.py*.
 
@@ -34,7 +40,9 @@ En esta clase se sobrecarga el método `__str__` para mostrar la información de
 ### Progradex
 Clase que contiene a los programones (objetos de la clase **Programon**) vistos y capturados del jugador en dos listas distintas. Su método *show\_programones* mencionado antes, muestra toda la información (al hacer print() al objeto) de los programones capturados y únicamente el nombre, id y tipo de los programones vistos (además de la última vez que fueron vistos, número de ruta o ciudad).
 
-* ciudades.py
+```
+ciudades.py
+```
 
 Módulo 
 
