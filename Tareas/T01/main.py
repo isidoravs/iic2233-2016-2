@@ -13,10 +13,12 @@ while not game_running:
     if ingreso.isdigit():
         if ingreso == "1":
             # jugador ya registrado
+            programon_rojo.cargar_datos(PC)
             programon_rojo.log_in()
             game_running = True
         elif ingreso == "2":
             # nuevo jugador
+            programon_rojo.cargar_datos(PC)
             programon_rojo.sign_up(PC)
             game_running = True
         elif ingreso == "3":

@@ -6,7 +6,7 @@ from jsonReader import jsonToDict, dictToJson
 
 
 class Programon:
-    def __init__(self, ide, name, moves, tipo, level, stats, evolve_level, evolve_to):
+    def __init__(self, ide, name, moves, tipo, level, stats, evolve_level=-1, evolve_to=-1):
         self.ide = ide
         self.unique_id = 0  # depende de cada jugador
         self.name = name
@@ -23,7 +23,7 @@ class Programon:
         self.evolve_to = evolve_to  # -1 si no evoluciona
         self.iv = random.randint(0, 15)  # generados al instanciar
         self.ev = random.randint(0, 65535)
-        self.batallas = []  # alamacena datos de las batallas, para mostrarlas
+        self.batallas = []  # lista de listas, [contrincante, resultado]
         self.original_hp = self.hp
         self.visto_capturado = 0
         self.set_moves()  # actualiza moves a sus pp y power base
@@ -39,12 +39,19 @@ class Programon:
         self.moves = new_moves
 
     def evolucionar(self, PC):
-        # actualizar info en PC RR
-        subevolucion = self.name
+        subevolucion = None
         for evolucion in PC.base_programones:
             if evolucion["id"] == self.evolve_to:
-                # mismo programon pero con distintas caracteristicas, unique_id se mantiene
-                self.id = evolucion["id"]
+                # guardar informacion subevolucion
+                sub_stats = [self.hp, self.special_defense, self.special_attack, self.defense, self.speed, self.attack]
+
+                subevolucion = Programon(self.ide, self.name, self.moves, self.tipo, self.level, sub_stats,
+                                         self.evolve_level, self.evolve_to)
+                subevolucion.moves = self.moves
+                subevolucion.unique_id = -1
+
+                # evolucion, mismo unique_id con distintas caracteristicas
+                self.ide = evolucion["id"]
                 self.tipo = evolucion["type"]
                 self.hp = evolucion["hp"]
                 self.name = evolucion["name"]
@@ -55,18 +62,15 @@ class Programon:
                 self.attack = evolucion["attack"]
                 self.moves = evolucion["moves"]
                 self.set_moves()
-                if evolveLevel in evolucion.keys():
+                if "evolveLevel" in evolucion.keys():
                     self.evolve_level = evolucion["evolveLevel"]
                     self.evolve_to = evolucion["evolveTo"]
                 else:
                     self.evolve_level = -1
                     self.evolve_to = -1
         print(">>> {} evoluciona a {} <<<\nSe ha actualizado la informacion en tu Progradex y en "
-              "el PC".format(subevolucion, self.name))
-
-    def resumen_batallas(self, nombre_programon):
-        # muestra el resumen de batallas
-        pass
+              "el PC".format(subevolucion.name, self.name))
+        return subevolucion
 
     def actualizar_stats(self, base_programones):  # si se captura programon o aumenta de nivel
         # base_datos objeto de la clase PCBastian
@@ -94,7 +98,8 @@ class Programon:
     def atacar(self, entrenador): # "jugador" o "trainer"
         if entrenador == "jugador":
             print("\n Movimientos de {} (hp = {})".format(self.name, self.hp))
-            print("\n".join("[{}]: {}".format(i + 1, self.moves[i]["name"]) for i in range(len(self.moves))))
+            print("\n".join("[{}]: {} (pp = {})".format(i + 1, self.moves[i]["name"], self.moves[i]["pp"])
+                            for i in range(len(self.moves))))
 
             while True:
                 ataque_jugador = input("Ingresa el numero de movimiento para atacar:\n> ")
@@ -122,7 +127,7 @@ class Programon:
                 if movimiento["name"] == move_chosen["name"]:
                     movimiento["pp"] -= 1
                     if movimiento["pp"] == 0:
-                        self.moves.remove(movimiento)  # no se si funciona RR
+                        self.moves.remove(movimiento)
                     type_move = movimiento["type"]
                     base_move = movimiento["power"]
 
@@ -132,17 +137,32 @@ class Programon:
             print(self.name,"no ha acertado el ataque")
             return None
 
+    def __str__(self):
+        rutas = jsonToDict("datos/routes.json")
+        ide = self.visto_capturado
+        location = ""
+        if ide % 4 == 0:
+            for ruta in rutas:
+                if (ide // 4) == ruta["route"]:
+                    location = ruta["destination"]
+        else:
+            location = "hierba, ruta {}".format(ide // 4 + 1)
+        display = "\n~ {} (nivel: {})~\n ID: {} | Tipo: {}\n Ultima vez visto: {}" \
+                  "\n".format(self.name, self.level, self.ide, self.tipo, location)
+        stats = "* Stats *\n HP: {}\n Speed: {}\n Attack: {} | Special attack: {}\n Defense: {} | Special defense: " \
+                "{}\n".format(self.hp, self.speed, self.attack, self.special_attack, self.defense, self.special_defense)
+        display += stats
+        base = jsonToDict("datos/programones.json")
+        for programon in base:
+            if programon["id"] == self.ide:
+                if "evolveTo" in programon.keys():
+                    for evolucion in base:
+                        if programon["evolveTo"] == evolucion["id"]:
+                            display += " Evolve to: {} (in level {})".format(evolucion["name"],
+                                                                                      programon["evolveLevel"])
+                else:
+                    break
+        return display
+
 if __name__ == "__main__":
     print("Module being run directly")
-
-
-
-
-
-
-
-
-
-
-
-

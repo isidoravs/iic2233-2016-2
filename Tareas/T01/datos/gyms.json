@@ -17,7 +17,7 @@
     },
     "trainers":[
       {
-        "name": "Jr. Trainer",
+        "name": "Jr Trainer",
         "programones":[
           {
             "id":50,
@@ -76,7 +76,7 @@
     "city": "Vermilion City",
     "id": 5,
     "leader":{
-      "name": "Lt. Surge",
+      "name": "Lt Surge",
       "programones":[
         {
           "id":100,
@@ -190,7 +190,7 @@
         ]
       },
       {
-        "name": "Beauty",
+        "name": "Scientist",
         "programones":[
           {
             "id":69,
@@ -256,7 +256,7 @@
         ]
       },
       {
-        "name": "Juggler",
+        "name": "Tuttle",
         "programones":[
           {
             "id":97,
@@ -265,7 +265,7 @@
         ]
       },
       {
-        "name": "Jugler",
+        "name": "Burglar",
         "programones":[
           {
             "id":96,
@@ -343,7 +343,7 @@
         ]
       },
       {
-        "name": "Psychic",
+        "name": "Joker",
         "programones":[
           {
             "id":122,
@@ -369,7 +369,7 @@
         ]
       },
       {
-        "name": "Psychic",
+        "name": "Weirdo",
         "programones":[
           {
             "id":64,
@@ -451,7 +451,7 @@
         ]
       },
       {
-        "name": "Super Nerd",
+        "name": "Ultra Nerd",
         "programones":[
           {
             "id":4,
@@ -472,7 +472,7 @@
         ]
       },
       {
-        "name": "Super Nerd",
+        "name": "Juggler",
         "programones":[
           {
             "id":78,
@@ -538,7 +538,7 @@
         ]
       },
       {
-        "name": "BlackBelt",
+        "name": "PokeManiac",
         "programones":[
           {
             "id":67,
@@ -555,7 +555,7 @@
         ]
       },
       {
-        "name": "CoolTrainer",
+        "name": "Engineer",
         "programones":[
           {
             "id":33,

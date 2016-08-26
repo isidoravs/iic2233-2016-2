@@ -167,7 +167,7 @@ class Gimnasio:
         ciudades_batalla = jugador.batallas.keys()  # ciudades donde ha batallado
         if self.city_name not in ciudades_batalla:
             print("Bienvenido! Al parecer no te has enfrentado a ninguno de nuestros entrenadores:")
-            nuevo_gimnasio = [[contrincante.name, 0, 0] for contrincante in self.trainers]
+            nuevo_gimnasio = [[contrincante.name, 0] for contrincante in self.trainers]
             jugador.batallas[self.city_name] = nuevo_gimnasio
             beated_trainers = 0
 
@@ -185,7 +185,7 @@ class Gimnasio:
             else:
                 print(display_beated)
 
-        if beated_trainers == jugador.batallas[self.city_name]:
+        if beated_trainers == len(jugador.batallas[self.city_name]):
             print("Felicitaciones! Le has ganado a todos los entrenadores, es tu turno de enfrentarte al lider.")
             print("\n ~ Batalla contra {} ~".format(self.leader.name))
             batalla = Batalla(self.city_name, jugador, self.leader, self.leader.programon_squad, PC, False)
@@ -272,15 +272,16 @@ class Mapa:
                 print("¡Ha aparecido un {} salvaje (nivel {})!".format(programon_salvaje.name,
                                                                                 programon_salvaje.level))
                 programon_salvaje.visto_capturado = self.ide
-                self.jugador.progradex.programones_vistos.append(programon_salvaje)
+                programon_salvaje.unique_id = len(self.jugador.progradex.programones_vistos +
+                                                  self.jugador.progradex.programones_capturados)
                 print("\n ~ Comienza la batalla ~")
-                batalla = Batalla(None, self.jugador, None, [programon_salvaje], self.PC, True)
+                batalla = Batalla(None, self.jugador, programon_salvaje, [programon_salvaje], self.PC, True)
             else:
                 print("... no ocurre nada en especial, continua tu camino.")
             return
 
     def mostrar(self):
-        display = "[ Pallet Town ]"
+        display = "[ Pallet Town ]\n"
         display += "\n".join(" v\n v Route {}\n v\n[ {} ]".format(i, self.routes[i]["destination"])
                              for i in range(len(self.routes)))
         print(display)
