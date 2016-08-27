@@ -53,11 +53,11 @@ Módulo que contiene la clase **Ciudad** y sus las **Gimnasio** y **Mapa** que s
 Los objetos de esta clase poseen un *nombre*, *id* y reciben además al objeto de la clase *PCBastian* como atributo. En caso de que su id sea distinto de 0 (no es Pallet Town), la ciudad posee un *gimnasio*. Para instanciar el gimnasio (objeto de la clase **Gimnasio** utilizo el método *set\_trainers()* que los obtiene de la base de datos y agrega sus respectivos programones al equipo. 
 
 Como en la ciudad el jugador puede acceder a distintas opciones, los métodos `menu_ciudad()` y `opciones_ciudad()` permiten al jugador optar por:
-* Acceder al Centro Programon
+* Acceder al Centro Programon<br />
 Que ofrece ingresar al PC de Bastián y cambiar los programones de su equipo por lo que ha capturado y se encuentran en el PC (si tiene menos de 6 en su equipo, se le indica que no hay programones disponibles para cambiar).
-* Ingresar al Gimnasio
+* Ingresar al Gimnasio<br />
 Llama al método `entrar()` de la clase **Gimnasio** que informa al usuario si es la primera vez que pasa por éste o, en caso contrario, muestra la cantidad de entrenadores que ha derrotado y ofrece la opción de escoger un entrenador para pelear. En caso de haberlos derrotado a todos, inmediatamente comienza una batalla con el lider del gimnasio.
-* Ir a la Tienda de Prograbolas
+* Ir a la Tienda de Prograbolas<br />
 En esta opción se revisa que el jugador pueda acceder al menos a una prograbola y con el método de la clase, `tienda(jugador)`, se pide la cantidad de prograbolas a comprar y descuenta el dinero del usuario (si es que lo puede pagar).
 
 ### Gimnasio
