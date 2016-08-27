@@ -75,6 +75,15 @@ batallas.py
 Es el módulo más complejo que lleva a cabo todo el proceso de pelea entre programones, tanto en gimnasios como en la hierba (contra programones salvajes). Utiliza las librerías *math* (para cálculo de stats) y *random* (para definir ataques de oponentes o probabilidad de captura de programon salvaje). También utiliza la función *jsonToDict* para obtener los datos base de programones y movimientos.
 
 ### Trainer
+Los objetos de esta clase poseen *nombre*, *programon\_squad* (lista con los programones de su equipo) y *trainer\_type*. Éste último determina si el entrenador es uno común o el lider del gimnasio.
+
+### Batalla
+
+
+En este módulo además se agregan las funciones:
+* `calculo_stats(base, iv, ev, nivel`: en base a las fórmulas dadas se calculan los nuevos stats del programon ganador
+* `calculo_harm(programon_ataca, programon_defiende, base_move, type_move, PC)`: dependiendo de la combianción del ataque del programon y el tipo de programon atacado, calcula el daño (*harm*) que el atacante hace al programon que se defiende
+* `resultado_ataque(result, programon_ataca, programon_defiende, PC)`: a partir del daño hecho, retorna un **Bool** determinando si el atacante ganó o no (al dejar sin *hp* a su oponente)
 
 
 
