@@ -1,7 +1,7 @@
 # Tarea 1
 *Isidora Vizcaya*
 ```python
-"Ha aparecido un {} salvaje!".format(ayudante.name)
+print("Ha aparecido un {} salvaje!".format(ayudante_salvaje.name))
 ```
 
 Para poder modelar un sistema de batallas entre programones que se nos pidió en la tarea, cree 6 **modulos** que explicaré a continuación con sus respectivos conjuntos de clases y funciones (separados por sus relaciones y tipos en común).
@@ -83,3 +83,8 @@ Es el módulo más complejo que lleva a cabo todo el proceso de pelea entre prog
 
 ## myJsonToDict
 Junto con los módulos anteriores, se incluye el archivo *myJsonReader.py* que contiene la función `myJsonToDict(path)` pedida para esta tarea (sin utilizar librería *json*). En este archivo se extrae la información de los 6 archivos .json entregados en la tarea y se compara lo obtenido con lo retornado por la función `jsonToDict(path)` original. En este archivo se ve que lo obtenido es igual! Sin embargo, en los archivos entregados mantuve el uso de la función original debido a su mayor eficiencia.
+
+```python
+print("¡Ya esta!\n{} atrapado".format(ayudante_salvaje.name))
+print("Se ha actualizando tu informacion en la Progradex")
+```
