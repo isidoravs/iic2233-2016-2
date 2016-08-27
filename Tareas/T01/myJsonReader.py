@@ -38,12 +38,20 @@ def recursive_call(convert):
 
                 else:
                     seleccion = []
-                    for j in range(i, len(convert)): ##ACA
+                    opened = 0
+                    closed = 0
+                    for j in range(i, len(convert)):
                         if "]" not in convert[j]:
+                            if "[" in convert[j]:
+                                opened += 1
                             seleccion.append(convert[j])
-                        else:
-                            i = j + 1
-                            break
+                        if "]" in convert[j]:
+                            closed += 1
+                            if opened == closed:
+                                i = j + 1
+                                break
+                            else:
+                                seleccion.append(convert[j])
                     dicc.update(list_value(seleccion))
 
             elif "{" in convert[i]:
@@ -51,12 +59,20 @@ def recursive_call(convert):
                 new_key = convert[i].split(':')
                 clean_key1 = new_key[0].replace(',', '')
                 clean_key2 = clean_key1.replace('"', '')
+                opened = 1
+                closed = 0
                 for j in range(i + 1, len(convert)):
                     if "}" not in convert[j]:
+                        if "{" in convert[j]:
+                            opened += 1
                         seleccion.append(convert[j])
-                    else:
-                        i = j + 1
-                        break
+                    if "}" in convert[j]:
+                        closed += 1
+                        if opened == closed:
+                            i = j + 1
+                            break
+                        else:
+                            seleccion.append(convert[j])
                 dicc[clean_key2] = recursive_call(seleccion)
         else:
             i += 1
@@ -85,14 +101,8 @@ def list_value(lista_original):
     j = 1
     while j < len(lista_original):
         if "{" in lista_original[j]:
-            seleccion = []
-            for k in range(j + 1, len(lista_original)):
-                if "}" not in lista_original[k]:
-                    seleccion.append(lista_original[k])
-                else:
-                    j = k + 1
-                    break
-            new_list.append(recursive_call(seleccion))
+            new_list = listas_diccionario(lista_original[1:])
+            j = len(lista_original)
 
         else:
             clean_value = lista_original[j].replace('"', '')
@@ -108,6 +118,7 @@ def list_value(lista_original):
 
     new_dicc[clean_key] = new_list
     return new_dicc
+
 
 def listas_diccionario(content):
     final = []
@@ -145,8 +156,8 @@ parser2 = myJsonToDict("datos/programones.json")
 parser3 = myJsonToDict("datos/routes.json")
 parser4 = myJsonToDict("datos/moveCategories.json")
 parser5 = myJsonToDict("datos/types.json")
-# parser6 = myJsonToDict("datos/gyms.json")
-# parser7 = myJsonToDict("datos/infoJugadores.json")
+parser6 = myJsonToDict("datos/gyms.json")
+parser7 = myJsonToDict("datos/infoJugadores.json")
 
 
 print(parser1)
@@ -154,18 +165,20 @@ print(parser2)
 print(parser3)
 print(parser4)
 print(parser5)
-# print(parser6)
-# print(parser7)
+print(parser6)
+print(parser7)
 
 parser1_original = jsonToDict("datos/programonMoves.json")
 parser2_original = jsonToDict("datos/programones.json")
 parser3_original = jsonToDict("datos/routes.json")
 parser4_original = jsonToDict("datos/moveCategories.json")
 parser5_original = jsonToDict("datos/types.json")
+parser6_original = jsonToDict("datos/gyms.json")
+
 
 print(parser1 == parser1_original)
 print(parser2 == parser2_original)
 print(parser3 == parser3_original)
 print(parser4 == parser4_original)
 print(parser5 == parser5_original)
-
+print(parser6 == parser6_original)
