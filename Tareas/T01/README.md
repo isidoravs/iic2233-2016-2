@@ -44,7 +44,10 @@ Clase que contiene a los programones (objetos de la clase **Programon**) vistos 
 ciudades.py
 ```
 
-Módulo 
+Módulo que contiene la clase **Ciudad** y sus las **Gimnasio** y **Mapa** que se relacionan directamente con ella. Para este módulo se utiliza la librería *random* para determinar la aparición de un programon salvaje en la hierba (modelada por la clase **Mapa**) y además se importan las funciones *jsonToDict* y las clases **Programon**, **Batalla** y **Trainer** (que permiten la interacción entre el jugador y los programones en los lugares modelados por este módulo).
+
+### Ciudad
+Los objetos de esta clase poseen un *nombre*, *ide* y reciben además al objeto de la clase *PCBastian* como atributo.
 
 ## myJsonToDict
 Junto con los módulos anteriores, se incluye el archivo *myJsonReader.py* que contiene la función `myJsonToDict(path)` pedida para esta tarea (sin utilizar librería *json*). En este archivo se extrae la información de los 6 archivos .json entregados en la tarea y se compara lo obtenido con lo retornado por la función `jsonToDict(path)` original. En este archivo se ve que lo obtenido es igual! Sin embargo, en los archivos entregados mantuve el uso de la función original debido a su mayor eficiencia.
