@@ -75,20 +75,27 @@ batallas.py
 Es el módulo más complejo que lleva a cabo todo el proceso de pelea entre programones, tanto en gimnasios como en la hierba (contra programones salvajes). Utiliza las librerías *math* (para cálculo de stats) y *random* (para definir ataques de oponentes o probabilidad de captura de programon salvaje). También utiliza la función *jsonToDict* para obtener los datos base de programones y movimientos.
 
 ### Trainer
-Los objetos de esta clase poseen *nombre*, *programon\_squad* (lista con los programones de su equipo) y *trainer\_type*. Éste último determina si el entrenador es uno común o el lider del gimnasio.
+Los objetos de esta clase poseen *nombre*, *programon\_squad* (lista con los programones de su equipo) y *trainer\_type*. Éste último determina si el entrenador es uno común o el lider del gimnasio. Para determinar los trainers por gimnasio, modifiqué el archivo *gyms.json* de manera que el jugador pudiera distinguir al entrenador por su nombre.
 
 ### Batalla
-
+```
+COMPLETAR
+```
 
 En este módulo además se agregan las funciones:
 * `calculo_stats(base, iv, ev, nivel`: en base a las fórmulas dadas se calculan los nuevos stats del programon ganador
 * `calculo_harm(programon_ataca, programon_defiende, base_move, type_move, PC)`: dependiendo de la combianción del ataque del programon y el tipo de programon atacado, calcula el daño (*harm*) que el atacante hace al programon que se defiende
 * `resultado_ataque(result, programon_ataca, programon_defiende, PC)`: a partir del daño hecho, retorna un **Bool** determinando si el atacante ganó o no (al dejar sin *hp* a su oponente)
 
+```
+programones.py
+```
+Último módulo que contiene únicamente la clase **Programon**. Utiliza las librerías *math* y *random* para fines muy similares al modulo anterior. Además importa las funciones *jsonToDict* (de JsonReader.py) y *calculo\_stats* (de batallas.py).
 
-
-
-
+### Programon
+```
+COMPLETAR
+```
 
 ## myJsonToDict
 Junto con los módulos anteriores, se incluye el archivo *myJsonReader.py* que contiene la función `myJsonToDict(path)` pedida para esta tarea (sin utilizar librería *json*). En este archivo se extrae la información de los 6 archivos .json entregados en la tarea y se compara lo obtenido con lo retornado por la función `jsonToDict(path)` original. En este archivo se ve que lo obtenido es igual! Sin embargo, en los archivos entregados mantuve el uso de la función original debido a su mayor eficiencia.
