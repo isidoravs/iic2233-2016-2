@@ -1,5 +1,8 @@
 # Tarea 1
 *Isidora Vizcaya*
+```
+Ha aparecido un ayudante salvaje!
+```
 
 Para poder modelar un sistema de batallas entre programones que se nos pidió en la tarea, cree 6 **modulos** que explicaré a continuación con sus respectivos conjuntos de clases y funciones (separados por sus relaciones y tipos en común).
 
@@ -47,7 +50,25 @@ ciudades.py
 Módulo que contiene la clase **Ciudad** y sus las **Gimnasio** y **Mapa** que se relacionan directamente con ella. Para este módulo se utiliza la librería *random* para determinar la aparición de un programon salvaje en la hierba (modelada por la clase **Mapa**) y además se importan las funciones *jsonToDict* y las clases **Programon**, **Batalla** y **Trainer** (que permiten la interacción entre el jugador y los programones en los lugares modelados por este módulo).
 
 ### Ciudad
-Los objetos de esta clase poseen un *nombre*, *ide* y reciben además al objeto de la clase *PCBastian* como atributo.
+Los objetos de esta clase poseen un *nombre*, *id* y reciben además al objeto de la clase *PCBastian* como atributo. En caso de que su id sea distinto de 0 (no es Pallet Town), la ciudad posee un *gimnasio*. Para instanciar el gimnasio (objeto de la clase **Gimnasio** utilizo el método *set\_trainers()* que los obtiene de la base de datos y agrega sus respectivos programones al equipo. 
+
+Como en la ciudad el jugador puede acceder a distintas opciones, los métodos `menu_ciudad()` y `opciones_ciudad()` permiten al jugador optar por:
+* Acceder al Centro Programon
+Que ofrece ingresar al PC de Bastián y cambiar los programones de su equipo por lo que ha capturado y se encuentran en el PC (si tiene menos de 6 en su equipo, se le indica que no hay programones disponibles para cambiar).
+* Ingresar al Gimnasio
+Llama al método `entrar()` de la clase **Gimnasio** que informa al usuario si es la primera vez que pasa por éste o, en caso contrario, muestra la cantidad de entrenadores que ha derrotado y ofrece la opción de escoger un entrenador para pelear. En caso de haberlos derrotado a todos, inmediatamente comienza una batalla con el lider del gimnasio.
+* Ir a la Tienda de Prograbolas
+En esta opción se revisa que el jugador pueda acceder al menos a una prograbola y con el método de la clase, `tienda(jugador)`, se pide la cantidad de prograbolas a comprar y descuenta el dinero del usuario (si es que lo puede pagar).
+
+### Gimnasio
+Los objetos de esta clase poseen *nombre*, *id*, una lista de entrenadores (objetos de la clase **Trainer**) y un líder (objeto de la clase **Trainer** diferenciado). Su único método es *entrar()* que se explicó en la clase anterior.
+
+### Mapa
+
+
+
+
+
 
 ## myJsonToDict
 Junto con los módulos anteriores, se incluye el archivo *myJsonReader.py* que contiene la función `myJsonToDict(path)` pedida para esta tarea (sin utilizar librería *json*). En este archivo se extrae la información de los 6 archivos .json entregados en la tarea y se compara lo obtenido con lo retornado por la función `jsonToDict(path)` original. En este archivo se ve que lo obtenido es igual! Sin embargo, en los archivos entregados mantuve el uso de la función original debido a su mayor eficiencia.
