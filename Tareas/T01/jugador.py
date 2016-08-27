@@ -1,6 +1,6 @@
 # modulo para un jugador y su informacion
 from ciudades import Ciudad
-from jsonReader import jsonToDict, dictToJson
+from jsonReader import jsonToDict
 
 
 class Jugador:
