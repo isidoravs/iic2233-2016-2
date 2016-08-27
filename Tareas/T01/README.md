@@ -66,7 +66,7 @@ Los objetos de esta clase poseen *nombre*, *id*, una lista de entrenadores (obje
 ### Mapa
 Clase que modela el desplazamiento del usuario entre las ciudades. Posee como atributos el *jugador* actual, un *id* (que funciona de la misma manera que el *location\_id* del jugador (de hecho, se utiliza para actualizar este último), el *PC* y el contenido del archivo *routes.json*.
 
-Su método más importante es `new_location(movimiento)` que recibe el valor **1** (si el jugador quiere avanzar hacia adelante) o **-1** (si el jugador quiere avanzar hacia atrás). En este método se determina la nueva ubicación del jugador de ser posible (no puede retroceder desde Pallet Town ni avanzar desde Cinnabar Island) y actualiza el atributo *location* del jugador dependiendo si entra o sale de una ciudad. Este método revisa si el jugador ha batallado en el gimnasio para que pueda seguir *avanzando* en el mapa. Si el jugador se encuentra en la hierba con un 35% de probabilidad llama al método `generar_programon_salvaje()` que retorna un objeto de la clase **Programon** para comenzar una batalla con éste y poder capturarlo.
+Su método más importante es `new_location(movimiento)` que recibe el valor **1** (si el jugador quiere avanzar hacia adelante) o **-1** (si el jugador quiere avanzar hacia atrás). En este método se determina la nueva ubicación del jugador de ser posible (no puede retroceder desde Pallet Town ni avanzar desde Cinnabar Island) y actualiza el atributo *location* del jugador dependiendo si entra o sale de una ciudad. Este método revisa si el jugador ha batallado en el gimnasio para que pueda seguir *avanzando* en el mapa. Si el jugador se encuentra en la hierba con un 35% de probabilidad llama al método `generar_programon_salvaje()` que retorna un objeto de la clase **Programon** para comenzar una batalla con éste y poder capturarlo (esta función revisa la restricción de los niveles de programones con evolución/subevolución por ruta).
 
 ```
 batallas.py
@@ -93,9 +93,14 @@ programones.py
 Último módulo que contiene únicamente la clase **Programon**. Utiliza las librerías *math* y *random* para fines muy similares al modulo anterior. Además importa las funciones *jsonToDict* (de JsonReader.py) y *calculo\_stats* (de batallas.py).
 
 ### Programon
-```
-COMPLETAR
-```
+Clase que permite instanciar programones con *id*, *unique_id* (generado al instanciar, único para cada programon inclusive los salvajes no capturados), *name*, *moves* (lista con diccionarios que contienen los datos de cada movimiento), *tipo*, *nivel*, *hp*, *stats*, *evolve level* y *evolve to*, además de los *iv* y *ev* aleatorios (**Obs.** generados al instanciar y estáticos al evolucionar). Se incluye también, un atributo *batallas* (lista de lista tipo `[oponente, resultado]`, *original_hp* para devolver los hp al finalizar una batalla y *visto\_capturado* que contiene el id de la ubicación en el mapa en que fue por última vez visto o capturado.
+
+Sus métodos son:
+* `atacar`: dependiendo si es un programon del jugador o entrenador, determina el próximo movimiento en la pelea y su probabilidad de acertar
+* `actualizar_stats`: con la función `calculo_stats` actualiza los nuevos valores de los atributos del programon si el programon aumenta de nivel (gana batalla -eso incluye capturar programón salvaje- en la que participó y tiene hp mayor a 0) **Obs.** Programones de entrenadores nunca aumentan su nivel o stats.
+* `evolucionar`: Actualiza los atributos del programón, manteniendo su *unique\_id* y *nivel* (que es igual a *evolve\_level*) para que la instancia del programon en la **Progradex** y **PC** sea la misma sólo que con las características de un programón evolucionado. Este métdo retorna una instancia de **Programon** con los mismos atributos que el programon a evolucionar (pero cambia *unique\_id* a -1) para luego agregar esa "subevolución" a la Progradex (**Obs.** esta subevolución no está disponible para agregar al equipo de batalla).
+
+Además se sobrecarga el método `__str__()` para mostrar los datos de cada programón.
 
 ## myJsonToDict
 Junto con los módulos anteriores, se incluye el archivo *myJsonReader.py* que contiene la función `myJsonToDict(path)` pedida para esta tarea (sin utilizar librería *json*). En este archivo se extrae la información de los 6 archivos .json entregados en la tarea y se compara lo obtenido con lo retornado por la función `jsonToDict(path)` original. En este archivo se ve que lo obtenido es igual! Sin embargo, en los archivos entregados mantuve el uso de la función original debido a su mayor eficiencia.
