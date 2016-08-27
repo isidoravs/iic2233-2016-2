@@ -1,4 +1,5 @@
-#myJsonToDict v.2
+from jsonReader import jsonToDict
+
 
 def myJsonToDict(path):
     lines = open_file(path)
@@ -10,7 +11,6 @@ def myJsonToDict(path):
         opened = 0
         close = 0
         while i < len(content):
-            # caso base:
             if opened != 0 and opened == close:
                 final.append(recursive_call(content[inicio:i]))
                 opened = 0
@@ -21,8 +21,7 @@ def myJsonToDict(path):
                     opened += 1
                 if "}" in content[i]:
                     close += 1
-            i += 1
-        # ultimo
+                i += 1
         if opened == close:
             final.append(recursive_call(content[inicio:i]))
     else:
@@ -42,19 +41,22 @@ def recursive_call(convert):
                 i += 1
 
             elif "[" in convert[i]:
-                if "]" in convert[i]:  # caso lista con enteros
+                if "]" in convert[i]:  # caso lista con entero
                     new_key = convert[i].split(':')
                     clean_key = new_key[0].replace('"', '')
-                    aux1 = new_key[1].strip().replace("[", "")
-                    aux2 = aux1.replace("]", "")
-                    revisar = aux2.split(",")
-                    new_list = [int(n) for n in revisar]
-                    dicc[clean_key] = new_list
+                    if "[]" in convert[i]:
+                        dicc[clean_key] = []
+                    else:
+                        aux1 = new_key[1].strip().replace("[", "")
+                        aux2 = aux1.replace("]", "")
+                        revisar = aux2.split(",")
+                        new_list = [int(n) for n in revisar]
+                        dicc[clean_key] = new_list
                     i += 1
 
                 else:
                     seleccion = []
-                    for j in range(i, len(convert)):
+                    for j in range(i, len(convert)): ##ACA
                         if "]" not in convert[j]:
                             seleccion.append(convert[j])
                         else:
@@ -81,14 +83,14 @@ def recursive_call(convert):
 def normal_value(dicc, line):
     line1 = line.replace('"', '')
     line2 = line1.replace(',', '')
-    line3 = line2.replace(' ', '')  # cambiar por hacer despues un strip, para no sacar espacios RR
-    aux = line3.split(':')
-    if "." in aux[1] and aux[1][0].isdigit():  # float
-        dicc[aux[0]] = float(aux[1])
-    elif aux[1].isdigit():
-        dicc[aux[0]] = int(aux[1])
+    aux = line2.strip().split(':')
+    clean_aux = aux[1].strip()
+    if "." in clean_aux and clean_aux[0].isdigit():  # float
+        dicc[aux[0]] = float(clean_aux)
+    elif clean_aux.isdigit():
+        dicc[aux[0]] = int(clean_aux)
     else:
-        dicc[aux[0]] = aux[1]
+        dicc[aux[0]] = clean_aux
     return dicc
 
 def list_value(dicc, lista_original):
@@ -111,12 +113,13 @@ def list_value(dicc, lista_original):
         else:
             clean_value = lista_original[j].replace('"', '')
             aux = clean_value.strip().replace(',', '')
-            if "." in aux and aux[0].isdigit():
-                new_list.append(float(aux))
-            elif aux.isdigit():
-                new_list.append(int(aux))
+            clean_aux = aux.strip()
+            if "." in clean_aux and clean_aux[0].isdigit():
+                new_list.append(float(clean_aux))
+            elif clean_aux.isdigit():
+                new_list.append(int(clean_aux))
             else:
-                new_list.append(aux)
+                new_list.append(clean_aux)
             j += 1
 
     new_dicc[clean_key] = new_list
@@ -149,20 +152,28 @@ def dicc_value(lista_original):
                     break
             new_dicc.update(list_value(new_dicc, seleccion))
 
-        else:
+        elif "]" not in lista_original[j]:
             line1 = lista_original[j].replace('"', '')
-            line2 = line1.replace(',', '')
-            line3 = line2.replace(' ', '')
-            aux = line3.strip().split(":")
-            if "." in aux[1] and aux[1][0].isdigit():
-                new_dicc[aux[0]] = float(aux[1])
-            elif aux[1].isdigit():
-                new_dicc[aux[0]] = int(aux[1])
+            line2 = line1.strip().replace(',', '')
+            aux = line2.strip().split(":")
+            clean_aux = aux[1].strip() ## ACA
+            if "." in clean_aux and clean_aux[0].isdigit():
+                new_dicc[aux[0]] = float(clean_aux)
+            elif clean_aux.isdigit():
+                new_dicc[aux[0]] = int(clean_aux)
             else:
-                new_dicc[aux[0]] = aux[1]
+                new_dicc[aux[0]] = clean_aux
+            j += 1
+        else:
             j += 1
     return new_dicc
 
+def listas_diccionario(content):
+
+
+
+
+    
 def open_file(path):
     clean_lines = []
     with open(path, encoding="utf-8") as json_file:
@@ -176,8 +187,9 @@ parser2 = myJsonToDict("datos/programones.json")
 parser3 = myJsonToDict("datos/routes.json")
 parser4 = myJsonToDict("datos/moveCategories.json")
 parser5 = myJsonToDict("datos/types.json")
-# parser6 = myJsonToDict("datos/infoJugadores.json")
-parser7 = myJsonToDict("datos/gyms.json")
+# parser6 = myJsonToDict("datos/gyms.json")
+# parser7 = myJsonToDict("datos/infoJugadores.json")
+
 
 print(parser1)
 print(parser2)
@@ -185,6 +197,17 @@ print(parser3)
 print(parser4)
 print(parser5)
 # print(parser6)
-print(parser7)
+# print(parser7)
 
+parser1_original = jsonToDict("datos/programonMoves.json")
+parser2_original = jsonToDict("datos/programones.json")
+parser3_original = jsonToDict("datos/routes.json")
+parser4_original = jsonToDict("datos/moveCategories.json")
+parser5_original = jsonToDict("datos/types.json")
+
+print(parser1 == parser1_original)
+print(parser2 == parser2_original)
+print(parser3 == parser3_original)
+print(parser4 == parser4_original)
+print(parser5 == parser5_original)
 
