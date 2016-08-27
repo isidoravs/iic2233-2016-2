@@ -78,9 +78,15 @@ Es el módulo más complejo que lleva a cabo todo el proceso de pelea entre prog
 Los objetos de esta clase poseen *nombre*, *programon\_squad* (lista con los programones de su equipo) y *trainer\_type*. Éste último determina si el entrenador es uno común o el lider del gimnasio. Para determinar los trainers por gimnasio, modifiqué el archivo *gyms.json* de manera que el jugador pudiera distinguir al entrenador por su nombre.
 
 ### Batalla
-```
-COMPLETAR
-```
+Cada batalla tiene como atributos el *nombre de la ciudad*, *jugador*, *oponente* (objeto de la clase **Trainer** o **Programon** (en caso de ser uno salvaje), *equipo del oponente* (lista con programones), *PC* y un boolean *capturable* que determina si la batalla se realiza contra un programon salvaje o no. Además se tienen las listas *elegidos\_jugador* / *disponibles\_jugador* y *elegidos\_oponente* / *disponibles\_oponente* que ayudan a determinar cuando el jugador o su oponente pierde la batalla si no hay más programones en condiciones de pelear y, además, determinan qué programones del equipo participaron de la batalla (para actualizar sus stats si logran ganar). Esta clase maneja el atributo *visto\_capturado* de los objetos de la clase **Programon** que se explica más adelante.
+
+Sus métodos son:
+* `primer_programon()`: permite al usuario escoger el programon que comenzará de su equipo
+* `pelear(programon_jugador, programon_oponente, final_batalla, ganador`: función recursiva principal de la clase **Batalla**...
+* `menu_batalla(programon_jugador, programon_oponente)`: da la opción al jugador de pelear, cambiar su programon de la batalla o abandonar la batalla (lo que retorna "cobarde"). En caso de que se enfrente a un programon salvaje, se agrega la opción de lanzar una prograbola para capturarlo
+* `turno_pelea(programon_jugador, programon_oponente)`: define los turnos de la batalla, en cada uno comienza el programon más rápido (**Obs.** se tener el mismo *speed* comienza el jugador) y permite a ambos programones atacar (en caso de que el primero en atacar no derrote al otro)
+* `proximo_a_pelear(programon_actual, entrenador, solo_cambio)`: 
+
 
 En este módulo además se agregan las funciones:
 * `calculo_stats(base, iv, ev, nivel`: en base a las fórmulas dadas se calculan los nuevos stats del programon ganador
