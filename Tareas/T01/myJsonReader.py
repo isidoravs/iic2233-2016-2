@@ -4,26 +4,8 @@ from jsonReader import jsonToDict
 def myJsonToDict(path):
     lines = open_file(path)
     if "[" in lines[0] and "]" in lines[-1]:  # lista con diccionarios
-        final = []
         content = lines[1:-1]
-        i = 0
-        inicio = 0
-        opened = 0
-        close = 0
-        while i < len(content):
-            if opened != 0 and opened == close:
-                final.append(recursive_call(content[inicio:i]))
-                opened = 0
-                close = 0
-                inicio = i
-            else:
-                if "{" in content[i]:
-                    opened += 1
-                if "}" in content[i]:
-                    close += 1
-                i += 1
-        if opened == close:
-            final.append(recursive_call(content[inicio:i]))
+        final = listas_diccionario(content)
     else:
         final = recursive_call(lines)
 
@@ -62,7 +44,7 @@ def recursive_call(convert):
                         else:
                             i = j + 1
                             break
-                    dicc.update(list_value(dicc, seleccion))
+                    dicc.update(list_value(seleccion))
 
             elif "{" in convert[i]:
                 seleccion = []
@@ -75,10 +57,11 @@ def recursive_call(convert):
                     else:
                         i = j + 1
                         break
-                dicc[clean_key2] = dicc_value(seleccion)
+                dicc[clean_key2] = recursive_call(seleccion)
         else:
             i += 1
     return dicc
+
 
 def normal_value(dicc, line):
     line1 = line.replace('"', '')
@@ -93,7 +76,8 @@ def normal_value(dicc, line):
         dicc[aux[0]] = clean_aux
     return dicc
 
-def list_value(dicc, lista_original):
+
+def list_value(lista_original):
     new_dicc = {}
     new_key = lista_original[0].split(':')
     clean_key = new_key[0].replace('"', '')
@@ -108,7 +92,7 @@ def list_value(dicc, lista_original):
                 else:
                     j = k + 1
                     break
-            new_list.append(dicc_value(seleccion))
+            new_list.append(recursive_call(seleccion))
 
         else:
             clean_value = lista_original[j].replace('"', '')
@@ -125,55 +109,29 @@ def list_value(dicc, lista_original):
     new_dicc[clean_key] = new_list
     return new_dicc
 
-def dicc_value(lista_original):
-    new_dicc = {}
-    j = 0
-    while j < len(lista_original):
-        if "{" in lista_original[j]:
-            seleccion = []
-            new_key = lista_original[j].split(':')
-            clean_key1 = new_key[0].replace(',', '')
-            clean_key2 = clean_key1.replace('"', '')
-            for k in range(j + 1, len(lista_original)):
-                if "}" not in lista_original[k]:
-                    seleccion.append(lista_original[k])
-                else:
-                    j = k + 1
-                    break
-            new_dicc[clean_key2] = dicc_value(seleccion)
-
-        elif "[" in lista_original[j]:
-            seleccion = []
-            for k in range(j, len(lista_original)):
-                if "]" not in lista_original[k]:
-                    seleccion.append(lista_original[k])
-                else:
-                    j = k + 1
-                    break
-            new_dicc.update(list_value(new_dicc, seleccion))
-
-        elif "]" not in lista_original[j]:
-            line1 = lista_original[j].replace('"', '')
-            line2 = line1.strip().replace(',', '')
-            aux = line2.strip().split(":")
-            clean_aux = aux[1].strip() ## ACA
-            if "." in clean_aux and clean_aux[0].isdigit():
-                new_dicc[aux[0]] = float(clean_aux)
-            elif clean_aux.isdigit():
-                new_dicc[aux[0]] = int(clean_aux)
-            else:
-                new_dicc[aux[0]] = clean_aux
-            j += 1
-        else:
-            j += 1
-    return new_dicc
-
 def listas_diccionario(content):
+    final = []
+    i = 0
+    inicio = 0
+    opened = 0
+    close = 0
+    while i < len(content):
+        if opened != 0 and opened == close:
+            final.append(recursive_call(content[inicio:i]))
+            opened = 0
+            close = 0
+            inicio = i
+        else:
+            if "{" in content[i]:
+                opened += 1
+            if "}" in content[i]:
+                close += 1
+            i += 1
+    if opened == close:
+        final.append(recursive_call(content[inicio:i]))
+    return final
 
 
-
-
-    
 def open_file(path):
     clean_lines = []
     with open(path, encoding="utf-8") as json_file:
