@@ -1,7 +1,7 @@
 # Tarea 1
 *Isidora Vizcaya*
-```
-Ha aparecido un ayudante salvaje!
+```python
+"Ha aparecido un {} salvaje!".format(ayudante.name)
 ```
 
 Para poder modelar un sistema de batallas entre programones que se nos pidió en la tarea, cree 6 **modulos** que explicaré a continuación con sus respectivos conjuntos de clases y funciones (separados por sus relaciones y tipos en común).
@@ -64,6 +64,17 @@ En esta opción se revisa que el jugador pueda acceder al menos a una prograbola
 Los objetos de esta clase poseen *nombre*, *id*, una lista de entrenadores (objetos de la clase **Trainer**) y un líder (objeto de la clase **Trainer** diferenciado). Su único método es *entrar()* que se explicó en la clase anterior.
 
 ### Mapa
+Clase que modela el desplazamiento del usuario entre las ciudades. Posee como atributos el *jugador* actual, un *id* (que funciona de la misma manera que el *location\_id* del jugador (de hecho, se utiliza para actualizar este último), el *PC* y el contenido del archivo *routes.json*.
+
+Su método más importante es `new_location(movimiento)` que recibe el valor **1** (si el jugador quiere avanzar hacia adelante) o **-1** (si el jugador quiere avanzar hacia atrás). En este método se determina la nueva ubicación del jugador de ser posible (no puede retroceder desde Pallet Town ni avanzar desde Cinnabar Island) y actualiza el atributo *location* del jugador dependiendo si entra o sale de una ciudad. Si el jugador se encuentra en la hierba con un 35% de probabilidad llama al método `generar_programon_salvaje()` que retorna un objeto de la clase **Programon** para comenzar una batalla con éste y poder capturarlo.
+
+```
+batallas.py
+```
+
+Es el módulo más complejo que lleva a cabo todo el proceso de pelea entre programones, tanto en gimnasios como en la hierba (contra programones salvajes). Utiliza las librerías *math* (para cálculo de stats) y *random* (para definir ataques de oponentes o probabilidad de captura de programon salvaje). También utiliza la función *jsonToDict* para obtener los datos base de programones y movimientos.
+
+### Trainer
 
 
 
