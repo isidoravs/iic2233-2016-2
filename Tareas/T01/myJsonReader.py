@@ -88,6 +88,8 @@ def normal_value(dicc, line):
         dicc[aux[0]] = float(clean_aux)
     elif clean_aux.isdigit():
         dicc[aux[0]] = int(clean_aux)
+    elif clean_aux == "-1":
+        dicc[aux[0]] = -1
     else:
         dicc[aux[0]] = clean_aux
     return dicc
@@ -112,6 +114,8 @@ def list_value(lista_original):
                 new_list.append(float(clean_aux))
             elif clean_aux.isdigit():
                 new_list.append(int(clean_aux))
+            elif clean_aux == "-1":
+                new_list.append(-1)
             else:
                 new_list.append(clean_aux)
             j += 1
@@ -167,6 +171,7 @@ print(parser4)
 print(parser5)
 print(parser6)
 print(parser7)
+
 
 parser1_original = jsonToDict("datos/programonMoves.json")
 parser2_original = jsonToDict("datos/programones.json")
