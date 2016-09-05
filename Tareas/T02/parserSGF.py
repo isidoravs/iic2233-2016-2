@@ -72,36 +72,34 @@ def sgfToTree(path):
                 juego.SO = line[i + 3:i + j]
 
     # comienza el arbol
-    arbol = set_arbol(lines_string[:-1], juego)  #string gigante (sin parentesis  inicial ni final)
-    return arbol
+    arbol_jugadas = set_arbol(lines_string[:-1], juego)  # string gigante (sin parentesis  inicial ni final)
+    return arbol_jugadas
 
 
-def set_arbol(data, juego, arbol=None, id_split=0, number_split=0):
+def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth=0):
     abc_min = "abcdefghijklmnopqrs"
-    if arbol is None:
+    if arbol_jugadas is None:
         if data[0] == "(":  # arbol comienza con una variacion
-            arbol = ArbolJugadas(0)  # raiz vacia
+            arbol_jugadas = ArbolJugadas(0)  # raiz vacia
             juego.total_nodes += 1
-            set_arbol(data, juego, arbol, 0, 0)
+            set_arbol(data, juego, arbol_jugadas, 0, 0, 0)
 
         else:
             if data[1] == "B":
                 x = abc_min.find(data[3])
                 y = abc_min.find(data[4])
-                arbol = ArbolJugadas(0, "black", 1, x, y)
-                juego.total_nodes += 1
-                set_arbol(data[7:], juego, arbol, 0, 1)
+                arbol_jugadas = ArbolJugadas(0)
+                arbol_jugadas.agregar_nodo(1, "black", 1, 0, x, y, 0)
+                juego.total_nodes += 2
+                set_arbol(data[7:], juego, arbol_jugadas, 0, 1, 0)
 
             elif data[1] == "W":
                 x = abc_min.find(data[3])
                 y = abc_min.find(data[4])
-                arbol = ArbolJugadas(0, "white", 1, x, y)
-                juego.total_nodes += 1
-                set_arbol(data[7:], juego, arbol, 0, 1)
-
-            else:
-                # RR en caso no contado
-                print("revisar codigo")
+                arbol_jugadas = ArbolJugadas(0)
+                arbol_jugadas.agregar_nodo(1, "white", 1, 0, x, y, 0)
+                juego.total_nodes += 2
+                set_arbol(data[7:], juego, arbol_jugadas, 0, 1, 0)
 
     else:
         # caso base
@@ -123,13 +121,14 @@ def set_arbol(data, juego, arbol=None, id_split=0, number_split=0):
                 else:
                     x = abc_min.find(nodo[2])
                     y = abc_min.find(nodo[3])
-                arbol.agregar_nodo(juego.total_nodes, color, prenumber + 1, x, y, id_padre)
+
+                arbol_jugadas.agregar_nodo(juego.total_nodes, color, prenumber + 1, depth, x, y, id_padre)
 
                 id_padre = juego.total_nodes
                 juego.total_nodes += 1
                 prenumber += 1
 
-        elif data[0] == "(":  #variacion
+        elif data[0] == "(":  # variacion
             all_variations = MyList()
             opened = 0
             closed = 0
@@ -147,8 +146,10 @@ def set_arbol(data, juego, arbol=None, id_split=0, number_split=0):
                     closed = 0
                     inicio = i + 1
 
+            new_depth = depth
             for variation in all_variations:
-                set_arbol(variation, juego, arbol, id_split, number_split)
+                set_arbol(variation, juego, arbol_jugadas, id_split, number_split, new_depth)
+                new_depth += 1
 
         else:  # caso en que no es directamente variacion, pero tiene variaciones dentro
             for i in range(len(data)):
@@ -175,16 +176,16 @@ def set_arbol(data, juego, arbol=None, id_split=0, number_split=0):
                 else:
                     x = abc_min.find(nodo[2])
                     y = abc_min.find(nodo[3])
-                arbol.agregar_nodo(juego.total_nodes, color, prenumber + 1, x, y, id_padre)
+                arbol_jugadas.agregar_nodo(juego.total_nodes, color, prenumber + 1, depth, x, y, id_padre)
 
                 id_padre = juego.total_nodes
                 juego.total_nodes += 1
                 prenumber += 1
 
             # llamo recursivamente a las variaciones
-            set_arbol(new_data, juego, arbol, id_padre, prenumber)
+            set_arbol(new_data, juego, arbol_jugadas, id_padre, prenumber, depth)
 
-    return arbol
+    return arbol_jugadas
 
 
 class InfoJuego:
@@ -195,8 +196,8 @@ class InfoJuego:
         self.SZ = '19'
         # los atrbutos anteriores siempre tendran esos valores
         self.KM = 6.5
-        self.EV=None
-        self.DT=None
+        self.EV = None
+        self.DT = None
         self.PB = None
         self.PW = None
         self.WR = None
@@ -205,7 +206,9 @@ class InfoJuego:
         self.total_nodes = 0
 
 
-arbol = sgfToTree("ejemplos/Ejemplo variaciones simple.sgf")
-
-#arbol = sgfToTree("ejemplos/Chen Yaoye vs Lee Sedol.sgf")
-print(arbol)
+if __name__ == '__main__':
+    arbol_jugadas = sgfToTree("ejemplos/Ejemplo variaciones simple.sgf")
+    # arbol_jugadas = sgfToTree("ejemplos/Chen Yaoye vs Lee Sedol.sgf")
+    # arbol_jugadas = sgfToTree("ejemplos/pass_example.sgf")
+    # arbol_jugadas = sgfToTree("ejemplos/Ejemplo con capturas y variaciones.sgf")
+    print(arbol_jugadas)

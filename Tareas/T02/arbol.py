@@ -3,22 +3,23 @@ from myEDD import MyList
 
 
 class ArbolJugadas:
-    def __init__(self, id_nodo, color=None, number=None, x=None, y=None, id_padre=None):  # caso de bifurcacion inicio
+    def __init__(self, id_nodo, color=None, number=0, depth=0, x=None, y=None, id_padre=None):
         self.id_nodo = id_nodo
         self.color = color
-        self.number = number
+        self.number = number  # corresponde al numero de jugada (independiente si pasa) y coordenada i
+        self.depth = depth # coordenada j
         self.x = x
         self.y = y
         self.id_padre = id_padre
         self.hijos = MyList()
 
-    def agregar_nodo(self, id_nodo, color, number, x, y, id_padre=None):
+    def agregar_nodo(self, id_nodo, color, number, depth, x, y, id_padre=None):
         if self.id_nodo == id_padre:
-            self.hijos.append(ArbolJugadas(id_nodo, color, number, x, y, id_padre))
+            self.hijos.append(ArbolJugadas(id_nodo, color, number, depth, x, y, id_padre))
 
         else:
             for hijo in self.hijos:
-                hijo.agregar_nodo(id_nodo, color, number, x, y, id_padre)
+                hijo.agregar_nodo(id_nodo, color, number, depth, x, y, id_padre)
 
     def obtener_nodo(self, id_nodo):
         if self.id_nodo == id_nodo:
@@ -33,10 +34,10 @@ class ArbolJugadas:
     def __repr__(self):
         def recorrer_arbol(raiz):
             for hijo in raiz.hijos:
-                self.ret += "id-nodo: {} -> id_padre: {} -> color: {} -> numero: {}\n".format(hijo.id_nodo,
+                self.ret += "id-nodo: {} -> id_padre: {} -> color: {} -> numero: {} -> depth: {}\n".format(hijo.id_nodo,
                                                                                               hijo.id_padre,
                                                                                               hijo.color,
-                                                                                              hijo.number)
+                                                                                              hijo.number, hijo.depth)
                 recorrer_arbol(hijo)
 
             return self
@@ -48,9 +49,4 @@ class ArbolJugadas:
 
 
 if __name__ == '__main__':
-    arbol = ArbolJugadas(0, "black", 0)
-    arbol.agregar_nodo(1, "white", 1, 0)
-    arbol.agregar_nodo(2, "black", 1, 0)
-    arbol.agregar_nodo(3, "black", 2, 1)
-
-    print(arbol)
+    print("Module being run diectly")

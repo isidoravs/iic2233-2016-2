@@ -23,7 +23,7 @@ class Tablero:  # grafo no dirigido
         self.root = node
         self.nodes = MyList(node)
         self.actual_node = node
-        self.abc = "ABCDEFGHJKlMNOPQRST"
+        self.abc = "ABCDEFGHJKLMNOPQRST"
 
     def set_tablero(self, filas, columnas):  # tablero poblado de NodoTablero, solo cambiar atributos al jugar
         for i in range(filas):
@@ -78,9 +78,9 @@ class Tablero:  # grafo no dirigido
             selected_node.piece = True
             selected_node.value = text
             selected_node.color = color
+            return True
         else:
-            print("Lugar inválido para agregar una pieza")
-        return
+            return False
 
     def add_square(self, letter, y, color):
         x = self.abc.find(letter)
