@@ -309,10 +309,8 @@ class Tablero:  # grafo no dirigido
 
         if len(to_check) > 0:
             for nodo in to_check:
-                return self.set_grupo(nodo)
-
-        else:
-            return
+                self.set_grupo(nodo)
+        return
 
     def revisar_contorno(self, nodo):  # retorna lista con nodos del mismo color adyacentes al nodo
         contorno = MyList()

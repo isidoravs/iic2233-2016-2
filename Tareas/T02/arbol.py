@@ -51,6 +51,22 @@ class ArbolJugadas:
                 if nodo:
                     return nodo
 
+    def get_max_depth(self, raiz, go):
+        for hijo in raiz.hijos:
+            if hijo.depth > go.max_depth:
+                go.max_depth = hijo.depth
+            self.get_max_depth(hijo, go)
+
+        return self
+
+    def actualizar_depth(self, raiz, limite):  # limite es el depth en donde ocurre la variacion
+        for hijo in raiz.hijos:
+            if hijo.depth > limite:
+                hijo.depth += 1
+            self.actualizar_depth(hijo, limite)
+
+        return self
+
     def __repr__(self):
         def recorrer_arbol(raiz):
             for hijo in raiz.hijos:
