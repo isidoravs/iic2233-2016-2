@@ -57,3 +57,8 @@ class MyList:
             ret += "{}, ".format(actual_node.value)
             actual_node = actual_node.next
         return ret.strip(", ") + "]"
+
+if __name__ == "__main__":
+    lista_prueba = MyList(1, 2)
+    print(lista_prueba)
+    print(1 in lista_prueba)

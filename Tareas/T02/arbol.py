@@ -7,9 +7,9 @@ class ArbolJugadas:
         self.id_nodo = id_nodo
         self.color = color
         self.number = number  # corresponde al numero de jugada (independiente si pasa) y coordenada i
-        self.depth = depth # coordenada j
-        self.x = x
-        self.y = y
+        self.depth = depth  # coordenada j
+        self.x = x  # indice de tablero.abc
+        self.y = y  # numero del tablero
         self.id_padre = id_padre
         self.hijos = MyList()
 
@@ -31,13 +31,31 @@ class ArbolJugadas:
                 if nodo:
                     return nodo
 
+    def obtener_padre(self, id_padre, go):
+        if self.id_nodo == id_padre:
+            return self
+        else:
+            for hijo in self.hijos:
+                nodo = hijo.obtener_padre(id_padre, go)
+
+                if nodo:
+                    return nodo
+
+    def obtener_point(self, i, j):
+        if self.number == i and self.depth == j:
+            return self
+        else:
+            for hijo in self.hijos:
+                nodo = hijo.obtener_point(i, j)
+
+                if nodo:
+                    return nodo
+
     def __repr__(self):
         def recorrer_arbol(raiz):
             for hijo in raiz.hijos:
-                self.ret += "id-nodo: {} -> id_padre: {} -> color: {} -> numero: {} -> depth: {}\n".format(hijo.id_nodo,
-                                                                                              hijo.id_padre,
-                                                                                              hijo.color,
-                                                                                              hijo.number, hijo.depth)
+                self.ret += "id-nodo: {} -> id_padre: {} -> color: {} -> numero: {} -> depth: " \
+                            "{}\n".format(hijo.id_nodo, hijo.id_padre, hijo.color, hijo.number, hijo.depth)
                 recorrer_arbol(hijo)
 
             return self
