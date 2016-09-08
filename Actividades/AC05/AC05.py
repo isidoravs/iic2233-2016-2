@@ -13,9 +13,10 @@ class Jugador:
         self.promedio = 0
 
     def calcular_promedio(self, rondas):  # rondas se la da campeonato
-        promedio = lambda rondas: self.puntos / rondas
-        self.promedio = promedio
-        return promedio
+        promedio = lambda ptje, n: ptje/n
+        p = promedio(self.puntos, rondas)
+        self.promedio = p
+        return p
 
     def ganar(self):
         self.puntos += 6
@@ -98,7 +99,7 @@ class Campeonato:
         [perdedor.perder() for perdedor in perdedores]
 
         grupo = ganadores + perdedores
-        # print(self.promedio_grupo(grupo))
+        print("Promedio puntaje por grupo: {}".format(self.promedio_grupo(grupo)))
         return
 
     def definir_ganador(self):
