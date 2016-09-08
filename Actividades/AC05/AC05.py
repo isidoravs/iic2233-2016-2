@@ -17,12 +17,13 @@ class Jugador:
         return
 
     def perder(self):
-        self.puntos += randint(0,5)
+        self.puntos += randint(0, 5)
         return
 
     def __repr__(self):
         return "Jugador {}, elo: {}, id: {}, ganadas: {}, puntaje: {}".format(self.nombre, self.elo, self.ide,
                                                                               self.partidas_ganadas, self.puntos)
+
 
 class Campeonato:
     def __init__(self, jugadores):
@@ -33,8 +34,8 @@ class Campeonato:
 
     def iniciar(self):
         self.primera_ronda()
-        ver = self.rondas()
-        return ver
+        [self.rondas() for i in range(9)]
+        self.definir_ganador()
 
     def primera_ronda(self):
         print("Comienza la primera ronda")
@@ -52,19 +53,27 @@ class Campeonato:
 
     def rondas(self):
         self.cantidad_rondas += 1
-        print("Comienza la ronda {}".format(self.cantidad_rondas))
+        print("\nComienza la ronda {}".format(self.cantidad_rondas))
         ganadas = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         grupos = [[jugador for jugador in self.jugadores if jugador.partidas_ganadas == x] for x in ganadas]
-        sorted_puntaje = [sorted(grupo, key=lambda x: x.puntos) for grupo in grupos]
-        partidas = [] # falta emparejar
+        sorted_puntaje = [sorted(grupo, key=lambda x: x.puntos) for grupo in grupos if len(grupo) != 0]
+        partidas = [self.emparejar(grupo) for grupo in sorted_puntaje]
 
-        self.finalizar_partida(partidas)
+        all_partidas = [self.finalizar_partida(partida) for partida in partidas]
 
         apuesta = randint(0, 1000)
         self.apuestas.append(apuesta)
         self.print_apuesta()
+        return
 
-        return sorted_puntaje
+    def emparejar(self, grupo):
+        aux = list(enumerate(grupo))
+        par = list(filter(lambda x: x[0] % 2 == 0, aux))
+        impar = list(filter(lambda x: x[0] % 2 != 0, aux))
+        jugadores_par = [tupla[1] for tupla in par]
+        jugadores_impar = [tupla[1] for tupla in impar]
+        partidas = list(zip(jugadores_par, jugadores_impar))
+        return partidas
 
     def print_apuesta(self):
         a = reduce(lambda x, y: x + y, self.apuestas)
@@ -76,7 +85,18 @@ class Campeonato:
 
         [ganador.ganar() for ganador in ganadores]
         [perdedor.perder() for perdedor in perdedores]
+        return
 
+    def definir_ganador(self):
+        print("")
+        ganadas = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+        grupos = [[jugador for jugador in self.jugadores if jugador.partidas_ganadas == x] for x in ganadas]
+        grupos_clean = [grupo for grupo in grupos if len(grupo) != 0]
+        ganador = grupos_clean[0]
+        if len(ganador) > 1:
+            print("No existe jugador")
+        else:
+            print("El ganador es", ganador[0].nombre)
         return
 
 
@@ -97,4 +117,3 @@ def read_line(gen):
 jugadores = read("jugadores.csv")
 
 campeonato = Campeonato(jugadores)
-print(campeonato.iniciar())
