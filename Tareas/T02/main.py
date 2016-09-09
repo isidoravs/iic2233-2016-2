@@ -1,7 +1,7 @@
 # T02 - Isidora Vizcaya
 from gui import MainWindow, run
 from tablero import NodeTablero, Tablero
-from parserSGF import sgfToTree, InfoJuego
+from parserSGF import sgfToTree, InfoJuego, treeToSgf
 from arbol import ArbolJugadas
 from myEDD import MyList
 
@@ -28,11 +28,13 @@ class GoWindow(MainWindow):
         self.pass_seguidos = 0
 
         self.seleccion_valida = True  # para comenzar luego de abrir un archivo
-        self.end_game = False
         self.new_variation = False  # para crear variaciones en el arbol
+        self.end_game = False
         self.actual_node = None
         self.tablero_pasado = MyList()  # determina juegos pasados, listas con nodos
         self.dead_pieces = None  # utilizada al hacer count
+        self.territorio_marcado = False  # en caso de analizar partidas luego de haber marcado territorio
+        self.ko_chance = None  # posible Ko en futura jugada
 
     def on_piece_click(self, letter, y):
         if not self.seleccion_valida:  # en caso de que deba escoger un nodo del arbol
@@ -55,24 +57,54 @@ class GoWindow(MainWindow):
             self.tablero.set_grupo(selected_node)
 
             for nodo in self.tablero.one_group:
-                # marco las piedras
-                new_letter = self.tablero.abc[nodo.x_pos]
-                self.remove_piece(new_letter, nodo.y_pos + 1)
-                self.add_piece(new_letter, nodo.y_pos + 1, "X", nodo.color)
-                if nodo not in self.dead_pieces:
-                    self.dead_pieces.append(nodo)
+                if nodo.value == "X":  # desmarcar piedras
+                    new_letter = self.tablero.abc[nodo.x_pos]
+                    self.remove_piece(new_letter, nodo.y_pos + 1)
+                    self.add_piece(new_letter, nodo.y_pos + 1, "", nodo.color)
+                    nodo.value = ""
+
+                else:
+                    # marco las piedras
+                    new_letter = self.tablero.abc[nodo.x_pos]
+                    self.remove_piece(new_letter, nodo.y_pos + 1)
+                    self.add_piece(new_letter, nodo.y_pos + 1, "X", nodo.color)
+                    nodo.value = "X"
+                    if nodo not in self.dead_pieces:
+                        self.dead_pieces.append(nodo)
+
+            # asegura que no esten las desmarcadas en muertas
+            last_check = MyList()
+            for nodo in self.dead_pieces:
+                if nodo.value == "X":
+                    last_check.append(nodo)
+
+            self.dead_pieces = MyList()
+            for elem in last_check:
+                self.dead_pieces.append(elem)
 
             self.tablero.one_group = MyList()
             return
 
         if self.end_game:  # en caso de haber terminado la partida
-            self.show_message("La partida ha terminado, solo puedes analizar las jugadas anteriores")
+            self.show_message("La partida ha terminado, solo puedes analizar las jugadas anteriores.")
             return
+
+        if self.ko_chance is not None:
+            if self.ko_chance[0] == letter and self.ko_chance[1] + 1 == y:
+                self.show_message("Violación a la regla de Ko! Posición inválida.")
+                return
+            else:
+                self.ko_chance = None
 
         if self.tablero.add_piece(letter, y - 1, self.jugada, self.turn):
             self.add_piece(letter, y, self.jugada, self.turn)
 
             if self.tablero.to_remove is not None:  # pieza agregada capturo a otras
+                # caso de posible KO futuro
+                if len(self.tablero.to_remove) == 1:  # un grupo
+                    if len(self.tablero.to_remove[0]) == 1:  # una piedra en el grupo
+                        self.ko_chance = self.tablero.to_remove[0][0]  # guarda coordenada de KO
+
                 for grupo in self.tablero.to_remove:
                     for coordenada in grupo:
                         letter = coordenada[0]
@@ -83,7 +115,10 @@ class GoWindow(MainWindow):
             if self.new_variation:  # debe determinar si crea una nueva variacion
                 divergencia = True
                 for hijo in self.actual_node.hijos:
-                    if self.tablero.abc[hijo.x] == letter and hijo.y == y:  # no diverge
+                    if hijo.x is None:  # la jugada anterior era paso, pero ahora no paso, HAY divergencia
+                        break
+
+                    elif self.tablero.abc[hijo.x] == letter and hijo.y == y:  # no diverge
                         divergencia = False
                         self.actual_node = hijo  # ya va a estar el nodo en el tablero
                         break
@@ -108,7 +143,14 @@ class GoWindow(MainWindow):
 
             # actualiza el arbol
             x = self.tablero.abc.find(letter)
-            self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth, x, y, self.id_nodo_prox - 1)
+            resumen = self.resumen_estado()
+            self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth, x, y,
+                                    self.id_nodo_prox - 1, resumen)
+
+            match_resumen = self.arbol.obtener_resumen(resumen)
+            if match_resumen is not None:  # hay estados iguales
+                self.add_line((match_resumen.number, match_resumen.depth), (self.jugada, self.depth), "white")
+
             self.add_point(self.jugada, self.depth, self.jugada, self.turn)
             self.add_line((self.jugada - 1, self.depth), (self.jugada, self.depth), "black")
 
@@ -131,9 +173,12 @@ class GoWindow(MainWindow):
 
     def on_point_click(self, i, j):
         if self.dead_pieces is not None:
-            # dado que no existe el metodo remove_square no se puede volver atrás el tablero
-            self.show_message("Seleccione piedras muertas a eliminar, luego no podra volver atras")
+            self.show_message("Seleccione piedras muertas a eliminar, luego podra analizar las partidas")
             return
+
+        if self.end_game:
+            self.show_message("El juego había terminado pero puede analizar las jugadas anteriores")
+            self.end_game = False
 
         point = self.arbol.obtener_point(i, j)
 
@@ -197,7 +242,7 @@ class GoWindow(MainWindow):
         self.tablero.territorio_black = 0
         # eliminar valores grafos del tablero
         for nodo_grafo in self.tablero.nodes:  # no es muy eficiente pero evita problemas
-            if nodo_grafo.piece:
+            if nodo_grafo.piece or nodo_grafo.square:
                 self.remove_piece(self.tablero.abc[nodo_grafo.x_pos], nodo_grafo.y_pos + 1)
                 nodo_grafo.piece = False
                 nodo_grafo.value = None
@@ -252,9 +297,17 @@ class GoWindow(MainWindow):
 
         self.depth += 1
         self.max_depth += 1
+        self.id_nodo_prox += 1
 
         x = self.tablero.abc.find(letter)
-        self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth, x, y, self.actual_node.id_nodo)
+        resumen = self.resumen_estado()
+        self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth, x, y,
+                                self.actual_node.id_nodo, resumen)
+
+        match_resumen = self.arbol.obtener_resumen(resumen)
+        if match_resumen is not None:  # hay estados iguales
+            self.add_line((match_resumen.number, match_resumen.depth), (self.jugada, self.depth), "white")
+
         self.add_point(self.jugada, self.depth, self.jugada, self.turn)
         self.add_line((self.actual_node.number, self.actual_node.depth), (self.jugada, self.depth), "black")
         self.jugada += 1
@@ -315,26 +368,42 @@ class GoWindow(MainWindow):
 
         return self
 
+    def resumen_estado(self):
+        resumen = ""
+        for nodo in self.tablero.nodes:
+            if nodo.piece:
+                if nodo.color == "black":
+                    resumen += "B"
+                else:
+                    resumen += "W"
+
+            else:
+                resumen += "X"
+
+        return resumen
+
     def on_save_click(self, path):
         if self.dead_pieces is not None:
             self.show_message("Debe seleccionar las piedras muertas a remover antes de guardar.")
             return
 
+        treeToSgf(self.arbol, self.juego, path)
+        self.show_message("Se ha guardado la partida en {}".format(path))
         return
 
     def on_pass_click(self):
         self.pass_seguidos += 1
+        self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth,
+                                None, None, self.id_nodo_prox - 1)
+        self.add_point(self.jugada, self.depth, self.jugada, self.turn)
+        self.add_line((self.jugada - 1, self.depth), (self.jugada, self.depth), "black")
+
         if self.pass_seguidos == 2:
             self.end_game = True
             self.show_message("Jugadores pasan consecutivamente. Seleccione piedras muertas a remover.")
             self.dead_pieces = MyList()
 
         else:
-            self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth,
-                                    None, None, self.id_nodo_prox - 1)
-            self.add_point(self.jugada, self.depth, self.jugada, self.turn)
-            self.add_line((self.jugada - 1, self.depth), (self.jugada, self.depth), "black")
-
             self.jugada += 1
             self.id_nodo_prox += 1
 
@@ -343,6 +412,7 @@ class GoWindow(MainWindow):
             else:
                 self.turn = "black"
             self.show_message("Jugador ha pasado")
+
         return
 
     def on_count_click(self):
@@ -370,6 +440,10 @@ class GoWindow(MainWindow):
         # contar territorio
         self.contar_territorio()
         self.calcular_puntaje()
+
+        # para volver a analizar partidas
+        self.dead_pieces = None
+        self.territorio_marcado = True
         return
 
     def contar_territorio(self):
@@ -404,6 +478,8 @@ class GoWindow(MainWindow):
                 if territorio:
                     for integrante in grupo_vacio:
                         self.add_square(self.tablero.abc[integrante.x_pos], integrante.y_pos + 1, capturado_por)
+                        integrante.square = True
+
                         if capturado_por == "black":
                             self.tablero.territorio_black += 1
                         else:

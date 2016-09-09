@@ -3,6 +3,26 @@ from myEDD import MyList
 from arbol import ArbolJugadas
 
 
+class InfoJuego:
+    def __init__(self):
+        self.GM = '1'
+        self.FF = '4'
+        self.CA = 'UTF-8'
+        self.SZ = '19'
+
+        # los atrbutos anteriores siempre tendran esos valores
+        self.KM = 6.5
+        self.EV = None
+        self.DT = None
+        self.PB = None
+        self.BR = None
+        self.PW = None
+        self.WR = None
+        self.RE = None
+        self.SO = None
+        self.total_nodes = 0
+
+
 def sgfToTree(path):
     juego = InfoJuego()
     data = open(path, 'r')
@@ -51,6 +71,11 @@ def sgfToTree(path):
                 j = line[i:].find(']')
                 juego.PB = line[i + 3:i + j]
 
+            if 'BR[' in line:
+                i = line.find('BR[')
+                j = line[i:].find(']')
+                juego.BR = line[i + 3:i + j]
+
             if 'PW[' in line:
                 i = line.find('PW[')
                 j = line[i:].find(']')
@@ -91,15 +116,7 @@ def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth
                 arbol_jugadas = ArbolJugadas(0)
                 arbol_jugadas.agregar_nodo(1, "black", 1, 0, x, y, 0)
                 juego.total_nodes += 2
-                set_arbol(data[7:], juego, arbol_jugadas, 0, 1, 0)
-
-            elif data[1] == "W":
-                x = abc_min.find(data[3])
-                y = abc_min.find(data[4])
-                arbol_jugadas = ArbolJugadas(0)
-                arbol_jugadas.agregar_nodo(1, "white", 1, 0, x, y, 0)
-                juego.total_nodes += 2
-                set_arbol(data[7:], juego, arbol_jugadas, 0, 1, 0)
+                set_arbol(data[7:], juego, arbol_jugadas, 1, 1, 0)
 
     else:
         # caso base
@@ -121,6 +138,7 @@ def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth
                 else:
                     x = abc_min.find(nodo[2])
                     y = abc_min.find(nodo[3])
+
 
                 arbol_jugadas.agregar_nodo(juego.total_nodes, color, prenumber + 1, depth, x, y, id_padre)
 
@@ -176,6 +194,7 @@ def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth
                 else:
                     x = abc_min.find(nodo[2])
                     y = abc_min.find(nodo[3])
+
                 arbol_jugadas.agregar_nodo(juego.total_nodes, color, prenumber + 1, depth, x, y, id_padre)
 
                 id_padre = juego.total_nodes
@@ -188,27 +207,93 @@ def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth
     return arbol_jugadas
 
 
-class InfoJuego:
-    def __init__(self):
-        self.GM = '1'
-        self.FF = '4'
-        self.CA = 'UTF-8'
-        self.SZ = '19'
-        # los atrbutos anteriores siempre tendran esos valores
-        self.KM = 6.5
-        self.EV = None
-        self.DT = None
-        self.PB = None
-        self.PW = None
-        self.WR = None
-        self.RE = None
-        self.SO = None
-        self.total_nodes = 0
+def treeToSgf(arbol_jugadas, info, path):
+    ret = "(;"
+    ret += "GM[{}]FF[{}]CA[{}]SZ[{}]KM[{}]\n".format(info.GM, info.FF, info.CA, info.SZ, str(info.KM))
+    if info.EV is not None:
+        ret += "EV[{}]\n".format(info.EV)
+
+    if info.DT is not None:
+        ret += "DT[{}]\n".format(info.DT)
+
+    if info.PB is not None:
+        ret += "PB[{}]".format(info.PB)
+
+    if info.BR is not None:
+        ret += "BR[{}]\n".format(info.BR)
+
+    if info.PW is not None:
+        ret += "PW[{}]".format(info.PW)
+
+    if info.WR is not None:
+        ret += "WR[{}]\n".format(info.WR)
+
+    if info.RE is not None:
+        ret += "RE[{}]\n".format(info.RE)
+
+    if info.SO is not None:
+        ret += "SO[{}]\n".format(info.SO)
+
+    if ret[-1:] != "\n":  # solo para estilo
+        ret += "\n"
+
+    ret += set_file(arbol_jugadas) + ")\n"
+
+    archivo = open(path, 'w')
+    archivo.write(ret)
+    archivo.close()
+
+    return
+
+
+def set_file(arbol_jugadas, ret=""):
+    abc_min = "abcdefghijklmnopqrs"
+    # caso base
+    if len(arbol_jugadas.hijos) == 0:
+        return ret
+
+    elif len(arbol_jugadas.hijos) == 1:
+        hijo = arbol_jugadas.hijos[0]
+        color = hijo.color
+
+        if hijo.x is None:
+            x = ""
+            y = ""
+        else:
+            x = abc_min[hijo.x]
+            y = abc_min[hijo.y - 1]
+        if color == "black":
+            ret += ";B[{}{}]".format(x, y)
+        else:
+            ret += ";W[{}{}]".format(x, y)
+
+        ret += set_file(hijo)
+
+    else:  # mas de un hijo
+        for hijo in arbol_jugadas.hijos:
+            ret += "("
+            color = hijo.color
+
+            if hijo.x is None:
+                x = ""
+                y = ""
+            else:
+                x = abc_min[hijo.x]
+                y = abc_min[hijo.y - 1]
+            if color == "black":
+                ret += ";B[{}{}]".format(x, y)
+            else:
+                ret += ";W[{}{}]".format(x, y)
+
+            variation = set_file(hijo)
+            ret += variation + ")"
+
+    return ret
 
 
 if __name__ == '__main__':
-    arbol_jugadas = sgfToTree("ejemplos/Ejemplo variaciones simple.sgf")
-    # arbol_jugadas = sgfToTree("ejemplos/Chen Yaoye vs Lee Sedol.sgf")
-    # arbol_jugadas = sgfToTree("ejemplos/pass_example.sgf")
-    # arbol_jugadas = sgfToTree("ejemplos/Ejemplo con capturas y variaciones.sgf")
-    print(arbol_jugadas)
+    # info = sgfToTree("ejemplos/Ejemplo variaciones simple.sgf")
+    # info = sgfToTree("ejemplos/Chen Yaoye vs Lee Sedol.sgf")
+    # info = sgfToTree("ejemplos/pass_example.sgf")
+    # info = sgfToTree("ejemplos/Ejemplo con capturas y variaciones.sgf")
+    treeToSgf(info[0], info[1], "ejemplos/Isidora.sgf")

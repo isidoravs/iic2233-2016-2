@@ -13,6 +13,7 @@ class NodeTablero:
         self.left = link_left
         self.value = value  # Determina el numero de la pieza (piedra)
         self.piece = piece  # True si es una pieza, False si es vacio
+        self.square = False  # True si es un cuadrado de territorio
         self.libertades = 0
 
     def __repr__(self):
@@ -225,7 +226,8 @@ class Tablero:  # grafo no dirigido
             if i == 0:
                 self.one_group.append(nodos_contrarios[i])
                 self.set_grupo(nodos_contrarios[i])
-                grupos_nodos.append([nodo for nodo in self.one_group])
+                grupos_nodos.append(self.one_group)
+
                 self.one_group = MyList()
             else:
                 nodo_unico = True
@@ -233,17 +235,19 @@ class Tablero:  # grafo no dirigido
                     if nodos_contrarios[i] in grupo:
                         nodo_unico = False
                         break
+
                 if nodo_unico:
                     self.one_group.append(nodos_contrarios[i])
                     self.set_grupo(nodos_contrarios[i])
-                    grupos_nodos.append([nodo for nodo in self.one_group])
+                    grupos_nodos.append(self.one_group)
                     self.one_group = MyList()
 
         all_removes = MyList()
-        remove_pieces = MyList()  # lista de listas con las coordenadas de las piezas a eliminar
 
         for grupo_nodo in grupos_nodos:
             grupo_capturado = True
+            remove_pieces = MyList()  # lista de listas con las coordenadas de las piezas a eliminar
+
             for integrante in grupo_nodo:
                 if integrante.up is not None and integrante.up.color is None:  # hay libertades
                     grupo_capturado = False

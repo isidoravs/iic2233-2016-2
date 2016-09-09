@@ -3,7 +3,7 @@ from myEDD import MyList
 
 
 class ArbolJugadas:
-    def __init__(self, id_nodo, color=None, number=0, depth=0, x=None, y=None, id_padre=None):
+    def __init__(self, id_nodo, color=None, number=0, depth=0, x=None, y=None, id_padre=None, resumen="X"*361):
         self.id_nodo = id_nodo
         self.color = color
         self.number = number  # corresponde al numero de jugada (independiente si pasa) y coordenada i
@@ -12,14 +12,15 @@ class ArbolJugadas:
         self.y = y  # numero del tablero
         self.id_padre = id_padre
         self.hijos = MyList()
+        self.resumen = resumen  # resumen del estado del tablero en el momento de agregarlo
 
-    def agregar_nodo(self, id_nodo, color, number, depth, x, y, id_padre=None):
+    def agregar_nodo(self, id_nodo, color, number, depth, x, y, id_padre=None, resumen=""):
         if self.id_nodo == id_padre:
-            self.hijos.append(ArbolJugadas(id_nodo, color, number, depth, x, y, id_padre))
+            self.hijos.append(ArbolJugadas(id_nodo, color, number, depth, x, y, id_padre, resumen))
 
         else:
             for hijo in self.hijos:
-                hijo.agregar_nodo(id_nodo, color, number, depth, x, y, id_padre)
+                hijo.agregar_nodo(id_nodo, color, number, depth, x, y, id_padre, resumen)
 
     def obtener_nodo(self, id_nodo):
         if self.id_nodo == id_nodo:
@@ -31,7 +32,7 @@ class ArbolJugadas:
                 if nodo:
                     return nodo
 
-    def obtener_padre(self, id_padre, go):
+    def obtener_padre(self, id_padre, go=None):
         if self.id_nodo == id_padre:
             return self
         else:
@@ -47,6 +48,16 @@ class ArbolJugadas:
         else:
             for hijo in self.hijos:
                 nodo = hijo.obtener_point(i, j)
+
+                if nodo:
+                    return nodo
+
+    def obtener_resumen(self, resumen):
+        if self.resumen == resumen:
+            return self
+        else:
+            for hijo in self.hijos:
+                nodo = hijo.obtener_resumen(resumen)
 
                 if nodo:
                     return nodo
