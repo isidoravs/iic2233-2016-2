@@ -13,7 +13,6 @@ class NodeTablero:
         self.left = link_left
         self.value = value  # Determina el numero de la pieza (piedra)
         self.piece = piece  # True si es una pieza, False si es vacio
-        self.square = False  # cambia a True si es un cuadrado de territorio
         self.libertades = 0
 
     def __repr__(self):
@@ -34,6 +33,8 @@ class Tablero:  # grafo no dirigido
         self.abc = "ABCDEFGHJKLMNOPQRST"
         self.prisioneros_white = 0
         self.prisioneros_black = 0
+        self.territorio_white = 0
+        self.territorio_black = 0
         self.to_remove = None  # guarda piezas pendientes por eliminar de la interfaz
         self.one_group = MyList()  # atributo temporal para analizar un grupo a la vez
 
@@ -128,23 +129,6 @@ class Tablero:  # grafo no dirigido
                 return False
         else:
             return False
-
-    def add_square(self, letter, y, color):
-        x = self.abc.find(letter)
-        selected_node = None
-
-        for node in self.nodes:
-            if node.x_pos == x and node.y_pos == y:
-                selected_node = node
-                break
-
-        if selected_node.piece is None:  # es un espacio vacio del tablero
-            selected_node.piece = False
-            selected_node.value = None
-            selected_node.color = color
-        else:
-            print("Lugar inválido para agregar un cuadrado de territorio")
-        return
 
     def remove_piece(self, letter, y):
         x = self.abc.find(letter)
@@ -265,15 +249,15 @@ class Tablero:  # grafo no dirigido
                     grupo_capturado = False
                     break
 
-                if integrante.down is not None and integrante.down.color is None:  # hay libertades
+                if integrante.down is not None and integrante.down.color is None:
                     grupo_capturado = False
                     break
 
-                if integrante.right is not None and integrante.right.color is None:  # hay libertades
+                if integrante.right is not None and integrante.right.color is None:
                     grupo_capturado = False
                     break
 
-                if integrante.left is not None and integrante.left.color is None:  # hay libertades
+                if integrante.left is not None and integrante.left.color is None:
                     grupo_capturado = False
                     break
 
@@ -315,7 +299,7 @@ class Tablero:  # grafo no dirigido
     def revisar_contorno(self, nodo):  # retorna lista con nodos del mismo color adyacentes al nodo
         contorno = MyList()
 
-        if nodo.up is not None and nodo.up.color == nodo.color:
+        if nodo.up is not None and nodo.up.color == nodo.color:  # tambien aplica para los "grupos" vacios
             contorno.append(nodo.up)
 
         if nodo.down is not None and nodo.down.color == nodo.color:
@@ -328,6 +312,23 @@ class Tablero:  # grafo no dirigido
             contorno.append(nodo.left)
 
         return contorno
+
+    def revisar_pertenencia(self, nodo):  # utilizado en seleccion de territorio
+        alrededores = MyList()
+
+        if nodo.up is not None and nodo.up.color != nodo.color:
+            alrededores.append(nodo.up)
+
+        if nodo.down is not None and nodo.down.color != nodo.color:
+            alrededores.append(nodo.down)
+
+        if nodo.right is not None and nodo.right.color != nodo.color:
+            alrededores.append(nodo.right)
+
+        if nodo.left is not None and nodo.left.color != nodo.color:
+            alrededores.append(nodo.left)
+
+        return alrededores
 
 
 if __name__ == "__main__":

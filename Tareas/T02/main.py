@@ -1,7 +1,7 @@
 # T02 - Isidora Vizcaya
 from gui import MainWindow, run
 from tablero import NodeTablero, Tablero
-from parserSGF import sgfToTree
+from parserSGF import sgfToTree, InfoJuego
 from arbol import ArbolJugadas
 from myEDD import MyList
 
@@ -13,6 +13,8 @@ class GoWindow(MainWindow):
         first_node = NodeTablero(0, 0, None, None, None, None)
         self.tablero = Tablero(first_node)
         self.tablero.set_tablero(19, 19)
+
+        self.juego = InfoJuego()
 
         self.setWindowTitle("GO")
         self.show_message("Jugador Negro comienza la partida")
@@ -129,7 +131,8 @@ class GoWindow(MainWindow):
 
     def on_point_click(self, i, j):
         if self.dead_pieces is not None:
-            self.show_message("Antes de analizar el juego, seleccione piedras muertas a eliminar.")
+            # dado que no existe el metodo remove_square no se puede volver atrás el tablero
+            self.show_message("Seleccione piedras muertas a eliminar, luego no podra volver atras")
             return
 
         point = self.arbol.obtener_point(i, j)
@@ -148,6 +151,18 @@ class GoWindow(MainWindow):
         # condiciones siguiente jugada (point es el ultimo)
         self.depth = point.depth
         self.jugada = point.number + 1
+
+        # reviso en caso de que sean pasos
+        if point.x is None:
+            padre = self.arbol.obtener_padre(point.id_padre, self)
+            if padre.x is None:  # dos seguidos
+                self.end_game = True
+                self.show_message("Jugadores pasaron consecutivamente. Seleccione piedras muertas a remover.")
+                self.dead_pieces = MyList()
+                return
+            else:
+                self.pass_seguidos = 1
+
         if point.color == "black":
             self.turn = "white"
         else:
@@ -176,6 +191,10 @@ class GoWindow(MainWindow):
         self.turn = "black"
         self.pass_seguidos = 0
         self.jugada = 1
+        self.tablero.prisioneros_white = 0
+        self.tablero.prisioneros_black = 0
+        self.tablero.territorio_white = 0
+        self.tablero.territorio_black = 0
         # eliminar valores grafos del tablero
         for nodo_grafo in self.tablero.nodes:  # no es muy eficiente pero evita problemas
             if nodo_grafo.piece:
@@ -260,7 +279,9 @@ class GoWindow(MainWindow):
         if path[-4:] != ".sgf":
             self.show_message("Archivo invalido, debe tener extension .sgf")
         else:
-            arbol_jugadas = sgfToTree(path)
+            info_parser = sgfToTree(path)
+            arbol_jugadas = info_parser[0]
+            self.juego = info_parser[1]
 
             if len(self.arbol.hijos) != 0:
                 # elimino puntos anteriores
@@ -331,6 +352,12 @@ class GoWindow(MainWindow):
 
         # remover piedras
         for nodo_grafo in self.dead_pieces:
+            # piedras muertas son capturadas
+            if nodo_grafo.color == "black":
+                self.tablero.prisioneros_white += 1
+            else:
+                self.tablero.prisioneros_black += 1
+
             nodo_grafo.piece = False
             nodo_grafo.color = None
             nodo_grafo.value = None
@@ -340,7 +367,67 @@ class GoWindow(MainWindow):
 
         self.show_message("Se han eliminado las piedras muertas.")
 
-        # contar territorio RR
+        # contar territorio
+        self.contar_territorio()
+        self.calcular_puntaje()
+        return
+
+    def contar_territorio(self):
+        revisados = MyList()
+
+        for nodo in self.tablero.nodes:
+            if not nodo.piece and nodo not in revisados:  # es espacio vacio
+                # se crea un grupo de nodos vacio
+                self.tablero.one_group.append(nodo)
+                self.tablero.set_grupo(nodo)
+
+                grupo_vacio = MyList()
+                for integrante in self.tablero.one_group:
+                    grupo_vacio.append(integrante)
+                    revisados.append(integrante)
+
+                self.tablero.one_group = MyList()
+
+                # chequea si pertenece a algun territorio conquistado
+                capturado_por = None
+                territorio = True  # parte del caso que pertenezca a algun territorio
+                for integrante in grupo_vacio:
+                    if territorio:
+                        for alrededor in self.tablero.revisar_pertenencia(integrante):
+                            if capturado_por is None:
+                                capturado_por = alrededor.color
+                            else:
+                                if alrededor.color != capturado_por:
+                                    territorio = False
+                                    break
+
+                if territorio:
+                    for integrante in grupo_vacio:
+                        self.add_square(self.tablero.abc[integrante.x_pos], integrante.y_pos + 1, capturado_por)
+                        if capturado_por == "black":
+                            self.tablero.territorio_black += 1
+                        else:
+                            self.tablero.territorio_white += 1
+
+        self.show_message("Se ha marcado el territorio de cada jugador.")
+        return
+
+    def calcular_puntaje(self):
+        black = self.tablero.prisioneros_black + self.tablero.territorio_black
+        white = self.tablero.prisioneros_white + self.tablero.territorio_white + self.juego.KM
+        self.show_message("Puntajes ->    Negro: {} | Blanco: {}".format(black, white))
+
+        # defino al ganador
+        if black > white:
+            diferencia = black - white
+            self.set_result("B + {}".format(diferencia))
+
+        elif white > black:
+            diferencia = white - black
+            self.set_result("W + {}".format(diferencia))
+
+        else:
+            self.set_result("Empate")
         return
 
     def on_resign_click(self):

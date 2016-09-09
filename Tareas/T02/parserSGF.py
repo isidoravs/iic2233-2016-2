@@ -73,7 +73,7 @@ def sgfToTree(path):
 
     # comienza el arbol
     arbol_jugadas = set_arbol(lines_string[:-1], juego)  # string gigante (sin parentesis  inicial ni final)
-    return arbol_jugadas
+    return MyList(arbol_jugadas, juego)
 
 
 def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth=0):
