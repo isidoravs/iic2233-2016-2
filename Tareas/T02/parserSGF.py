@@ -207,7 +207,7 @@ def set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth
     return arbol_jugadas
 
 
-def treeToSgf(arbol_jugadas, info, path):
+def treeToSgf(arbol_jugadas, max_depth, info, path):
     ret = "(;"
     ret += "GM[{}]FF[{}]CA[{}]SZ[{}]KM[{}]\n".format(info.GM, info.FF, info.CA, info.SZ, str(info.KM))
     if info.EV is not None:
@@ -291,9 +291,24 @@ def set_file(arbol_jugadas, ret=""):
     return ret
 
 
+def check_arbol(arbol):
+    def find_primera_linea(raiz, primera_linea):
+        # caso base
+        if len(raiz.hijos) == 0:
+            return primera_linea
+        # llamada recursiva
+        else:
+            primera_linea.append(raiz.hijos[0])
+            return find_primera_linea(raiz.hijos[0], primera_linea)
+
+    primera_linea = find_primera_linea(arbol, MyList())
+    return primera_linea
+
+
 if __name__ == '__main__':
     # info = sgfToTree("ejemplos/Ejemplo variaciones simple.sgf")
     # info = sgfToTree("ejemplos/Chen Yaoye vs Lee Sedol.sgf")
     # info = sgfToTree("ejemplos/pass_example.sgf")
-    # info = sgfToTree("ejemplos/Ejemplo con capturas y variaciones.sgf")
-    treeToSgf(info[0], info[1], "ejemplos/Isidora.sgf")
+    info = sgfToTree("ejemplos/Ejemplo con capturas y variaciones.sgf")
+    primera_linea = check_arbol(info[0])
+    print(primera_linea)

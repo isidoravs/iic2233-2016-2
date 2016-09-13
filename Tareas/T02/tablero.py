@@ -38,6 +38,7 @@ class Tablero:  # grafo no dirigido
         self.territorio_black = 0
         self.to_remove = None  # guarda piezas pendientes por eliminar de la interfaz
         self.one_group = MyList()  # atributo temporal para analizar un grupo a la vez
+        self.posibles_ojos = MyList()
 
     def set_tablero(self, filas, columnas):  # tablero poblado de NodoTablero, solo cambiar atributos al jugar
         for i in range(filas):
@@ -333,6 +334,69 @@ class Tablero:  # grafo no dirigido
             alrededores.append(nodo.left)
 
         return alrededores
+
+    def revisar_encierro(self, nodo):  # utilizado en seleccion de territorio
+        encierro = MyList()
+
+        if nodo.up is None:
+            encierro.append(None)
+        else:
+            if nodo.up.piece:
+                encierro.append(nodo.up.color)
+
+        if nodo.down is None:
+            encierro.append(None)
+        else:
+            if nodo.down.piece:
+                encierro.append(nodo.down.color)
+
+        if nodo.left is None:
+            encierro.append(None)
+        else:
+            if nodo.left.piece:
+                encierro.append(nodo.left.color)
+
+        if nodo.right is None:
+            encierro.append(None)
+        else:
+            if nodo.right.piece:
+                encierro.append(nodo.right.color)
+
+        return encierro
+
+    def set_posibles_ojos(self):
+        for nodo in self.nodes:
+            if not nodo.piece:  # debe ser un nodo vacio
+                ojo = True
+                encierro = self.revisar_encierro(nodo)
+
+                if len(encierro) != 4:
+                    ojo = False
+                else:
+                    color_base = ""
+                    for color in encierro:
+                        if color is not None:
+                            if color_base == "":
+                                color_base = color
+                            else:
+                                if color != color_base:
+                                    ojo = False
+                                    break
+                if ojo:
+                    self.posibles_ojos.append(nodo)
+        return
+
+    def validar_grupo(self, grupo):  # retorna True o False dependiendo de la cantidad de ojos dentro del grupo
+        ojos = MyList()
+        for integrante in grupo:
+            alrededores = self.revisar_pertenencia(integrante)
+            for neighbour in alrededores:
+                if neighbour in self.posibles_ojos and neighbour not in ojos:
+                    ojos.append(neighbour)
+        if len(ojos) > 1:
+            return False
+
+        return True
 
 
 if __name__ == "__main__":

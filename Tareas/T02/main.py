@@ -56,21 +56,27 @@ class GoWindow(MainWindow):
             self.tablero.one_group.append(selected_node)
             self.tablero.set_grupo(selected_node)
 
-            for nodo in self.tablero.one_group:
-                if nodo.value == "X":  # desmarcar piedras
-                    new_letter = self.tablero.abc[nodo.x_pos]
-                    self.remove_piece(new_letter, nodo.y_pos + 1)
-                    self.add_piece(new_letter, nodo.y_pos + 1, "", nodo.color)
-                    nodo.value = ""
+            # verificar cantidad de ojos
+            ojos_valido = self.tablero.validar_grupo(self.tablero.one_group)
 
-                else:
-                    # marco las piedras
-                    new_letter = self.tablero.abc[nodo.x_pos]
-                    self.remove_piece(new_letter, nodo.y_pos + 1)
-                    self.add_piece(new_letter, nodo.y_pos + 1, "X", nodo.color)
-                    nodo.value = "X"
-                    if nodo not in self.dead_pieces:
-                        self.dead_pieces.append(nodo)
+            if ojos_valido:
+                for nodo in self.tablero.one_group:
+                    if nodo.value == "X":  # desmarcar piedras
+                        new_letter = self.tablero.abc[nodo.x_pos]
+                        self.remove_piece(new_letter, nodo.y_pos + 1)
+                        self.add_piece(new_letter, nodo.y_pos + 1, "", nodo.color)
+                        nodo.value = ""
+
+                    else:
+                        # marco las piedras
+                        new_letter = self.tablero.abc[nodo.x_pos]
+                        self.remove_piece(new_letter, nodo.y_pos + 1)
+                        self.add_piece(new_letter, nodo.y_pos + 1, "X", nodo.color)
+                        nodo.value = "X"
+                        if nodo not in self.dead_pieces:
+                            self.dead_pieces.append(nodo)
+            else:
+                self.show_message("No está permitido eliminar grupos que tengan 2 o más ojos")
 
             # asegura que no esten las desmarcadas en muertas
             last_check = MyList()
@@ -107,9 +113,9 @@ class GoWindow(MainWindow):
 
                 for grupo in self.tablero.to_remove:
                     for coordenada in grupo:
-                        letter = coordenada[0]
-                        y = coordenada[1] + 1
-                        self.remove_piece(letter, y)
+                        letter_r = coordenada[0]
+                        y_r = coordenada[1] + 1
+                        self.remove_piece(letter_r, y_r)
                 self.tablero.to_remove = None
 
             if self.new_variation:  # debe determinar si crea una nueva variacion
@@ -144,6 +150,7 @@ class GoWindow(MainWindow):
             # actualiza el arbol
             x = self.tablero.abc.find(letter)
             resumen = self.resumen_estado()
+            self.actual_node = self.arbol.obtener_point(self.jugada, self.depth)
             self.arbol.agregar_nodo(self.id_nodo_prox, self.turn, self.jugada, self.depth, x, y,
                                     self.id_nodo_prox - 1, resumen)
 
@@ -189,6 +196,8 @@ class GoWindow(MainWindow):
             else:
                 next_color = "Negro"
             self.show_message("Perfecto! Es el turno del jugador {}".format(next_color))
+
+        self.set_result("")  # en caso de que se necesite borrar un resultado anterior
 
         # actualiza las piezas del tablero
         self.show_tablero_pasado(point)
@@ -257,8 +266,8 @@ class GoWindow(MainWindow):
 
         self.tablero_pasado = MyList()
 
-        for nodo_grafo in self.tablero.nodes:
-            for nodo_pasado in to_recreate:
+        for nodo_pasado in to_recreate:
+            for nodo_grafo in self.tablero.nodes:
                 if nodo_grafo.x_pos == nodo_pasado.x and nodo_grafo.y_pos == nodo_pasado.y - 1:
                     self.simular_jugadas_pasada(self.tablero.abc[nodo_pasado.x], nodo_pasado.y,
                                                 nodo_pasado.number, nodo_pasado.color)
@@ -266,7 +275,7 @@ class GoWindow(MainWindow):
 
         return
 
-    def simular_jugadas_pasada(self, letter, y, text, color):  # falla al agregar la pieza que captura RR
+    def simular_jugadas_pasada(self, letter, y, text, color):
         if self.tablero.add_piece(letter, y - 1, text, color):
             self.add_piece(letter, y, text, color)
 
@@ -387,7 +396,7 @@ class GoWindow(MainWindow):
             self.show_message("Debe seleccionar las piedras muertas a remover antes de guardar.")
             return
 
-        treeToSgf(self.arbol, self.juego, path)
+        treeToSgf(self.arbol, self.max_depth, self.juego, path)
         self.show_message("Se ha guardado la partida en {}".format(path))
         return
 
@@ -402,6 +411,7 @@ class GoWindow(MainWindow):
             self.end_game = True
             self.show_message("Jugadores pasan consecutivamente. Seleccione piedras muertas a remover.")
             self.dead_pieces = MyList()
+            self.tablero.set_posibles_ojos()  # aplica restriccion de ojos
 
         else:
             self.jugada += 1
