@@ -21,20 +21,24 @@ Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la
 
 6. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que esta tentativa opción de Ko, el atributo vuelve a ser *None*.
 
-
-
-
-
-
 ```
 tablero.py
 ```
 Modela el funcionamiento de las piedras en el tablero y su relación unas con otras en las interesecciones.
 
 ### NodeTablero
+Clase que permite representar cada interesección del tablero. En caso de estar vacía sus atributos `color`, `value` (número de jugada en que se inserta la pieza en esa intersección), `x_pos` e `y_pos` (coordenadas como números) son *None*. Además el atributo `piece` es un booleano que determina si en ese nodo del grafo existe o no una piedra (analogamente para el atributo `square`).
+
+Lo mejor de estos nodos es que se conectan mediante sus atributos `link_up`, `link_down`, `link_right` y `link_left` a los demás nodos del grafo, permitiendo la conexión entre las interesecciones del tablero.
 
 ### Tablero
+Clase que describe el tablero de juego. Éste corresponde a un grafo no dirigido que dado un tamaño (filas / columnas) conecta los distintos nodos (inicialmente como intersecciones vacías) para crearlo y que exista la debida conexión entre ellos por medio del método `set_tablero(filas, columnas)`.
 
+Esta clase se encarga, además de toda la interacción entre nodos, de llevar la cuenta de prisioneros y territorio del jugador blanco y negro (con sus atributos `prisioneros_black`, `prisioneros_white`, `territorio_black` y `territorio_white`).
+
+Algunos métodos de `Tablero` importantes de explicar son:
+
+1. 
 
 ```
 arbol.py
