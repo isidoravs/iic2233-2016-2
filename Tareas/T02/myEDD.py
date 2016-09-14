@@ -59,6 +59,6 @@ class MyList:
         return ret.strip(", ") + "]"
 
 if __name__ == "__main__":
-    lista_prueba = MyList(1, 2)
+    lista_prueba = MyList(1, 2, 3)
     print(lista_prueba)
     print(1 in lista_prueba)

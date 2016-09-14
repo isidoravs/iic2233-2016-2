@@ -1,9 +1,9 @@
-# T02 - Isidora Vizcaya
 from gui import MainWindow, run
 from tablero import NodeTablero, Tablero
 from parserSGF import sgfToTree, InfoJuego, treeToSgf
 from arbol import ArbolJugadas
 from myEDD import MyList
+from bonus import Bonus
 
 
 class GoWindow(MainWindow):
@@ -396,7 +396,7 @@ class GoWindow(MainWindow):
             self.show_message("Debe seleccionar las piedras muertas a remover antes de guardar.")
             return
 
-        treeToSgf(self.arbol, self.max_depth, self.juego, path)
+        treeToSgf(self.arbol, self.juego, path)
         self.show_message("Se ha guardado la partida en {}".format(path))
         return
 
