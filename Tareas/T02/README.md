@@ -62,6 +62,7 @@ Nodo que únicamente tiene los atributos `value` (valor, lo que se quiere almace
 ### MyList
 Clase que representa la lista ligada (caso particular de árbol), es una secuencia de nodos. Luego, tiene un atributo `root` (primer nodo) y `tail` (último nodo). Cuando se utiliza el método `append(value)` cambia el nodo siguiente (`next`) del actual nodo *cola* y luego se actualiza el último nodo (`Node(value)`) en `tail`. En caso de no existir una *cabeza*, el nodo con el valor que se quiere agregar pasa a ser el `root` (y por ende, `tail`). 
 
+**COMPLETAR AQUI**
 ---
 ```
 parserSGF.py
