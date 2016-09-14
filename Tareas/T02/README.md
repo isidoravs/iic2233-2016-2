@@ -45,9 +45,9 @@ tablero.py
 ```
 Modela el funcionamiento de las piedras en el tablero y su relación unas con otras en las interesecciones.
 
-# NodeTablero
+### NodeTablero
 
-# Tablero
+### Tablero
 
 
 ```
