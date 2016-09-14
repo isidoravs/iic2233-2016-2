@@ -1,5 +1,4 @@
 # Tarea 2
----
 ![alt text](http://multitap.cl/wp-content/uploads/2016/01/Gostones.jpg "PROGRAGO")
 > Bienvenido a este modelo de las funcionalidades del juego **GO**!
 > Este juego entre dos jugadores se juega en un tablero de 19 x 19.
