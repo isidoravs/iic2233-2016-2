@@ -5,8 +5,6 @@
 > Para esto las distintas clases y sus métodos, además de otras funciones
 > se dividen en **5** módulos:
 
-***
-
 ```
 main.py
 ```
