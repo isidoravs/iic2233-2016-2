@@ -31,6 +31,12 @@ Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la
 ```
 tablero.py
 ```
+Modela el funcionamiento de las piedras en el tablero y su relación unas con otras en las interesecciones.
+
+# NodeTablero
+
+# Tablero
+
 
 ```
 arbol.py
