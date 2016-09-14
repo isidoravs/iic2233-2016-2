@@ -36,20 +36,31 @@ Clase que describe el tablero de juego. Éste corresponde a un grafo no dirigido
 
 Esta clase se encarga, además de toda la interacción entre nodos, de llevar la cuenta de prisioneros y territorio del jugador blanco y negro (con sus atributos `prisioneros_black`, `prisioneros_white`, `territorio_black` y `territorio_white`).
 
-Algunos métodos de `Tablero` importantes de explicar son:
-
-1. 
-
 ```
 arbol.py
 ```
+### ArbolJugadas
+Clase que representa un árbol, modelando cada nodo (que es en sí un árbol) y agregando más de forma incremental. Esta clase se utiliza para el árbol de jugadas y las variaciones que ocurren en las partidas del juego. En caso de no existir ninguna variación en un nodo sólo hay un elemento en la lista (de la clase `MyList`) `hijos`.
+
+Para hacer más fácil el volver a jugadas pasadas cuando el usuario hace click en un nodo del árbol, cada objeto de esta clase tiene como atributos:
+
+* `x`: coordenada x de la piedra correspondiente en el tablero
+* `y`: coordenada y de la piedra correspondiente en el tablero
+* `number`: corresponde al número de jugada en que se agrega la piedra relacionada con ese nodo del árbol. Coincide con la coordenada **i** del espacio destinado al árbol en la interfaz.
+* `depth`: coordenada **j** del espacio destinado al árbol en la interfaz. Se relaciona con en nivel o variación de la partida.
+
+**Estados Iguales**: mediante el atributo `resumen` de cada nodo del árbol (que contiene un string con el estado del tablero resumido, *X* si es vacío, *B* si hay una piedra negra y *W* si hay una piedra blanca) y el método `obtener_resumen(resumen)` es posible comparar cada vez que se agrega una piedra al tablero si hay estados iguales en el arbol de jugadas. En caso de ocurrir esto, se conecta con una línea blanca.
 
 ---
 ```
 myEDD.py
 ```
-Explicar implementación
+Además de la utilización de árboles y grafos, utilicé listas ligadas para reemplazar el uso de listas proporcinadas por Python.
+### Node
+Nodo que únicamente tiene los atributos `value` (valor, lo que se quiere almacenar) y `next` (nodo próximo con el cual se conecta).
 
+### MyList
+Clase que representa la lista ligada (caso particular de árbol), es una secuencia de nodos. Luego, tiene un atributo `root` (primer nodo) y `tail` (último nodo). Cuando se utiliza el método `append(value)` cambia el nodo siguiente (`next`) del actual nodo *cola* y luego se actualiza el último nodo (`Node(value)`) en `tail`. En caso de no existir una *cabeza*, el nodo con el valor que se quiere agregar pasa a ser el `root` (y por ende, `tail`).  
 ---
 ```
 parserSGF.py
