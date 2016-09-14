@@ -22,3 +22,34 @@ Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la
 11. `dead_pieces`: lista (de la clase `MyList`) de nodos que se deen eliminar dado que fueron marcados como muertos.
 12. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que esta tentativa opción de Ko, el atributo vuelve a ser *None*.
 13. `end_game`: (por último!) booleano que determina si ya fue el término de una partida.
+
+
+
+
+
+
+```
+tablero.py
+```
+
+```
+arbol.py
+```
+
+---
+```
+myEDD.py
+```
+Explicar implementación
+
+---
+```
+parserSGF.py
+```
+Explicar funcionamiento
+
+---
+```
+bonus.py
+```
+> (intento de) bonus
