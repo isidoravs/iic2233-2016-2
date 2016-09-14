@@ -1,9 +1,9 @@
 # Tarea 2
 ![alt text](http://multitap.cl/wp-content/uploads/2016/01/Gostones.jpg "PROGRAGO")
 > Bienvenido a este modelo de las funcionalidades del juego **GO**!
-> Este juego entre dos jugadores se juega en un tablero de 19 x 19.
-> Para esto las distintas clases y sus métodos, además de otras funciones
-> se dividen en **5** módulos:
+> En éste participan dos jugadores poniendo y capturando piedras en un tablero de 19 x 19.
+> Para esto las distintas clases y sus métodos, además de otras funciones se dividen en
+> **5** módulos:
 
 ```
 main.py
