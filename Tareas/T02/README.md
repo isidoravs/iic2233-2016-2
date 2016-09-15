@@ -74,17 +74,17 @@ parserSGF.py
 ```
 Módulo encargado de trabajar con los archivos **.sgf**. 
 
-1. **Open**
+### Open
 
-### sgfToTree(path)
+1. `sgfToTree(path)`
 
-### set\_arbol(data, juego, arbol\_jugadas=None, id\_split=0, number\_split=0, depth=0)
+2. `set\_arbol(data, juego, arbol\_jugadas=None, id\_split=0, number\_split=0, depth=0)`
 
-2. **Save**
+### Save
 
-### treeToSgf(arbol\_jugadas, info, path)
+1. `treeToSgf(arbol\_jugadas, info, path)`
 
-### set\_file(arbol\_jugadas, ret="")
+2. `set\_file(arbol\_jugadas, ret="")`
 
 ---
 ```
@@ -92,7 +92,7 @@ bonus.py
 ```
 > (intento de) bonus
 
-Después de algunos intentos... no lo logré.
+Después de muchos intentos... no lo logré.
 
 ![Mucha tristeza](http://www.reactiongifs.com/r/sbbn.gif)
 
