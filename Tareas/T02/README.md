@@ -62,7 +62,12 @@ Nodo que únicamente tiene los atributos `value` (valor, lo que se quiere almace
 ### MyList
 Clase que representa la lista ligada (caso particular de árbol), es una secuencia de nodos. Luego, tiene un atributo `root` (primer nodo) y `tail` (último nodo). Cuando se utiliza el método `append(value)` cambia el nodo siguiente (`next`) del actual nodo *cola* y luego se actualiza el último nodo (`Node(value)`) en `tail`. En caso de no existir una *cabeza*, el nodo con el valor que se quiere agregar pasa a ser el `root` (y por ende, `tail`). 
 
-**COMPLETAR AQUI**
+Además para esta clase se sobreescriben los métodos:
+
+* `__len__()`: de manera que retorne la cantidad de nodos en la lista ligada.
+* `__getitem__()`: de manera que se pueda iterar sobre la lista y conseguir un elemento de ésta. Retorna el valor del nodo en la posición **i** de la lista ligada.
+* `__repr__()`: retorna un string que muestra los valores de cada nodo de la lista, separados por comas y encerrados por corchetes (`[]`) como sería en una lista común.
+
 ---
 ```
 parserSGF.py
@@ -73,4 +78,12 @@ Explicar funcionamiento
 ```
 bonus.py
 ```
-> (intento de) bonus
+> (intento de) bonus...
+
+Después de algunos intentos... no lo logré.
+![Mucha tristeza](http://www.reactiongifs.com/r/sbbn.gif)
+
+... pero de todas formas creo que cubrí todo lo pedido por la tarea! Espero que disfrutes este juego!
+
+---
+GO!
