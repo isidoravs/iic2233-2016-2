@@ -74,17 +74,31 @@ parserSGF.py
 ```
 Módulo encargado de trabajar con los archivos **.sgf**. 
 
+### InfoJuego
+Clase mencionada anteriormente que alamcena toda la información contenida o que debería contener un archivo **SGF**. Los valores predeterminados son *GM* = 1, *FF* = 4, *CA* = "UTF-8", *SZ* = 19, *KM* = 6.5; los que pueden cambiar en caso de abrir un archivo con valores distintos.
+
 ### Open
+Las siguientes funciones permiten al usuario abrir un archivo de la extensión pedida y retorna un objeto de la clase **ArbolJugadas** para poder ver las partidas guardadas. Este árbol mediante los métodos... **COMPLETAR**.
 
 1. `sgfToTree(path)`
+Esta función instancia un objeto de la clase **InfoJuego** (que se almacena en la variable *juego*), abre el archivo y lo lee hasta encontrar el primer nodo (determinado por `";B["`). Todo lo anterior se guarda en cada atributo de *juego* y luego llama a la función `set_arbol` entregándole como parámtros un string con todo el contenido de la partida (combinación de **;B[xy]** e **;W[xy]**, junto con sus variaciones) y la variable *juego*.
 
-2. `set\_arbol(data, juego, arbol\_jugadas=None, id\_split=0, number\_split=0, depth=0)`
+Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **ArbolJugadas**) y *juego*.
+
+2. `set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth=0)`
+Función recursiva que contempla inicialmente dos casos: 
+* arbol\_jugadas es *None* -> entonces crea un objeto de la clase **ArbolJugadas** y lo asigna a esa variable. Si comienza con una variación `(`, únicamente tiene el nodo raíz vacío; en cambio, si comienza con una piedra negra `;B` se agregan dos nodos (el raíz vacío y otro de id 1, color "black" y número 1). En ambos caso se llama recursivamente a la función para continuar el árbol.
+* otro caso (**else**) -> distingue tres casos para ir formando el árbol:
+..* **Caso 0** (base): cuando no hay paréntesis (y, por ende, variaciones) en `data` que es el string que almacena las jugadas. En este caso sólo es un string de la forma *;B[xy];W[xy];B[xy]...* 
+..* **Caso 1**: 
+
+
 
 ### Save
 
-1. `treeToSgf(arbol\_jugadas, info, path)`
+1. `treeToSgf(arbol_jugadas, info, path)`
 
-2. `set\_file(arbol\_jugadas, ret="")`
+2. `set_file(arbol_jugadas, ret="")`
 
 ---
 ```
@@ -94,7 +108,7 @@ bonus.py
 
 Después de muchos intentos... no lo logré.
 
-![Mucha tristeza](http://www.reactiongifs.com/r/sbbn.gif)
+![Mucha tristeza](http://www.reactiongifs.com/r/sbbn.gif "Mucha Tristeza")
 
 ... pero de todas formas creo que cubrí todo lo pedido por la tarea! Espero que disfrutes este juego!
 
