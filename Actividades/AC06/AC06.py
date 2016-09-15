@@ -1,18 +1,19 @@
 __author__ = "Juan Cortes, Cristian Cortes, Manuel Silva"
 
+def verify(str, int, list):
+    def decorador(function):
+        def new_function(*args):
+            if isinstance(args[1], str) and isinstance(args[2], int) and isinstance(args[3], list) and \
+                    isinstance(args[4], str):
+                setattr(args[0], "nombre", args[1])
+                setattr(args[0], "level", args[2])
+                setattr(args[0], "evolutions", args[3])
+                setattr(args[0], "owner", args[4])
 
-def verify(function):
-    def new_function(*args):
-        if isinstance(args[1], str) and isinstance(args[2], int) and isinstance(args[3], list) and isinstance(args[4],
-                                                                                                              str):
-            setattr(args[0], "nombre", args[1])
-            setattr(args[0], "level", args[2])
-            setattr(args[0], "evolutions", args[3])
-            setattr(args[0], "owner", args[4])
-
-        else:
-            raise Exception("Los atributos no cumplen con el tipo de datos")
-    return new_function
+            else:
+                raise Exception("Los atributos no cumplen con el tipo de datos")
+        return new_function
+    return decorador
 
 
 def protect_method(*metodos):  # recibe cantidad no determinada
@@ -81,7 +82,7 @@ class Pokedex:
 
 @protect_method("set_attributes")
 class Pokemon:
-    @verify
+    @verify(str, int, list)
     def __init__(self, nombre, level, evolutions, owner):
         self.nombre = nombre
         self.level = level
