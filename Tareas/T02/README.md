@@ -98,13 +98,21 @@ Función recursiva que contempla inicialmente dos casos:
 
 Finalmente retorna el árbol de jugadas.
 
-![Emoción infinita](http://www.reactiongifs.com/r/cheering_minions.gif "Costo pero se pudo")
+![Emoción infinita](http://www.reactiongifs.com/r/cheering_minions.gif "Costó pero se pudo")
 
 ### Save
+Las siguientes funciones permiten al usuario guardar las jugadas en un archivo de extensión **.sgf**, dado el árbol de jugadas al momento de hacer click en el botón *Save*.
 
 1. `treeToSgf(arbol_jugadas, info, path)`
+Función que comienza el string que será escrito en el archivo en `path`. En primer lugar se agrega la información básica obtenida de `info` que es el objeto de la clase **InfoJuego** mencionado anteriormente y luego se llama a `set_file` para agregar la información del árbol al string. Finalmente cierra con un `)\n` y lo escribe en el archivo pedido.
 
 2. `set_file(arbol_jugadas, ret="")`
+Función recursiva que distingue tres casos:
+* **Caso 0** (base): el nodo del árbol no tiene hijos, y por lo tanto, es el nodo final del árbol. Retorna el string `ret`.
+* **Caso 1**: el nodo de `arbol_jugadas` tiene únicamente un hijo, luego no hay variaciones. Se agrega `;B[xy]` o `;W[xy]` según corresponda. A `ret` se le agrega el resto del árbol, llamado recursivamente a la función, con el hijo como parámetro.
+* **Caso 2**: el nodo tiene más de un hijo, entonces por cada hijo se agrega la porción de variación (de manera recursiva) que corresponda, encerrada entre paréntesis.
+
+Finalmente retorna el string con el resumen de jugadas.
 
 ---
 ```
