@@ -78,7 +78,7 @@ Módulo encargado de trabajar con los archivos **.sgf**.
 Clase mencionada anteriormente que alamcena toda la información contenida o que debería contener un archivo **SGF**. Los valores predeterminados son *GM* = 1, *FF* = 4, *CA* = "UTF-8", *SZ* = 19, *KM* = 6.5; los que pueden cambiar en caso de abrir un archivo con valores distintos.
 
 ### Open
-Las siguientes funciones permiten al usuario abrir un archivo de la extensión pedida y retorna un objeto de la clase **ArbolJugadas** para poder ver las partidas guardadas. Este árbol mediante los métodos... **COMPLETAR**.
+Las siguientes funciones permiten al usuario abrir un archivo de la extensión pedida y retorna un objeto de la clase **ArbolJugadas** para poder ver las partidas guardadas. Este árbol mediante los métodos `set_arbol_jugadas(arbol_jugadas)` y previamente `clear_arbol(arbol)` (para borrar los nodos de las jugadas en la interfaz) de **GoWindow**, es el que se ve reflejado para los jugadores de manera que puedan hacer click en los nodos y ver las jugadas pasadas.
 
 1. `sgfToTree(path)`
 Esta función instancia un objeto de la clase **InfoJuego** (que se almacena en la variable *juego*), abre el archivo y lo lee hasta encontrar el primer nodo (determinado por `";B["`). Todo lo anterior se guarda en cada atributo de *juego* y luego llama a la función `set_arbol` entregándole como parámtros un string con todo el contenido de la partida (combinación de **;B[xy]** e **;W[xy]**, junto con sus variaciones) y la variable *juego*. Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **ArbolJugadas**) y *juego*.
