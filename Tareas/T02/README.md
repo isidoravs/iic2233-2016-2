@@ -17,9 +17,11 @@ Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la
 
 4. `arbol`: instancia de la clase `ArbolJugadas`, explicada más adelante, que modela el árbol de todas las jugadas (como dice el nombre :)) junto con las variaciones que existan en la partida. Queda representado en la parte derecha de la interfaz.
 
-5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas.
+5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo).
 
-6. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que esta tentativa opción de Ko, el atributo vuelve a ser *None*.
+6. `pass_seguidos`: permite llevar la cuenta de las veces que los jugadores han pasado. Si no pasa de manera seguida y su valor es 1 se reinicia, si pasa de manera seguida termina el juego.
+
+7. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que esta tentativa opción de Ko, el atributo vuelve a ser *None*.
 
 ```
 tablero.py
@@ -113,6 +115,17 @@ Función recursiva que distingue tres casos:
 * **Caso 2**: el nodo tiene más de un hijo, entonces por cada hijo se agrega la porción de variación (de manera recursiva) que corresponda, encerrada entre paréntesis.
 
 Finalmente retorna el string con el resumen de jugadas.
+
+```
+Funcionalidades que vale la pena explicar...
+```
+
+### On point click
+Cuando se hace click en el nodo del árbol se llama al método `show_tablero_pasado(point)` que obtiene todas las jugadas anteriores a ese punto siguiendo el camino correcto en caso de haber una variación. Luego reinicia el tablero y los valores de los nodos de éste para llamar a `simular_jugadas_pasadas(letter, y, text, color)` por cada jugada anterior. Esto permite recrear el proceso de todas las jugadas hasta llegar al punto seleccionado de manera que se capturen las piedras correspondientes y no existan problemas si el usuario vuelve a seleccionar un nodo del árbol pero del "futuro".
+
+### Add piece
+El método `add_piece(letter, y, text, color)` de la clase **Tablero** (DuckTyping) retorna *True* (y actualiza los atributos del nodo correspondiente) si es un lugar válido para agregar una pieza o *False* si es una jugada suicida o ya hay una pieza en esta intersección. Para determinar si una jugada es suicida se llama al método `actualizar_libertades(node)` **COMPLETAR** 
+
 
 ---
 ```
