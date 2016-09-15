@@ -17,9 +17,9 @@ Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la
 
 4. `arbol`: instancia de la clase `ArbolJugadas`, explicada más adelante, que modela el árbol de todas las jugadas (como dice el nombre :)) junto con las variaciones que existan en la partida. Queda representado en la parte derecha de la interfaz.
 
-5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo).
+5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo y tener una visión óptima de éste).
 
-6. `pass_seguidos`: permite llevar la cuenta de las veces que los jugadores han pasado. Si no pasa de manera seguida y su valor es 1 se reinicia, si pasa de manera seguida termina el juego.
+6. `pass_seguidos`: permite llevar la cuenta de las veces que los jugadores han pasado. Si no pasa de manera seguida y su valor es 1 se reinicia, si pasa de manera seguida termina el juego. Una vez pasadas dos veces seguidas los jugadores debe terminar el juego, no pueden realizar otra accion hasta determinar el ganador (pero luego pueden volver a analizar las jugadas).
 
 7. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que esta tentativa opción de Ko, el atributo vuelve a ser *None*.
 
@@ -51,7 +51,7 @@ Para hacer más fácil el volver a jugadas pasadas cuando el usuario hace click 
 * `number`: corresponde al número de jugada en que se agrega la piedra relacionada con ese nodo del árbol. Coincide con la coordenada **i** del espacio destinado al árbol en la interfaz.
 * `depth`: coordenada **j** del espacio destinado al árbol en la interfaz. Se relaciona con en nivel o variación de la partida.
 
-**Estados Iguales**: mediante el atributo `resumen` de cada nodo del árbol (que contiene un string con el estado del tablero resumido, *X* si es vacío, *B* si hay una piedra negra y *W* si hay una piedra blanca) y el método `obtener_resumen(resumen)` es posible comparar cada vez que se agrega una piedra al tablero si hay estados iguales en el arbol de jugadas. En caso de ocurrir esto, se conecta con una línea blanca.
+**Estados Iguales**: mediante el atributo `resumen` de cada nodo del árbol (que contiene un string de 361 caracteres con el estado del tablero resumido, *X* si es vacío, *B* si hay una piedra negra y *W* si hay una piedra blanca) y el método `obtener_resumen(resumen)` es posible comparar cada vez que se agrega una piedra al tablero si hay estados iguales en el arbol de jugadas. En caso de ocurrir esto, se conecta con una línea blanca.
 
 ---
 ```
@@ -126,6 +126,9 @@ Cuando se hace click en el nodo del árbol se llama al método `show_tablero_pas
 ### Add piece
 El método `add_piece(letter, y, text, color)` de la clase **Tablero** (DuckTyping) retorna *True* (y actualiza los atributos del nodo correspondiente) si es un lugar válido para agregar una pieza o *False* si es una jugada suicida o ya hay una pieza en esta intersección. Para determinar si una jugada es suicida se llama al método `actualizar_libertades(node)` **COMPLETAR** 
 
+### On pass click
+Al pasar se agrega en el árbol un nodo con el color del usuario y número de jugada, pero `x` e `y` son *None* (por lo que no existe en el tablero pieza con ese color y numero). 
+**Casos especiales**: al abrir un archivo con pasos, en caso de apretar ese nodo del arbol se agrega 1 a `pass_seguidos`. En caso de que el jugador siguiente pase, termina el juego, de otra forma se agrega una variación. Si el archivo termina con dos pasos seguidos y se aprieta el último nodo, la partida termina y se deben seleccionar las piedras muertas para calcular el territorio.
 
 ---
 ```
