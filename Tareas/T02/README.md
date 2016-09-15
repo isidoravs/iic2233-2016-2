@@ -81,9 +81,7 @@ Clase mencionada anteriormente que alamcena toda la información contenida o que
 Las siguientes funciones permiten al usuario abrir un archivo de la extensión pedida y retorna un objeto de la clase **ArbolJugadas** para poder ver las partidas guardadas. Este árbol mediante los métodos... **COMPLETAR**.
 
 1. `sgfToTree(path)`
-Esta función instancia un objeto de la clase **InfoJuego** (que se almacena en la variable *juego*), abre el archivo y lo lee hasta encontrar el primer nodo (determinado por `";B["`). Todo lo anterior se guarda en cada atributo de *juego* y luego llama a la función `set_arbol` entregándole como parámtros un string con todo el contenido de la partida (combinación de **;B[xy]** e **;W[xy]**, junto con sus variaciones) y la variable *juego*.
-
-Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **ArbolJugadas**) y *juego*.
+Esta función instancia un objeto de la clase **InfoJuego** (que se almacena en la variable *juego*), abre el archivo y lo lee hasta encontrar el primer nodo (determinado por `";B["`). Todo lo anterior se guarda en cada atributo de *juego* y luego llama a la función `set_arbol` entregándole como parámtros un string con todo el contenido de la partida (combinación de **;B[xy]** e **;W[xy]**, junto con sus variaciones) y la variable *juego*. Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **ArbolJugadas**) y *juego*.
 
 2. `set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth=0)`
 Función recursiva que contempla inicialmente dos casos: 
@@ -94,10 +92,13 @@ Función recursiva que contempla inicialmente dos casos:
 
 **Caso 0** (base): cuando no hay paréntesis (y, por ende, variaciones) en `data` que es el string que almacena las jugadas. En este caso sólo es un string de la forma *;B[xy];W[xy];B[xy]...*.
 
-**Caso 1**:
+**Caso 1**: data comienza con una variación - `(` - luego en este caso se busca la cantidad de variaciones y por cada una se llama recursivamente a la función cambiando el `depth` de cada uno (coordenada **j** en el árbol).
 
+**Caso 2**: cuando data no es inmediatamente una variación pero dentro del string hay varaciones. En este caso funciona de manera similar al caso base hasta llegar a la variación donde se llama recursivamente la función para llegar al caso 1.
 
+Finalmente retorna el árbol de jugadas.
 
+![Emoción infinita](http://www.reactiongifs.com/r/cheering_minions.gif "Costo pero se pudo")
 
 ### Save
 
