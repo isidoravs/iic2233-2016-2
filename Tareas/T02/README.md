@@ -88,9 +88,13 @@ Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **Arb
 2. `set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth=0)`
 Función recursiva que contempla inicialmente dos casos: 
 * arbol\_jugadas es *None* -> entonces crea un objeto de la clase **ArbolJugadas** y lo asigna a esa variable. Si comienza con una variación `(`, únicamente tiene el nodo raíz vacío; en cambio, si comienza con una piedra negra `;B` se agregan dos nodos (el raíz vacío y otro de id 1, color "black" y número 1). En ambos caso se llama recursivamente a la función para continuar el árbol.
+
 * otro caso (**else**) -> distingue tres casos para ir formando el árbol:
-..* **Caso 0** (base): cuando no hay paréntesis (y, por ende, variaciones) en `data` que es el string que almacena las jugadas. En este caso sólo es un string de la forma *;B[xy];W[xy];B[xy]...* 
-..* **Caso 1**: 
+
+⋅⋅1.  **Caso 0** (base): cuando no hay paréntesis (y, por ende, variaciones) en `data` que es el string que almacena las jugadas. En este caso sólo es un string de la forma *;B[xy];W[xy];B[xy]...*.
+
+⋅⋅2. **Caso 1**:
+
 
 
 
