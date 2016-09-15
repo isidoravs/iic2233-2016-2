@@ -124,7 +124,9 @@ Funcionalidades que vale la pena explicar...
 Cuando se hace click en el nodo del árbol se llama al método `show_tablero_pasado(point)` que obtiene todas las jugadas anteriores a ese punto siguiendo el camino correcto en caso de haber una variación. Luego reinicia el tablero y los valores de los nodos de éste para llamar a `simular_jugadas_pasadas(letter, y, text, color)` por cada jugada anterior. Esto permite recrear el proceso de todas las jugadas hasta llegar al punto seleccionado de manera que se capturen las piedras correspondientes y no existan problemas si el usuario vuelve a seleccionar un nodo del árbol pero del "futuro".
 
 ### Add piece
-El método `add_piece(letter, y, text, color)` de la clase **Tablero** (DuckTyping) retorna *True* (y actualiza los atributos del nodo correspondiente) si es un lugar válido para agregar una pieza o *False* si es una jugada suicida o ya hay una pieza en esta intersección. Para determinar si una jugada es suicida se llama al método `actualizar_libertades(node)` de la clase **Tablero**  **COMPLETAR** 
+El método `add_piece(letter, y, text, color)` de la clase **Tablero** (DuckTyping) retorna *True* (y actualiza los atributos del nodo correspondiente) si es un lugar válido para agregar una pieza o *False* si es una jugada suicida o ya hay una pieza en esta intersección. Para determinar si una jugada es suicida se llama al método `actualizar_libertades(node)` de la clase **Tablero** que crea una lista con los nodos de color contrario junto al nodo recién agregado. Esta lista se entrega como parámetro a `revisar_captura` y si este método no retorna *None*, retorna una lista con las piedras a eliminar (cuando existe captura).
+
+**COMPLETAR ^^** 
 
 ### On pass click
 Al pasar se agrega en el árbol un nodo con el color del usuario y número de jugada, pero `x` e `y` son *None* (por lo que no existe en el tablero pieza con ese color y numero). 
