@@ -81,9 +81,11 @@ bonus.py
 > (intento de) bonus...
 
 Después de algunos intentos... no lo logré.
+
 ![Mucha tristeza](http://www.reactiongifs.com/r/sbbn.gif)
 
 ... pero de todas formas creo que cubrí todo lo pedido por la tarea! Espero que disfrutes este juego!
 
----
 GO!
+---
+*Isidora Vizcaya*
