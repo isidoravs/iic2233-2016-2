@@ -3,7 +3,6 @@ from tablero import NodeTablero, Tablero
 from parserSGF import sgfToTree, InfoJuego, treeToSgf
 from arbol import ArbolJugadas
 from myEDD import MyList
-from bonus import Bonus
 
 
 class GoWindow(MainWindow):
@@ -16,7 +15,7 @@ class GoWindow(MainWindow):
 
         self.juego = InfoJuego()
 
-        self.setWindowTitle("GO")
+        self.setWindowTitle("GO!")
         self.show_message("Jugador Negro comienza la partida")
 
         self.turn = "black"
@@ -33,7 +32,6 @@ class GoWindow(MainWindow):
         self.actual_node = None
         self.tablero_pasado = MyList()  # determina juegos pasados, listas con nodos
         self.dead_pieces = None  # utilizada al hacer count
-        self.territorio_marcado = False  # en caso de analizar partidas luego de haber marcado territorio
         self.ko_chance = None  # posible Ko en futura jugada
 
     def on_piece_click(self, letter, y):
@@ -453,7 +451,6 @@ class GoWindow(MainWindow):
 
         # para volver a analizar partidas
         self.dead_pieces = None
-        self.territorio_marcado = True
         return
 
     def contar_territorio(self):

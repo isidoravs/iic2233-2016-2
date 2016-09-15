@@ -1,4 +1,3 @@
-# arbol de jugadas representado por un arbol
 from myEDD import MyList
 
 

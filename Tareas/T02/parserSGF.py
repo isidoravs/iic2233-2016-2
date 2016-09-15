@@ -1,4 +1,3 @@
-# lector de archivos de tipo SGF
 from myEDD import MyList
 from arbol import ArbolJugadas
 

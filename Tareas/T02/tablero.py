@@ -1,4 +1,3 @@
-# tablero es representado por un grafo
 from myEDD import MyList
 
 
