@@ -39,7 +39,24 @@ def protect_method(*metodos):  # recibe cantidad no determinada
 
 def my_name(function):
     def new_function(self):
-        print(self.nombre)
+        return self.nombre
+    return new_function
+
+
+def strongest(function):
+    def new_function(self):
+        fuerte = max(self.pokemon, key=lambda x: x.level)
+        print('El mas fuerte es {0.nombre} con level {0.level}'.format(fuerte))
+
+    return new_function
+
+
+def is_pokemon(function):
+    def new_function(self, pokemon, *args):
+        if not isinstance(pokemon, Pokemon):
+            print("Error, este no es un Pokemon valido !")
+        else:
+            self.pokemon.append(pokemon)
     return new_function
 
 
@@ -49,15 +66,18 @@ class Pokedex:
     def __init__(self):
         self.pokemon = list()
 
+    @is_pokemon
     def add_pokemon(self, pokemon):
         self.pokemon.append(pokemon)
 
+    @strongest
     def compare(self):
         print('El mas fuerte es {0.nombre}'.format(
             max(self.pokemon, key=lambda x: len(x.nombre))))
 
     def __str__(self):
         return 'Llevas {} Pokemon:\n{}'.format(len(self.pokemon), self.pokemon)
+
 
 @protect_method("set_attributes")
 class Pokemon:
