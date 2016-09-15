@@ -72,13 +72,25 @@ Además para esta clase se sobreescriben los métodos:
 ```
 parserSGF.py
 ```
-Explicar funcionamiento
+Módulo encargado de trabajar con los archivos **.sgf**. 
+
+1. **Open**
+
+### sgfToTree(path)
+
+### set\_arbol(data, juego, arbol\_jugadas=None, id\_split=0, number\_split=0, depth=0)
+
+2. **Save**
+
+### treeToSgf(arbol\_jugadas, info, path)
+
+### set\_file(arbol\_jugadas, ret="")
 
 ---
 ```
 bonus.py
 ```
-> (intento de) bonus...
+> (intento de) bonus
 
 Después de algunos intentos... no lo logré.
 
