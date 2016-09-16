@@ -127,18 +127,20 @@ Funcionalidades que vale la pena explicar...
 Cuando se hace click en el nodo del árbol se llama al método `show_tablero_pasado(point)` que obtiene todas las jugadas anteriores a ese punto siguiendo el camino correcto en caso de haber una variación. Luego reinicia el tablero y los valores de los nodos de éste para llamar a `simular_jugadas_pasadas(letter, y, text, color)` por cada jugada anterior. Esto permite recrear el proceso de todas las jugadas hasta llegar al punto seleccionado de manera que se capturen las piedras correspondientes y no existan problemas si el usuario vuelve a seleccionar un nodo del árbol pero del "futuro".
 
 ### Add piece
-El método `add_piece(letter, y, text, color)` de la clase **Tablero** (DuckTyping) retorna *True* (y actualiza los atributos del nodo correspondiente) si es un lugar válido para agregar una pieza. Si es una jugada suicida o ya hay una pieza en esta intersección, retorna *False*. Para determinar si una jugada es suicida se llama al método `actualizar_libertades(node)` de la clase **Tablero** que crea una lista con los nodos de color contrario junto al nodo recién agregado. Esta lista se entrega como parámetro a `revisar_captura` y si este método no retorna *None*, retorna una lista con las piedras a eliminar (cuando existe captura), qeu luego permite borrarlas del tablero.
+El método `add_piece(letter, y, text, color)` de la clase **Tablero** (DuckTyping) retorna *True* (y actualiza los atributos del nodo correspondiente) si es un lugar válido para agregar una pieza. Si es una jugada suicida o ya hay una pieza en esta intersección, retorna *False*. Para determinar si una jugada es suicida se llama al método `actualizar_libertades(node)` de la clase **Tablero** que crea una lista con los nodos de color contrario junto al nodo recién agregado. Esta lista se entrega como parámetro a `revisar_captura` y si este método no retorna *None*, retorna una lista con las piedras a eliminar (cuando existe captura), que luego permite borrarlas del tablero.
 
 ### Set grupo
 El método `set_grupo(nodo)` de la clase **Tablero** se encarga de armar los grupos de piedras contiguos de un mismo color. Esto ayuda a su captura (para contar las libertades del grupo) y también para contar territorio dado que se modifica de manera que se generen "grupos" de nodos vacíos. Debido a que es una función recursiva se facilitaba su implementación con el atributo de **Tablero** `one_group` que almacena, cada vez que se necesita, un grupo de manera temporal.
+
 **Obs:** el código permite que con agregar una piedra se pueda capturar más de un grupo a la vez, si corresponde.
 
 ### On pass click
 Al pasar se agrega en el árbol un nodo con el color del usuario y número de jugada, pero `x` e `y` son *None* (por lo que no existe en el tablero pieza con ese color y numero). 
+
 **Casos especiales**: al abrir un archivo con pasos, en caso de apretar ese nodo del arbol se agrega 1 a `pass_seguidos`. En caso de que el jugador siguiente pase, termina el juego, de otra forma se agrega una variación. Si el archivo termina con dos pasos seguidos y se aprieta el último nodo, la partida termina y se deben seleccionar las piedras muertas para calcular el territorio.
 
 ### On count click
-Cuando el usuario presiona el botón `Count`, además del cálculo de puntaje, se llama a la función `contar_territorio()`. Este método se encarga de crear "grupos" de nodos vacíos para luego determinar si pertenecen a algún territorio (verificando si está rodeado por piedras de un mismo color). Para verificar que el jugador no seleccione grupos con dos o más ojos se utilizan los métodos `set_posibles_ojos()` (que agrega a una lista los nodos de intersecciones vacías rodeados por piedras) y `validar_grupo(grupo)` que cuenta la cantidad de ojos dentro de un mismo grupo de piedras (si es mayor o igual a 2 retorna *False*). 
+Cuando el usuario presiona el botón `COUNT`, además del cálculo de puntaje, se llama a la función `contar_territorio()`. Este método se encarga de crear "grupos" de nodos vacíos para luego determinar si pertenecen a algún territorio (verificando si está rodeado por piedras de un mismo color). Para verificar que el jugador no seleccione grupos con dos o más ojos se utilizan los métodos `set_posibles_ojos()` (que agrega a una lista los nodos de intersecciones vacías rodeados por piedras) y `validar_grupo(grupo)` que cuenta la cantidad de ojos dentro de un mismo grupo de piedras (si es mayor o igual a 2 retorna *False*). 
 
 ---
 ```
