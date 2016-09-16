@@ -9,19 +9,19 @@ main.py
 ```
 Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la clase `MainWindow` (del módulo `gui` dado). En este módulo principal, la clase `GOWindow`, que hereda de `MainWindow`, tiene como atributos principales:
 
-1. `tablero`: objeto de la clase `Tablero` explicada más adelante, que corresponde a un grafo no dirigido que modela el espacio de juego y las intersecciones para colocar las piezas.
+1. `tablero`: objeto de la clase `Tablero` explicada más adelante. Éste corresponde a un grafo no dirigido que modela el espacio de juego y las intersecciones para colocar las piedras.
 
-2. `juego`: instancia de la clase `InfoJuego` explicada más adelante, que contiene la información de las partidas (*GM[1]FF[4]CA[UTF-8]SZ[19]KM[6.5]* en caso de que estos datos no sean proporcionados por un archivo). Este atributo permite no perder información adicional que exista en los archivos **.sgf** en caso de volver a guardarlos.
+2. `juego`: instancia de la clase `InfoJuego` explicada más adelante. Éste contiene la información de las partidas (*GM[1]FF[4]CA[UTF-8]SZ[19]KM[6.5]* en caso de que estos datos no sean proporcionados por un archivo). Este atributo permite no perder información adicional que exista en los archivos **.sgf** en caso de volver a guardarlos.
 
 3. `jugada`: establece el número de la jugada actual. Se actualiza en caso de hacer una variación y siempre calza con la coordenada **i** del árbol de jugadas.
 
 4. `arbol`: instancia de la clase `ArbolJugadas`, explicada más adelante, que modela el árbol de todas las jugadas (como dice el nombre :)) junto con las variaciones que existan en la partida. Queda representado en la parte derecha de la interfaz.
 
-5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo y tener una visión óptima de éste). **Obs:** si se hace click en un nodo del árbol de jugadas y únicamente si el siguiente estado difiere al que habría ocurrido se produce la variación. 
+5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo y tener una visión óptima de éste). **Obs:** Al hacer click en un nodo del árbol de jugadas, únicamente si el siguiente estado difiere al que habría ocurrido, se produce la variación. 
 
-6. `pass_seguidos`: permite llevar la cuenta de las veces que los jugadores han pasado. Si no pasa de manera seguida y su valor es 1 se reinicia, si pasa de manera seguida termina el juego. Una vez pasadas dos veces seguidas los jugadores debe terminar el juego, no pueden realizar otra accion hasta determinar el ganador (pero luego pueden volver a analizar las jugadas).
+6. `pass_seguidos`: permite llevar la cuenta de las veces que los jugadores han pasado. Si no pasa de manera seguida y su valor es 1 se reinicia, si pasa de manera seguida termina el juego. Una vez pasadas dos veces seguidas los jugadores deben terminar el juego, no pueden realizar otra accion hasta determinar el ganador (pero luego pueden volver a analizar las jugadas).
 
-7. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que esta tentativa opción de Ko, el atributo vuelve a ser *None*.
+7. `ko_chance`: guarda las coordenadas de la posición que queda prohibida para no violar la **regla de Ko**. En caso de pasar más de un turno desde que se establece la tentativa opción de Ko, el atributo vuelve a ser *None*.
 
 ```
 tablero.py
@@ -30,6 +30,7 @@ Modela el funcionamiento de las piedras en el tablero y su relación unas con ot
 
 ### NodeTablero
 Clase que permite representar cada interesección del tablero. En caso de estar vacía sus atributos `color`, `value` (número de jugada en que se inserta la pieza en esa intersección), `x_pos` e `y_pos` (coordenadas como números) son *None*. Además el atributo `piece` es un booleano que determina si en ese nodo del grafo existe o no una piedra (analogamente para el atributo `square`).
+
 **Obs:** el número `value` se agrega en las piedras del tablero en la interfaz, dado que permiten al jugador llevar un mejor seguimiento de sus jugadas pasadas.
 
 Lo mejor de estos nodos es que se conectan mediante sus atributos `link_up`, `link_down`, `link_right` y `link_left` a los demás nodos del grafo, permitiendo la conexión entre las interesecciones del tablero.
@@ -63,7 +64,7 @@ Además de la utilización de árboles y grafos, utilicé listas ligadas para re
 Nodo que únicamente tiene los atributos `value` (valor, lo que se quiere almacenar) y `next` (nodo próximo con el cual se conecta).
 
 ### MyList
-Clase que representa la lista ligada (caso particular de árbol), es una secuencia de nodos. Luego, tiene un atributo `root` (primer nodo) y `tail` (último nodo). Cuando se utiliza el método `append(value)` cambia el nodo siguiente (`next`) del actual nodo *cola* y luego se actualiza el último nodo (`Node(value)`) en `tail`. En caso de no existir una *cabeza*, el nodo con el valor que se quiere agregar pasa a ser el `root` (y por ende, `tail`). 
+Clase que representa la lista ligada (caso particular de árbol), es una secuencia de nodos. Luego, tiene un atributo `root` (primer nodo) y `tail` (último nodo). Cuando se utiliza el método `append(value)` cambia el nodo siguiente (`next`) del actual nodo *cola* y luego se actualiza el último nodo (`Node(value)`) en `tail`. En caso de no existir una *cabeza*, el nodo con el valor que se quiere agregar pasa a ser el `root` (y por ende, adicionalmente, `tail`). 
 
 Además para esta clase se sobreescriben los métodos:
 
@@ -84,7 +85,7 @@ Clase mencionada anteriormente que alamcena toda la información contenida o que
 Las siguientes funciones permiten al usuario abrir un archivo de la extensión pedida y retorna un objeto de la clase **ArbolJugadas** para poder ver las partidas guardadas. Este árbol mediante los métodos `set_arbol_jugadas(arbol_jugadas)` y previamente `clear_arbol(arbol)` (para borrar los nodos de las jugadas en la interfaz) de **GoWindow**, es el que se ve reflejado para los jugadores de manera que puedan hacer click en los nodos y ver las jugadas pasadas.
 
 1. `sgfToTree(path)`
-Esta función instancia un objeto de la clase **InfoJuego** (que se almacena en la variable *juego*), abre el archivo y lo lee hasta encontrar el primer nodo (determinado por `";B["`). Todo lo anterior se guarda en cada atributo de *juego* y luego llama a la función `set_arbol` entregándole como parámtros un string con todo el contenido de la partida (combinación de **;B[xy]** e **;W[xy]**, junto con sus variaciones) y la variable *juego*. Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **ArbolJugadas**) y *juego*.
+Esta función instancia un objeto de la clase **InfoJuego** (que se almacena en la variable *juego*), abre el archivo y lo lee hasta encontrar el primer nodo (determinado por `";B["`). Todo lo anterior se guarda en cada atributo de *juego* y luego llama a la función `set_arbol(data, juego)` entregándole como parámetros un string con todo el contenido de la partida (combinación de **;B[xy]** e **;W[xy]**, junto con sus variaciones) y la variable *juego*. Retorna una lista (de la clase `MyList`) con el árbol (objeto de la clase **ArbolJugadas**) y *juego*.
 
 2. `set_arbol(data, juego, arbol_jugadas=None, id_split=0, number_split=0, depth=0)`
 Función recursiva que contempla inicialmente dos casos: 
@@ -107,10 +108,11 @@ Finalmente retorna el árbol de jugadas.
 Las siguientes funciones permiten al usuario guardar las jugadas en un archivo de extensión **.sgf**, dado el árbol de jugadas al momento de hacer click en el botón *Save*.
 
 1. `treeToSgf(arbol_jugadas, info, path)`
-Función que comienza el string que será escrito en el archivo en `path`. En primer lugar se agrega la información básica obtenida de `info` que es el objeto de la clase **InfoJuego** mencionado anteriormente y luego se llama a `set_file` para agregar la información del árbol al string. Finalmente cierra con un `)\n` y lo escribe en el archivo pedido.
+Función que comienza el string que será escrito en el archivo en `path`. En primer lugar se agrega la información básica obtenida de `info` que es el objeto de la clase **InfoJuego** mencionado anteriormente y luego se llama a `set_file(arbol_jugadas)` para agregar la información del árbol al string. Finalmente cierra con un `)\n` y lo escribe en el archivo pedido.
 
 2. `set_file(arbol_jugadas, ret="")`
 Función recursiva que distingue tres casos:
+
 * **Caso 0** (base): el nodo del árbol no tiene hijos, y por lo tanto, es el nodo final del árbol. Retorna el string `ret`.
 * **Caso 1**: el nodo de `arbol_jugadas` tiene únicamente un hijo, luego no hay variaciones. Se agrega `;B[xy]` o `;W[xy]` según corresponda. A `ret` se le agrega el resto del árbol, llamado recursivamente a la función, con el hijo como parámetro.
 * **Caso 2**: el nodo tiene más de un hijo, entonces por cada hijo se agrega la porción de variación (de manera recursiva) que corresponda, encerrada entre paréntesis.
