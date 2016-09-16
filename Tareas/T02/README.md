@@ -17,7 +17,7 @@ Módulo principal (**el que se debe ejecutar**) que contiene la extensión de la
 
 4. `arbol`: instancia de la clase `ArbolJugadas`, explicada más adelante, que modela el árbol de todas las jugadas (como dice el nombre :)) junto con las variaciones que existan en la partida. Queda representado en la parte derecha de la interfaz.
 
-5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo y tener una visión óptima de éste).
+5. `depth`: indica el nivel donde se está haciendo la variación. Comienza en 0 cuando no hay variaciones y corresponde a la coordenada **j** del árbol de jugadas. Además el atributo `max_depth` determina la cantidad de variaciones, lo que es útil por si se requiere hacer una variación entre dos lineas de juego (permite desplazar las ramas del árbol hacia abajo y tener una visión óptima de éste). **Obs:** si se hace click en un nodo del árbol de jugadas y únicamente si el siguiente estado difiere al que habría ocurrido se produce la variación. 
 
 6. `pass_seguidos`: permite llevar la cuenta de las veces que los jugadores han pasado. Si no pasa de manera seguida y su valor es 1 se reinicia, si pasa de manera seguida termina el juego. Una vez pasadas dos veces seguidas los jugadores debe terminar el juego, no pueden realizar otra accion hasta determinar el ganador (pero luego pueden volver a analizar las jugadas).
 
