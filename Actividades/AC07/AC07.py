@@ -26,7 +26,6 @@ class MetaOrganization(type):
             print('Organización: {0}, jefe: {1}, trabajadores: {2}'.format(self.name, self.boss, i))
 
         used_names = []
-        original_init = dic["__init__"]
 
         # def __init__(self, name):
         #     used_names.append(self.name)
