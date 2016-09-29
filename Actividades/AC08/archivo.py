@@ -57,9 +57,11 @@ class TesteoPUKE(unittest.TestCase):
     def test_CodigoVerificadorRUT(self):
         # RUT correcto
         self.assertTrue(Verificador("19246011-5"))
+        self.assertTrue(Verificador("11415548-9"))
 
         # RUT incorrecto
         self.assertFalse(Verificador("19246011-8"))
+        self.assertFalse(Verificador("9991379-8"))
 
     def test_Clave(self):
         aux = "".join(str(randint(0, 9)) for _ in range(8))
