@@ -8,7 +8,7 @@ class TesteoPUKE(unittest.TestCase):
 
     def setUp(self):
         self.mat = PrograSU("Matematicas")
-        self.len = PrograSU("Lenguaje")
+        self.leng = PrograSU("Lenguaje")
 
     def test_AlternativaCorrecta(self):
         # matematicas
@@ -47,9 +47,9 @@ class TesteoPUKE(unittest.TestCase):
 
         # lenguaje
         correctas = [x for x in ['a', 'b', 'c'] if
-                     x == self.len.questions['1']['answer']]
+                     x == self.leng.questions['1']['answer']]
         incorrectas = [x for x in ['a', 'b', 'c'] if
-                       x != self.len.questions['5']['answer']]
+                       x != self.leng.questions['5']['answer']]
 
         self.assertEqual(len(correctas), 1)
         self.assertEqual(len(incorrectas), 2)
@@ -64,18 +64,18 @@ class TesteoPUKE(unittest.TestCase):
     def test_Clave(self):
         aux = "".join(str(randint(0, 9)) for _ in range(8))
         random_rut = aux + "-{}".format(str(randint(0, 9)))
-        student = Student("", 0, random_rut, "")
-        print(student.rut)
-        digitos = student.generar_codigo()
 
-        self.assertEqual((int(aux) + digitos) % 97, 1)
+        student = Student("", 0, random_rut, "")
+        digitos = student.generar_codigo
+
+        self.assertEqual(int(aux + str(digitos)) % 97, 1)
 
     def test_CrearUsuario(self):
         fake = "Isidora"
         self.assertFalse(self.mat.register(fake))
 
         real = Student("Isidora", 20, "19246011-5", "cumbres")
-        self.assertTrue(self.len.register(real))
+        self.assertTrue(self.leng.register(real))
 
     def test_RegistroExitoso(self):
         def random_students(n):
@@ -88,8 +88,8 @@ class TesteoPUKE(unittest.TestCase):
 
         # lenguaje
         n = randint(1, 10)
-        list(map(self.len.register, random_students(n)))
-        self.assertEqual(len(self.len.students), n)
+        list(map(self.leng.register, random_students(n)))
+        self.assertEqual(len(self.leng.students), n)
 
 
 if __name__ == "__main__":

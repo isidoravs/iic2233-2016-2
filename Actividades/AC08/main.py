@@ -115,7 +115,7 @@ class Student:
     @property
     def generar_codigo(self):
         try:
-            # La Ivania dijo que lo podria modificar para testClave
+            # La Ivania dijo que lo podia modificar para testClave
             return (98 - int(self.rut[:-2]) * 100 % 97) % 97
 
         except (TypeError) as err:
