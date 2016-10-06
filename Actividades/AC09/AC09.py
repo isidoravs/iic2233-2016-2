@@ -79,7 +79,7 @@ class Simulacion:
         self.tiempo_prox_grupo = 0
         self.cola = deque()
         self.restaurant = Restaurant(nro_mesas)
-        self.grupo_mesas = list()
+        self.grupos_mesas = list()
 
         self.dinero_ganado = 0
         self.platos = {"Filete": 0, "Nino": 0, "Consome": 0, "Porotos": 0,
@@ -110,7 +110,7 @@ class Simulacion:
             else:
                 self.prox_retira_fila = None
 
-            if len(self.grupo_mesas) > 0:
+            if len(self.grupos_mesas) > 0:
                 self.prox_retira_mesa = min(self.grupos_mesas,
                                             key=lambda c: c.tiempo_espera_plato)
                 self.prox_mesa_lista = min(self.grupos_mesas,
@@ -119,11 +119,13 @@ class Simulacion:
                 self.prox_retira_mesa = None
                 self.prox_mesa_lista = None
 
-
-            self.tiempo_simulacion = min(self.tiempo_prox_grupo,
-                                         self.prox_retira_fila.tiempo_espera_mesa,
-                                         self.prox_retira_mesa.tiempo_espera_plato,
-                                         self.mesa_lista.tiempo_mesa_lista)
+            try:
+                self.tiempo_simulacion = min(self.tiempo_prox_grupo,
+                                             self.prox_retira_fila.tiempo_espera_mesa,
+                                             self.prox_retira_mesa.tiempo_espera_plato,
+                                             self.mesa_lista.tiempo_mesa_lista)
+            except (AttributeError):
+                self.tiempo_simulacion = self.tiempo_prox_grupo
 
             # llega un grupo
             if self.tiempo_simulacion == self.tiempo_prox_grupo:
