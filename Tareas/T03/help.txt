@@ -1,0 +1,37 @@
+Piecewise#f = Piecewise[funcion, intervalo; funcion, intervalo ...]$Comando que permite definir una funcion f por partes segun los intervalos dados
+Ln#Ln[x]$Comando para el calculo del logaritmo natural de un valor x
+Exp#Exp[x]$Comando para el calculo de e elevado a x
+Sin#Sin[x]$Comando para el calculo de seno de x (medido en radianes)
+Cos#Cos[x]$Comando para el calculo de coseno de x (medido en radianes)
+Tan#Tan[x]$Comando para el calculo de tangente de x (medido en radianes)
+Sec#Sec[x]$Comando para el calculo de secante de x (medido en radianes)
+Csc#Csc[x]$Comando para el calculo de cosecante de x (medido en radianes)
+ArcSin#ArcSin[x]$Comando para el calculo de arcoseno de x (medido en radianes)
+ArcCos#ArcCos[x]$Comando para el calculo de arcocoseno de x (medido en radianes)
+ArcTan#ArcTan[x]$Comando para el calculo de arcotangente de x (medido en radianes)
+Abs#Abs[x]$Comando para el calculo del valor absoluto de x (medido en radianes)
+Derivate#Derivate[f, x]$Comando que permite calcular la derivada de la funcion f con respecto a x
+Integrate#Integrate[f, {x, cota_inferior, cota_superior}]$Comando que permite calcular la integral de la funcion f con respecto a x. En caso de no existir los limites, obtiene la primitiva de la integral.
+Sum#Sum[f, {x, cota_inferior, cota_superior}]$Comando que permite calcular la sumatoria de la funcion f[x] con x entre cota_inferior y cota_superior
+Plot#Plot[x/f, parametro, cota_inferior, cota_superior, color, linewidth]$Grafico 2D de la variable/funcion entre las cotas establecidas, con color y grosor del grafico dado en parametros
+RegionPlot#RegionPlot[x/f, parametro, cota_inferior, cota_superior, color, linewidth]$Grafico de region de la variable/funcion entre las cotas establecidas, con color y grosor del grafico dado en parametros
+Plot3D#Plot3D[x/f, parametro, cota_inferior, cota_superior, color, linewidth]$Grafico 3D de la variable/funcion entre las cotas establecidas, con color y grosor del grafico dado en parametros
+MatrixMultiply#MatrixMultiply[M1, M2]$Comando para la multiplicacion de las matrices M1 y M2
+Det#Det[M]$Comando para el calculo del determinante de la matriz M
+Range#Range[M]$Comando para el calculo del rango de la matriz M
+Dim#Dim[M]$Comando para el calculo de la dimension de la matriz M
+Trans#Trans[M]$Comando para el calculo de la traspuesta de la matriz M
+Inv#Inv[M]$Comando para el calculo de la inversa de la matriz M
+ClearV#ClearV v$Comando auxiliar que permite borrar la variable v
+ClearF#ClearF f$Comando auxiliar que permite borrar la funcion f
+ClearAllV#ClearAllV$Comando auxiliar que permite borrar todas las variables
+ClearAllF#ClearAllF$Comando auxiliar que permite borrar todas las funciones
+Who#Who$Despliega las variables definidas hasta el momento
+load#load nombre_archivo$Comando que permite cargar el archivo nombre_archivo y actualizar las variables/funciones en este estado
+save#save nombre_archivo$Comando que permite guardar un archivo nombre_archivo con el estado actual
+%S#%S$Simplifica el ultimo resultado obtenido
+FullSimplify#FullSimplify[operacion/resultado]$Simplifica el resultado dado o el resultado de la operacion dada como parametro
+Solve#Solve[expr, variables, dominio]$Comando que permite la resolucion de ecuaciones con respecto a las variables dadas. El parametro dominio es opcional.
+Divisible#Divisible[a, b]$Comando que permite determinar si a es divisible por b (retorna un booleano)
+MCM#MCM[a, b, c]$Comando que permite determinar si 'a' es el minimo comun multiplo entre 'b' y 'c' (retorna un booleano)
+MCD#MCD[a, b, c]$Comando que permite determinar si 'a' es el maximo comun divisor entre 'b' y 'c' (retorna un booleano)

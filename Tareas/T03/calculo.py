@@ -3,7 +3,7 @@ from functools import reduce
 
 
 class Calculadora:
-    def __init__(self):
+    def __init__(self, maplemathica):
         self.operations = ["^", "*", "/", "//", "%", "-", "+", "[", "]", "(", ")"]
         self.pi = 3.14159265
         self.other_operations = {"Ln": self.log, "Exp": self.exp, "Abs": self.abs,
@@ -16,13 +16,22 @@ class Calculadora:
                               "RegionPlot": self.region_plot, "Plot": self.plot,
                               "Integrate": self.integrate, "Solve": self.solve,
                               "Piecewise": self.piecewise}
+        self.inverse_func = {"Ln": "Exp", "Exp": "Ln", "Abs": "Abs", "Sin": "ArcSin",
+                             "Cos": "ArcCos", "Tan": "ArcTan", "Sec": "ArcCos",
+                             "Csc": "ArcSin", "ArcSin": "Sin", "ArcCos": "Cos",
+                             "ArcTan": "Tan"}
+        self.derivations = {"Sin": "Cos[#]", "Cos": "-1*Sin[#]", "Tan": "(Sec[#])^2", "Csc": "-1*Csc[#]/Tan[#]",
+                            "Sec": "Sec[#]*Tan[#]", "ArcSin": "1/(1 - #^2)^(1/2)", "ArcCos": "-1/(1 - #^2)^(1/2)",
+                            "ArcTan": "1/(1 + #)^2", "Exp": "Exp[#]", "Ln": "1/#"}
         self.temp = None
         self.parenthesis = [1, 0, 0]  # anidaciones, open, close, index
         self.operation = None  # auxiliar
         self.error = False
+        self.show_output = True
+        self.assign_func = False
+        self.maplemathica = maplemathica
 
     def pre_calculate(self, old_command, maplemathica):
-        # faltan parentesis () RR
         commmand = old_command.replace(" ", "")
         aux = list(commmand)
         str_operations = "".join([x if x not in self.operations
@@ -38,8 +47,6 @@ class Calculadora:
             aux2 = aux1.replace("Pi", str(self.pi)).split()
         else:
             aux2 = aux1.split()
-
-        print("Aux2:", aux2)
 
         if "(" in aux2:  # cambia orden de prioridad
             parenthesis_replace = [aux2[i] if "(" not in aux2[i] else
@@ -61,6 +68,14 @@ class Calculadora:
 
             aux2 = [x if "(" not in x else x[1:] for x in no_parenthesis]
 
+        if self.assign_func:
+            if "Derivate" in aux2:
+                dfunction = self.derivate(aux2[2:-1])
+                return dfunction
+
+            else: # integrate
+                return
+
         # evalua llamados a comandos especiales
         command_replace = [aux2[i] if aux2[i] not in self.func_commands and
                                       aux2[i] not in maplemathica.function_names
@@ -70,7 +85,8 @@ class Calculadora:
 
         # chequeo su implementacion
         if None in command_replace:
-            print("ERROR - not implemented function :(")
+            if self.show_output:
+                print("ERROR - not implemented function :(")
             return
 
         # elimino lo contenido en parentesis (si paso por las funciones)
@@ -97,10 +113,11 @@ class Calculadora:
             return self.calculate([str(n) for n in operation])
         elif self.error:
             return
+        elif not self.show_output:
+            return
         else:
             print("ERROR - variable not found")
             return
-        # falta con self.other_operations RR
 
     def calculate(self, old_operation):  # lista
         # arregla negativos
@@ -399,7 +416,7 @@ class Calculadora:
 
         return str(result)
 
-    def summatory(self, instruction):  # una variable RR
+    def summatory(self, instruction):
         param = "".join(instruction).split(",")
         function = param[0]
         variable = param[1][1:]  # saco parentesis
@@ -413,13 +430,82 @@ class Calculadora:
 
     def math_replace(self, string, variable, i):
         numeric = string.replace(variable, str(i))
-        # tal vez con pre_calculate se reemplazan variables RR
         return self.calculate(numeric)
 
     def simplify(self, param):
         pass
 
     def derivate(self, param):
+        parameters = " ".join(param).split(",")
+        variables = parameters[1:]
+        if "[" in parameters[0]:
+            aux = parameters[0][parameters[0].index("[") + 1:parameters[0].index("]")]
+
+        function = parameters[0].strip().split()  # lista
+
+        function_names = [key[0] for key in self.maplemathica.functions]
+
+        if function[0] in function_names:
+            found = [item for item in self.maplemathica.functions.items()
+                     if item[0][0] == function[0]]
+            check = found[0][1]
+
+            commmand = check.replace(" ", "")
+            aux0 = list(commmand)
+            str_operations = "".join([x if x not in self.operations
+                                      else " {} ".format(str(x))
+                                      for x in aux0])
+
+            if "/  /" in str_operations:
+                aux1 = str_operations.replace("/  /", "//")
+            else:
+                aux1 = str_operations
+
+            if "Pi" in str_operations:
+                aux2 = aux1.replace("Pi", str(self.pi)).split()
+            else:
+                aux2 = aux1.split()
+
+            function = aux2
+
+        # RR ampliar
+        if function[0] in self.derivations:
+            if aux.strip() == variables[0]:
+                dfunction = self.derivations[function[0]].replace("#", aux.strip())
+            else:  # regla de la cadena
+                dfunction = self.derivations[function[0]].replace("#", aux.strip()) \
+                            + "*" + self.derivate([aux.strip(), ",{}".format(variables[0])])
+            return dfunction
+
+        else:  # polinomio
+            if variables[0] not in function:  # constante
+                return "0"
+
+            to_solve = "".join(x if x != "-" else "+-"
+                               for x in function).replace(" ", "").split("+")
+
+            # diccionario grado: coef
+            grado = {self.set_grado(term, variables[0]): self.set_coef(term, variables[0])
+                     for term in to_solve}
+
+            if "0" not in grado.keys():
+                grado["0"] = "0"
+
+            derivada = {str(int(key)-1):str(int(grado[key])*int(key))
+                        for key in grado}
+
+            polinomio = ["{}*x^{}".format(derivada[key], key)
+                         for key in derivada if int(key) > 1]
+
+            if "1" in derivada.keys():
+                polinomio.append("{}*x".format(derivada["1"]))
+
+            if "0" in derivada.keys():
+                polinomio.append(derivada["0"])
+
+            return "+".join(polinomio)
+
+    def integrate(self, param):
         pass
 
     def plot3D(self, param):
@@ -431,11 +517,109 @@ class Calculadora:
     def plot(self, param):
         pass
 
-    def integrate(self, param):
-        pass
-
     def solve(self, param):
-        pass
+        parameters = " ".join(param).split(",")
+        equation = parameters[0].split("==")
+
+        # revisar trigonometrica, exp, log
+        if equation[0].split()[0] in self.other_operations.keys():
+            variable = parameters[1][1:-1].split(",")
+            self.solve_other(equation, variable)
+            return
+
+        # despeje
+        if equation[1] != "0":
+            equation[0] += "-{}".format(self.calculate(equation[1].split()))  # RR no se si resuelve
+            equation[1] = "0"
+
+        to_solve = "".join(x if x != "-" else "+-"
+                           for x in equation[0]).replace(" ","").split("+")
+        variable = parameters[1][1:-1].split(",")  # lista var sin parentesis
+
+        # diccionario grado: coef
+        grado = {self.set_grado(term, variable[0]):self.set_coef(term, variable[0])
+                 for term in to_solve}
+
+        if "0" not in grado.keys():
+            grado["0"] = "0"
+
+        maximo = max(grado.items(), key=lambda x: x[0])
+        an = abs(int(maximo[1]))  # coeficiente de la variables de mayor grado
+        a0 = abs(int(grado["0"]))  # ver si necesita calculate R
+
+        # print("a0 y an:", a0, an)
+
+        # por el Teorema de raiz racional: factores
+        p = [x for x in range(1, a0+1) if a0 % x == 0]
+        q = [x for x in range(1, an+1) if an % x == 0]
+
+        # print("p y q:",p,q)
+
+        candidates = [p[i] / q[j] for i in range(len(p)) for j in range(len(q))]
+        negative_candidates = [-1 * c for c in candidates]
+        possibles = candidates + negative_candidates
+
+        print("possible solutions:", possibles)
+        if len(possibles) == 0:
+            print("x = 0")
+
+        # corrobora resultado
+        checking = [(n, self.check_solve(parameters[0].replace(variable[0], str(n))))
+                    for n in candidates]
+
+        solutions = []
+        list(solutions.append(x[0]) for x in checking
+             if x[1] and x[0] not in solutions)
+
+        to_print = ["{} = {}".format(variable[0], sol) for sol in solutions]
+        if len(to_print) == 0 and a0 != 0:
+            print("no rational solutions for equation")
+        else:
+            print(*to_print, sep="\n")
+
+        return
+
+    def solve_other(self, equation, variable):
+        aux = equation[0].replace(" ", "")
+        command = equation[0].split()[0]
+        start = aux.index("[")
+        end = aux.index("]")
+
+        new_eq = [aux[start + 1:end], "{}[{}]".format(self.inverse_func[command],
+                                                      equation[1].replace(" ", ""))]
+
+        print("{} = {}".format(new_eq[0], self.pre_calculate(new_eq[1], self.maplemathica)))
+        return
+
+    def check_solve(self, equation):
+
+        compare = equation.replace(" ", "").split("==")
+        result = [self.pre_calculate(x, self.maplemathica)
+                  for x in compare]
+        return result[0] == result[1]  # booleano
+
+    def set_grado(self, term, variable):
+        if variable in term:
+            if "^" in term:
+                return term[term.index("^") + 1]
+            else:
+                return "1"
+        else:
+            return "0"
+
+    def set_coef(self, term, variable):
+        if variable in term:
+            if "*" in term:
+                return term[:term.index("*")]
+            else:
+                return "1"
+        else:  # a0
+            if "." in term:
+                return float(term)
+            elif term.isdigit():
+                return int(term)
+            else:
+                return self.pre_calculate(term, self.maplemathica)
 
     def piecewise(self, param):
         pass
@@ -470,5 +654,4 @@ class Calculadora:
 
 
 if __name__ == "__main__":
-    calculadora = Calculadora()
-    print(calculadora.calculate(["1", "+", "3!"]))
+    print("Module being run directly")

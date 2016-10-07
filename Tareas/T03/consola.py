@@ -6,6 +6,8 @@ from sys import exit
 class Menu:
     def __init__(self, maplemathica):
         self.maplemathica = maplemathica
+        self.help = None
+        self.set_help()
         self.consulta()
 
     def run(self):
@@ -17,7 +19,16 @@ class Menu:
 
         while True:
             eleccion = input("> ")
-            if "load" in eleccion:
+            if "?" in eleccion:
+                command = eleccion[:eleccion.index("?")]
+                if command in self.help:
+                    resume = self.help[command].split("$")
+                    print("{}\n{}".format(resume[0], resume[1]))
+
+                else:
+                    print("{} is not a valid command".format(command))
+
+            elif "load" in eleccion:
                 path = eleccion.replace("load", "").replace(" ", "").replace(
                     ";","")
                 self.load(path)
@@ -116,6 +127,12 @@ class Menu:
             file.writelines("{}\n".format(r) for r in result if r is not None)
 
         return
+
+    def set_help(self):
+        help = open("help.txt", "r")
+        lines_help = [line.split("#") for line in help.readlines()]
+        self.help = {x[0]:x[1] for x in lines_help}
+        help.close()
 
 if __name__ == "__main__":
     maplemathica = Maplemathica()
