@@ -25,7 +25,9 @@ class Maplemathica:  # almacena las variables y funciones de cada estado
                 self.calculadora.assign_func = False
 
             if "Integrate" in clean[1]:
-                pass
+                self.calculadora.assign_func = True
+                clean[1] = self.calculadora.pre_calculate(clean[1], self)
+                self.calculadora.assign_func = False
 
             name = clean[0][:clean[0].index("[")]
             num_variable = [i for i, x in enumerate(clean[0]) if x == "_"]

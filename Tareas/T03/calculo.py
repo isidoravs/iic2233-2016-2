@@ -20,6 +20,12 @@ class Calculadora:
                              "Cos": "ArcCos", "Tan": "ArcTan", "Sec": "ArcCos",
                              "Csc": "ArcSin", "ArcSin": "Sin", "ArcCos": "Cos",
                              "ArcTan": "Tan"}
+        self.integrates = {"Sin": "-1*Cos[#]", "Cos": "Sin[#]",
+                           "Tan": "-Ln[Cos[#]]", "Exp": "Exp[#]",
+                           "Ln": "#*Ln[#]-#", "Csc": "", "Sec":"",
+                           "ArcSin": "1/(1 - #^2)^(1/2)",
+                           "ArcCos": "-1/(1 - #^2)^(1/2)",
+                           "ArcTan": "1/(1 + x^2)"}
         self.derivations = {"Sin": "Cos[#]", "Cos": "-1*Sin[#]", "Tan": "(Sec[#])^2", "Csc": "-1*Csc[#]/Tan[#]",
                             "Sec": "Sec[#]*Tan[#]", "ArcSin": "1/(1 - #^2)^(1/2)", "ArcCos": "-1/(1 - #^2)^(1/2)",
                             "ArcTan": "1/(1 + #)^2", "Exp": "Exp[#]", "Ln": "1/#"}
@@ -74,7 +80,8 @@ class Calculadora:
                 return dfunction
 
             else: # integrate
-                return
+                intfunction = self.integrate(aux2[2:-1])
+                return intfunction
 
         # evalua llamados a comandos especiales
         command_replace = [aux2[i] if aux2[i] not in self.func_commands and
@@ -192,7 +199,7 @@ class Calculadora:
         if "." in param1:  # float
             p1 = float(param1)
         else:  # int
-            p1 = int(param1)  # falta cuando es variable RR
+            p1 = int(param1)
 
         if "." in param2:
             p2 = float(param2)
@@ -468,7 +475,6 @@ class Calculadora:
 
             function = aux2
 
-        # RR ampliar
         if function[0] in self.derivations:
             if aux.strip() == variables[0]:
                 dfunction = self.derivations[function[0]].replace("#", aux.strip())
@@ -506,7 +512,77 @@ class Calculadora:
             return "+".join(polinomio)
 
     def integrate(self, param):
-        pass
+        parameters = " ".join(param).split(",")
+        variables = [v[1:] for v in parameters[1:]]
+
+        if "}" in variables[0]:
+            var = variables[0].replace("}", "")
+        else:
+            var = variables[0]
+
+        if "[" in parameters[0]:
+            aux = parameters[0][parameters[0].index("[")
+                                + 1:parameters[0].index("]")]
+
+        function = parameters[0].strip().split()  # lista
+
+        function_names = [key[0] for key in self.maplemathica.functions]
+
+        if function[0] in function_names:
+            found = [item for item in self.maplemathica.functions.items()
+                     if item[0][0] == function[0]]
+            check = found[0][1]
+
+            commmand = check.replace(" ", "")
+            aux0 = list(commmand)
+            str_operations = "".join([x if x not in self.operations
+                                      else " {} ".format(str(x))
+                                      for x in aux0])
+
+            if "/  /" in str_operations:
+                aux1 = str_operations.replace("/  /", "//")
+            else:
+                aux1 = str_operations
+
+            if "Pi" in str_operations:
+                aux2 = aux1.replace("Pi", str(self.pi)).split()
+            else:
+                aux2 = aux1.split()
+
+            function = aux2
+
+        if function[0] in self.integrates:
+            if aux.strip() == var:
+                intfunction = self.integrates[function[0]].replace("#", aux.strip())
+            else:  # regla de la cadena
+                intfunction = self.integrates[function[0]].replace("#", aux.strip()) + \
+                              "/" + self.derivate([aux.strip(), ",{}".format(var)])
+            return intfunction
+
+        else:  # polinomio
+            if var not in function:  # constante
+                return "0"
+
+            to_solve = "".join(x if x != "-" else "+-"
+                               for x in function).replace(" ", "").split("+")
+
+            # diccionario grado: coef
+            grado = {self.set_grado(term, var): self.set_coef(term, var)
+                     for term in to_solve}
+
+            integral = {str(int(key)+1):str(int(grado[key])/(int(key) + 1))
+                        for key in grado}
+
+            polinomio = ["{}*x^{}".format(integral[key], key)
+                         for key in integral if int(key) > 1]
+
+            if "1" in integral.keys():
+                polinomio.append("{}*x".format(integral["1"]))
+
+            if "0" in integral.keys():
+                polinomio.append(integral["0"])
+
+            return "+".join(polinomio)
 
     def plot3D(self, param):
         pass
@@ -529,7 +605,7 @@ class Calculadora:
 
         # despeje
         if equation[1] != "0":
-            equation[0] += "-{}".format(self.calculate(equation[1].split()))  # RR no se si resuelve
+            equation[0] += "-{}".format(self.calculate(equation[1].split()))
             equation[1] = "0"
 
         to_solve = "".join(x if x != "-" else "+-"
