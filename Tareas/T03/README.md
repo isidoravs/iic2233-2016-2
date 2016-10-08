@@ -110,6 +110,6 @@ Algunos comentarios sobre las funciones de este tipo:
 
 > Y este es el intérprete Maplemáthica! Espero que sea de gran utilidad.
 
-![alt text](https://media.giphy.com/media/NGRNY6VLMAgqQ/giphy.gif "Like a Bob")
+![alt text](http://imgur.com/pLoo64E "Like a Bob")
 Se despide,
 Isidora Vizcaya.
