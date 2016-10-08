@@ -99,17 +99,30 @@ Los siguientes métodos se basan en las series e identidades dadas en el item 5.
 
 Algunos comentarios sobre las funciones de este tipo:
 
-* holan
+1. `abs`: permite el cálculo del valor absoluto de un número. Incluso del tipo "Abs[1 - Abs[-3]]"
+2. `summatory`: permite hacer la suma de expresiones del tipo "a\*x^n + ... + n" con respecto a la variable y el intervalo dado. No permite las sumas con variables no definidas o intervalos no dados.
+3. `derivate`: permite derivar expresiones trigonométricas, logaritmo y exponencial además de polinomios. Se almacena el resultado siempre en una función que luego es posible evaluar. Toma en cuanta la regla de la cadena para expresiones del tipo "Sin[2\*x^2 + 3\*x]", por ejemplo.
+4. `integrate`: permite integrar expresiones trigonométricas, logaritmo y exponencial además de polinomios. Se almacena la primitiva siempre en una función. *Obs:* No evalúa según el intervalo dado ni calcula integrales multiples. Considera regla de la cadena para expresiones del tipo "Tan[2\*x]", por ejemplo.
+5. `solve`: permite resolver ecuaciones. Utilizando el Teorema de la Raíz Racional otorga las posibles soluciones y luego las evalúa para desplegar en consola las raíces (racionales) correspondientes. *Obs:* no toma en cuenta el dominio dado.
+6. `plot`: permite graficar en 2D las funciones trigonométricas de la varible dada, en los intervalos y con el color/linewidth correspondiente.
+
+* para derivar e integrar polinomios se ultizaron los métodos `set_grado` y `set_coef` que permiten representar los polinomios como un diccionario en base a los coeficientes asociados a las variables del polinomio.
+
+*Obs:* simplify, plot3D, region_plot y piecewise no implementados.
 
 #
 ![alt text](https://media.giphy.com/media/9JjnmOwXxOmLC/giphy.gif "Algo más?")
 
 **Algunas observaciones:**
 
+* En general, se redondean los resultados de las divisiones al quinto decimal.
+
 
 
 > Y este es el intérprete Maplemáthica! Espero que sea de gran utilidad.
 
 ![alt text](https://media.giphy.com/media/k1bSa7EHfYHh6/giphy.gif "Like a Bob")
+
 Se despide,
+
 Isidora Vizcaya.
