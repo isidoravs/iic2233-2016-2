@@ -103,7 +103,7 @@ Algunos comentarios sobre las funciones de este tipo:
 2. `summatory`: permite hacer la suma de expresiones del tipo "a\*x^n + ... + n" con respecto a la variable y el intervalo dado. No permite las sumas con variables no definidas o intervalos no dados.
 3. `derivate`: permite derivar expresiones trigonométricas, logaritmo y exponencial además de polinomios. Se almacena el resultado siempre en una función que luego es posible evaluar. Toma en cuanta la regla de la cadena para expresiones del tipo "Sin[2\*x^2 + 3\*x]", por ejemplo.
 4. `integrate`: permite integrar expresiones trigonométricas, logaritmo y exponencial además de polinomios. Se almacena la primitiva siempre en una función. *Obs:* No evalúa según el intervalo dado ni calcula integrales multiples. Considera regla de la cadena para expresiones del tipo "Tan[2\*x]", por ejemplo.
-5. `solve`: permite resolver ecuaciones. Utilizando el Teorema de la Raíz Racional otorga las posibles soluciones y luego las evalúa para desplegar en consola las raíces (racionales) correspondientes. *Obs:* no toma en cuenta el dominio dado.
+5. `solve`: permite resolver ecuaciones. Utilizando el Teorema de la Raíz Racional otorga las posibles soluciones y luego las evalúa para desplegar en consola las raíces (racionales) correspondientes. *Obs:* no toma en cuenta el dominio dado y grados deben ser integers.
 6. `plot`: permite graficar en 2D las funciones trigonométricas de la varible dada, en los intervalos y con el color/linewidth correspondiente.
 
 * para derivar e integrar polinomios se ultizaron los métodos `set_grado` y `set_coef` que permiten representar los polinomios como un diccionario en base a los coeficientes asociados a las variables del polinomio.
@@ -116,8 +116,12 @@ Algunos comentarios sobre las funciones de este tipo:
 **Algunas observaciones:**
 
 * En general, se redondean los resultados de las divisiones al quinto decimal.
-
-
+* Si el archivo existe cuando se quiere guardar un estado, se reemplaza.
+* Asumo que el usuario no va a ingresar errores de sintaxis distintos a los planteados en el item 7 del enunciado (están todos esos controlados)
+* Si se vuelve a definir una variable con otro valor, se sobreescribe (al igual que ocurre cuando se carga un estado). Si se define una función con un nombre de una función ya definida, se sobreescribe (sin importar la cantidad de variabes).
+* Al leer *consultas.txt* no se van eliminando las variables/funciones, sólo sobreescriben las correspondientes. (Si se eliminan el terminar *resultados.txt*)
+* Si una la lectura de *consultas.txt* falla, comentar línea 11 de `consola.py` para continuar con el intérprete.
+* Permite guardar variables del tipo "a = f[1,2]; 
 
 > Y este es el intérprete Maplemáthica! Espero que sea de gran utilidad.
 
