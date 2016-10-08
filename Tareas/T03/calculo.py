@@ -1,5 +1,7 @@
 # se utiliza para calcular
 from functools import reduce
+import numpy as np
+from matplotlib import pyplot as plt
 
 
 class Calculadora:
@@ -94,6 +96,9 @@ class Calculadora:
         if None in command_replace:
             if self.show_output:
                 print("ERROR - not implemented function :(")
+            return
+
+        if "plot" in command_replace:
             return
 
         # elimino lo contenido en parentesis (si paso por las funciones)
@@ -211,13 +216,13 @@ class Calculadora:
 
         try:
             if op == "/":
-                return str(p1 / p2)
+                return str(round(p1 / p2, 5))
 
             if op == "//":
-                return str(p1 // p2)
+                return str(round(p1 // p2, 5))
 
             if op == "%":
-                return str(p1 % p2)
+                return str(round(p1 % p2, 5))
 
         except (ZeroDivisionError) as err:
             self.error = True
@@ -570,7 +575,7 @@ class Calculadora:
             grado = {self.set_grado(term, var): self.set_coef(term, var)
                      for term in to_solve}
 
-            integral = {str(int(key)+1):str(int(grado[key])/(int(key) + 1))
+            integral = {str(int(key)+1):str(round(int(grado[key])/(int(key) + 1), 5))
                         for key in grado}
 
             polinomio = ["{}*x^{}".format(integral[key], key)
@@ -591,7 +596,48 @@ class Calculadora:
         pass
 
     def plot(self, param):
-        pass
+        # no alcance a terminar :(
+        parameters = "".join(param).replace(" ", "").split(",")
+        function = parameters[0]
+        linewidth = parameters[-1]
+        color = parameters[-2]
+        cota_sup = int(parameters[-3])
+        cota_inf = int(parameters[-4])
+        parameter = parameters[-5]
+
+        if "Sin" in function:
+            x = np.linspace(cota_inf, cota_sup, 500)
+            plt.plot(x, np.sin(x), color, linewidth=linewidth)
+            plt.show()
+
+        elif "Cos" in function:
+            x = np.linspace(cota_inf, cota_sup, 500)
+            plt.plot(x, np.cos(x), color, linewidth=linewidth)
+            plt.show()
+
+        elif "Tan" in function:
+            x = np.linspace(cota_inf, cota_sup, 500)
+            plt.plot(x, np.tan(x), color, linewidth=linewidth)
+            plt.show()
+
+        elif "ArcSin" in function:
+            x = np.linspace(cota_inf, cota_sup, 500)
+            plt.plot(x, np.asin(x), color, linewidth=linewidth)
+            plt.show()
+
+        elif "ArcCos" in function:
+            x = np.linspace(cota_inf, cota_sup, 500)
+            plt.plot(x, np.acos(x), color, linewidth=linewidth)
+            plt.show()
+
+        elif "ArcTan" in function:
+            x = np.linspace(cota_inf, cota_sup, 500)
+            plt.plot(x, np.atan(x), color, linewidth=linewidth)
+            plt.show()
+
+        else:
+            print("not able to plot {}".format(function))
+        return "plot"
 
     def solve(self, param):
         parameters = " ".join(param).split(",")
@@ -692,7 +738,7 @@ class Calculadora:
         else:  # a0
             if "." in term:
                 return float(term)
-            elif term.isdigit():
+            elif term.isdigit() or "-" in term:
                 return int(term)
             else:
                 return self.pre_calculate(term, self.maplemathica)
