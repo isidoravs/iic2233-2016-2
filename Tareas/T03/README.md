@@ -39,11 +39,24 @@ El método principal `get_command` distingue entre estas opciones principales:
 7. `len([x for x in self.consultas if x in command]) > 0`: determina si hay una consulta booleana y llama a los métodos **MCM**, **MCD** o **isdivisible** según corresponda.
 8. `else`: funciona como **calculadora**, retorna el resultado al cálculo pedido por el usuario.
 
-
 ```
 calculo.py
 ```
-Módulo que se encarga de toda la matemática detrás del programa. Busca facilitar la vida de los usuarios para que eviten pasar por esta frustración:
-![alt text](https://media.giphy.com/media/a8749TBnyEIY8/giphy.gif "MAPLEMATHICA")
+Módulo que se encarga de toda la matemática detrás del programa. Busca facilitar la vida de los usuarios que sufren día a día con cálculos demasiado difíciles para hacer a mano, de manera que puedan evitar esta frustración:
+
+![alt text](https://media.giphy.com/media/PW24kUmUv3vlm/giphy.gif "Casi como mi frustracion haciendo esta tarea...")
+
+Para su correcto funcionamiento importa **reduce** de la librería *functools*, **numpy** (sólo para gráficos) y **pyplot** de la librería *matplotlib*.
+
+> **Atributos más relevantes:**
+
+1. `operations`: lista con las operaciones básicas, según su prioridad en el cálculo. Permiten hacer las operaciones del tipo "2 + 3^2 - 6%2".
+2. `other_operations`: diccionario con operaciones del tipo trigonométricas, logaritmo y exponencial, se calculan antes que las básicas.
+3. `func_commands`: diccionario con los comandos de Maplemathica, permiten llamar a los métodos correspondientes cuando se analizan ls partes del comando ingresado por el usuario.
+4. `inverse_func`: diccionario del tipo *funcion: inversa*. Útil para el comando `Solve` al calcular operaciones del tipo "Cos[x] == 0".
+5. `integrate` y `derivate`: diccionarios con las integrales / derivadas de operaciones trigonométricas, logaritmo y exponencial.
+
+> **Métodos más relevantes:**:
+
 
 
