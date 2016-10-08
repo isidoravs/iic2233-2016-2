@@ -21,5 +21,29 @@ El primer lugar, se distinguen 5 opciones cuando se ingresa un comando:
 falta *;* a la instrucción y luego de calcular, despliega los resultados en la consola o los escribe en *resultados.txt* de estar leyendo el 
 archivo de consultas.
 
+```
+interprete.py
+```
+![alt text](https://media.giphy.com/media/AXorq76Tg3Vte/giphy.gif "MAPLEMATHICA")
+
+Este módulo permite la determinar que busca el usuario con el comando ingresado. Almacena las **variables** y **funciones** en diccionaros como atributos de la clase.
+
+El método principal `get_command` distingue entre estas opciones principales:
+
+1. `"_]" in command`: define una función. En caso de ser una integral o derivada, la calcula en función de la variable y alamcena en el diccionario de funciones correspondiente.
+2. `"[[" in command`: define una matriz. La parsea y almacena en el diccionario de variables (reemplaza las variables en caso de no ser todas sus entradas numéricas).
+3. `True in [key in command for key in self.consultas_matriz]`: determina si se pide calcular alguna caracterísitica de las matrices y la asigna a su función correspondiente (*Obs:* Det, Range e Inv no implementados).
+4. `"Who" in command`: despliega las variables con el método `show_variables`.
+5. `"Clear" in command`: determina si se borra una variable/función específica o todas.
+6. `"=" in command`: principalmente distingue entre operadores booleanos (que retornan *True* o *False* a la comparación del usuario) y definición de variables (para calcular su valor y almacenar en el diccionario correspondiente).
+7. `len([x for x in self.consultas if x in command]) > 0`: determina si hay una consulta booleana y llama a los métodos **MCM**, **MCD** o **isdivisible** según corresponda.
+8. `else`: funciona como **calculadora**, retorna el resultado al cálculo pedido por el usuario.
+
+
+```
+calculo.py
+```
+Módulo que se encarga de toda la matemática detrás del programa. Busca facilitar la vida de los usuarios para que eviten pasar por esta frustración:
+![alt text](https://media.giphy.com/media/a8749TBnyEIY8/giphy.gif "MAPLEMATHICA")
 
 
