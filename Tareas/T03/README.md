@@ -78,8 +78,38 @@ Se encarga de:
 De haber pasado el filtro de este método, se pasa a calcular lo pedido (en base a las operaciones en `operations` y `other_operations`) con el método `calculate`.
 
 ### calculate(self, old_operation)
+Se encarga de:
+
+* calcular factoriales
+* calcular las operaciones en `other_operations` y luego las de `operations` con el método `all_operations`
+* maneja error del tipo ZeroDivisionError
+* retorna el resultado final (como float o int)
+
+### Apartado matemático
+
+Los siguientes métodos se basan en las series e identidades dadas en el item 5.1 y 5.2 del enunciado:
+
+* log
+* exp
+* sin, cos, tan
+* sec, csc
+* arcsin, arccos, arctan
+
+### `func_commands`
+
+Algunos comentarios sobre las funciones de este tipo:
+
+* holan
+
+#
+![alt text](https://media.giphy.com/media/9JjnmOwXxOmLC/giphy.gif "Algo más?")
+
+**Algunas observaciones:**
 
 
 
+> Y este es el intérprete Maplemáthica! Espero que sea de gran utilidad.
 
-
+![alt text](https://media.giphy.com/media/NGRNY6VLMAgqQ/giphy.gif "Like a Bob")
+Se despide,
+Isidora Vizcaya.
