@@ -51,12 +51,35 @@ Para su correcto funcionamiento importa **reduce** de la librería *functools*, 
 > **Atributos más relevantes:**
 
 1. `operations`: lista con las operaciones básicas, según su prioridad en el cálculo. Permiten hacer las operaciones del tipo "2 + 3^2 - 6%2".
-2. `other_operations`: diccionario con operaciones del tipo trigonométricas, logaritmo y exponencial, se calculan antes que las básicas.
+2. `other_operations`: diccionario con operaciones del tipo trigonométricas, logaritmo y exponencial, se calculan antes que las básicas. Permiten hacer el llamado a los métodos correspondientes para su cálculo en esta clase.
 3. `func_commands`: diccionario con los comandos de Maplemathica, permiten llamar a los métodos correspondientes cuando se analizan ls partes del comando ingresado por el usuario.
 4. `inverse_func`: diccionario del tipo *funcion: inversa*. Útil para el comando `Solve` al calcular operaciones del tipo "Cos[x] == 0".
 5. `integrate` y `derivate`: diccionarios con las integrales / derivadas de operaciones trigonométricas, logaritmo y exponencial.
 
+> **Otros atributos:**
+
+1. `error`: permite controlar el output a imprimir cuando se produjo un error en el cálculo del comando.
+2. `show_output`: permite controlar el display en consola cuando se está escribiendo en el archivo *respuestas.txt*
+3. `assign_func`: permite asignar lo obtenido de integrar y derivar a funciones, de manera que no se siga calculando.
+
 > **Métodos más relevantes:**:
+
+En general, Maplemathica se basa en dos métodos:
+
+### pre_calculate(self, old_command, mathematica)
+Se encarga de:
+
+* limpiar el comando para su lectura
+* hacer los cambios de variables (y del valor Pi) mediante el método `eval_variables`
+* dar prioridad a los cáculos entre paréntesis
+* determinar errores de llamado a variables no existentes
+* evaluar lo obtenido de las funciones en `func_commands`
+
+De haber pasado el filtro de este método, se pasa a calcular lo pedido (en base a las operaciones en `operations` y `other_operations`) con el método `calculate`.
+
+### calculate(self, old_operation)
+
+
 
 
 
