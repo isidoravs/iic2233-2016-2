@@ -1,0 +1,25 @@
+# Tarea 3
+![alt text](http://67.media.tumblr.com/30835bf9e8d809a6f944a921a80a650c/tumblr_inline_o0eoxv67QK1tbe472_500.gif "MAPLEMATHICA")
+> Bienvenido a este nuevo (y completamente original) intérprete interactivo: Maplemathica!
+> Para lograrlo, las distintas clases y sus métodos, además de otras funciones, se dividen en **3** módulos:
+
+```
+consola.py
+```
+Módulo principal (**el que se debe ejecutar**) que contiene las clase **Menu** que controla la interacción con el usuario con el método `run`.
+Antes de pedir los comandos al usuario, Maplemathica carga las concultas de *consultas.txt* y escribe las respuestas en *resultados.txt* 
+(con los métodos `consulta` y `decide_action`).
+Luego borra las variables y funciones definidas en los estados del archivo de consultas para que el usuario comience con sus comandos desde cero.
+
+El primer lugar, se distinguen 5 opciones cuando se ingresa un comando:
+
+1. `"?" in comando`: entrega una descripción del comando dado, en base a lo guardado en el archivo *help.txt*.
+2. `"load" in comando`: permite cargar un estado guardado en los archivos (de la carpeta *archivos*).
+3. `"save" in comando`: permite guardar el estado actual en un .txt en la carpeta archivos.
+4. `"exit" in comando`: permite salir del programa.
+5. `else`: el usuario ha ingresado un comando para calculo o definición de variables/funciones. El método `opcion_consulta` determina si hace
+falta *;* a la instrucción y luego de calcular, despliega los resultados en la consola o los escribe en *resultados.txt* de estar leyendo el 
+archivo de consultas.
+
+
+
