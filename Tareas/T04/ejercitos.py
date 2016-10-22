@@ -4,7 +4,7 @@ from gui.kinds.skull import Skull
 from gui.kinds.orc import Orc
 from unidades import Warrior, Archer, Pet
 from otras_unidades import Villager, Hero
-from random import expovariate
+from random import expovariate, randint
 
 
 class Ejercito:
@@ -20,11 +20,19 @@ class Ejercito:
         self.deaths = {'warrior': 0, 'archer': 0, 'pet': 0}  # numero
         self.buildings_data = {'tower': 0, 'barracks': 0}
         self.gold_spent = {'villager': 0, 'pet': 0, 'warrior': 0, 'archer': 0}
-        self.powers_used = dict()  # {nombre: efectividad}
+        self.god_power = {'name': start_info['power'], 'uses': 0,
+                          'effectiveness': []}
+        self.gold_extraction = [0]
+        self.tasa_creacion = [0]
+        self.tasa_muerte = [0]
 
         # informacion
         self._gold = 800
 
+        # atacado por poder
+        self.suffer_power = None
+        self.last_deaths = list()
+        self.to_revive = list()
         self.max_units = self.set_max_units()
 
         # unidades (vivas)
@@ -101,7 +109,6 @@ class Ejercito:
             return self.warriors + self.archers + self.pets
         return self.warriors + self.archers + self.pets + [self.hero]
 
-
     def first_villagers(self):
         # primeros 5 aldeanos
         for i in range(5):
@@ -150,16 +157,20 @@ class Ejercito:
 
     def creation_cicle(self):  # llamado al pasar un segundo
         if not self.all_buildings:  # edificacion destruida
-            return
+            return None, None
 
         if len(self.villagers) < 6:  # pausa en caso de haber menos aldeanos
             self.aux_clock += 1
             if self.aux_clock == 5:
+                if self.gold < 10:
+                    self.aux_clock -= 1
+                    return None, None  # no agrega si no tiene plata
+
                 self.aux_clock = 0
                 to_add = self.new_unit('villager')
                 self.villagers.append(to_add)
-                return to_add.unit
-            return
+                return to_add.unit, None
+            return None, None
 
         if not self.cicle_pause:
             self.next_clock[0] += 1  # aumenta solo si no hay pausa
@@ -173,7 +184,7 @@ class Ejercito:
                     # crea nueva unidad
                     to_add = self.new_unit(unit)
                     self.warriors.append(to_add)
-                    return to_add.unit
+                    return to_add.unit, "guerreros"
 
                 else:
                     self.cicle_pause = True
@@ -184,7 +195,7 @@ class Ejercito:
                     self.next_time()
                     to_add = self.new_unit(unit)
                     self.archers.append(to_add)
-                    return to_add.unit
+                    return to_add.unit, None
 
                 else:
                     self.cicle_pause = True
@@ -195,10 +206,11 @@ class Ejercito:
                     self.next_time()
                     to_add = self.new_unit(unit)
                     self.pets.append(to_add)
-                    return to_add.unit
+                    return to_add.unit, "mascotas"
 
                 else:
                     self.cicle_pause = True
+        return None, None
 
     def hero_arrival(self):
         self.time_for_hero += 1
@@ -218,6 +230,8 @@ class Ejercito:
         return
 
     def new_unit(self, unit_type):
+        self.tasa_creacion[-1] += 1
+
         if unit_type == "warrior":
             self.gold -= 20
             warrior = Warrior()
@@ -270,7 +284,12 @@ class Ejercito:
             hero.add_hero(self.race, int(aux[1]), int(aux[2]))
             return hero
 
-    def count_troops(self):  # poco eficiente RR
+    def count_troops(self):
+        if self.suffer_power == "berserker":  # no mueren
+            for unit in self.war_units:
+                unit.unit.health = 1  # sin importar que lo hayan herido
+            return []
+
         deaths = []
         for villager in self.villagers:
             if villager.health <= 0:
@@ -280,12 +299,14 @@ class Ejercito:
         for warrior in self.warriors:
             if warrior.health <= 0:
                 self.warriors.remove(warrior)
+                self.new_death(warrior, 'warrior')
                 self.deaths['warrior'] += 1
                 deaths.append((warrior.unit, 'guerreros'))  # para objetivo
 
         for archer in self.archers:
             if archer.health <= 0:
                 self.archers.remove(archer)
+                self.new_death(archer, 'archer')
                 self.deaths['archer'] += 1
                 deaths.append((archer.unit, 'arqueros'))
 
@@ -296,6 +317,7 @@ class Ejercito:
                     if len(self.hero.pets) == 0:
                         self.hero.aux_clock = 0  # comienza contador
                 self.pets.remove(pet)
+                self.new_death(pet, 'pet')
                 self.deaths['pet'] += 1
                 deaths.append((pet.unit, 'mascotas'))
 
@@ -307,7 +329,8 @@ class Ejercito:
 
                 if self.race == "Orc":  # mueren tambien mascotas
                     for pet in self.hero.pets:
-                        self.pets.remove(pet)
+                        if pet in self.pets:
+                            self.pets.remove(pet)
                         deaths.append((pet.unit, 'mascotas'))
 
                 if self.race == "Skull" and self.hero_lives < 3:
@@ -318,7 +341,87 @@ class Ejercito:
                         self.hero_death = None
                 self.hero = None
 
+        self.tasa_muerte[-1] += len(deaths)
         return deaths
+
+    def new_death(self, dead_ally, kind):
+        # para poder de invocar muertos
+        if len(self.last_deaths) == 7:
+            self.last_deaths.pop(0)  # elimina primero en lista
+
+        self.last_deaths.append((dead_ally, kind))
+        return
+
+    def activate_power(self, enemy_army):
+        self.god_power['uses'] += 1
+        self.god_power['effectiveness'].append(0)
+
+        if self.god_power['name'] == "plaga":
+            enemy_army.suffer_power = "plaga"
+            for unit in enemy_army.complete_army:
+                unit.move -= 1
+            return randint(8, 15)
+
+        elif self.god_power['name'] == "berserker":
+            self.suffer_power = "berserker"  # no lo sufre el enemigo
+            for unit in self.war_units:
+                unit.harm *= 2  # doble de daño
+                unit.unit.health = 1  # baja hp a 1 (pero inmortal por un tiempo)
+            return randint(8, 15)
+
+        elif self.god_power['name'] == "terremoto":
+            enemy_army.suffer_power = "terremoto"
+            return randint(8, 15)
+
+        elif self.god_power['name'] == "invocar_muertos":
+            self.suffer_power = "invocar_muertos"
+
+            for dead_unit in self.last_deaths:  # mantienen atributos
+                if dead_unit[1] == "warrior":
+                    dead_unit[0].add_warrior(self.race, self.cuartel.cord_x + 40,
+                                             self.cuartel.cord_y + 90)
+                    dead_unit[0].unit.health = round(dead_unit[0].unit.health * 0.5)
+                    self.to_revive.append(dead_unit[0].unit)
+
+                elif dead_unit[1] == "archer":
+                    dead_unit[0].add_archer(self.race, self.cuartel.cord_x + 40,
+                                            self.cuartel.cord_y + 90)
+                    dead_unit[0].unit.health = round(
+                        dead_unit[0].unit.health * 0.5)
+                    self.to_revive.append(dead_unit[0].unit)
+
+                else:  # pet
+                    dead_unit[0].add_pet(self.race, self.temple.cord_x + 40,
+                                         self.temple.cord_y + 90)
+                    dead_unit[0].unit.health = round(
+                        dead_unit[0].unit.health * 0.5)
+                    self.to_revive.append(dead_unit[0].unit)
+
+            self.last_deaths = list()  # evita errores
+            return 1
+
+        elif self.god_power['name'] == "glaciar":
+            enemy_army.suffer_power = "glaciar"
+            return randint(8, 15)
+
+    def desactivate_power(self, enemy_army):
+        if self.god_power['name'] == "plaga":
+            for unit in enemy_army.complete_army:
+                unit.move += 1
+            enemy_army.suffer_power = None
+
+        elif self.god_power['name'] == "berserker":
+            self.suffer_power = None  # seguiran teniendo hp 1 y harm doble
+
+        elif self.god_power['name'] == "terremoto":
+            enemy_army.suffer_power = None
+
+        elif self.god_power['name'] == "invocar_muertos":
+            self.suffer_power = None
+
+        elif self.god_power['name'] == "glaciar":  # glaciar
+            enemy_army.suffer_power = None
+        return
 
     def show_statistics(self):
         statistics = ""
@@ -333,12 +436,11 @@ class Ejercito:
                                             self.deaths['archer'],
                                             self.deaths['pet'])
         statistics += "\n > N° poderes utilizados por {}: {}".format(
-            self.god, len(self.powers_used))
-        statistics += "\n > Efectividad de poder(es): {}".format(
-            self.show_power_effectiveness())
-        statistics += "\n > Tasa de creacion (x min):\n    " \
-                      "Soldados: {} | Arqueros: {} | Mascotas: {} | " \
-                      "Aldeanos: {}"
+            self.god, self.god_power['uses'])
+        statistics += "\n > Efectividad del poder {}: {}".format(
+            self.god_power['name'], self.show_power_effectiveness())
+        statistics += "\n > Tasa de creacion (x min): {}".format(
+            sum(self.tasa_creacion) / len(self.tasa_creacion))
         statistics += "\n > Cantidad de oro gastada en:\n    " \
                       "Soldados: {} | Arqueros: {} | Mascotas: {} | " \
                       "Aldeanos: {}\n    Torretas: {} | Cuartel: {}" \
@@ -348,18 +450,19 @@ class Ejercito:
                                 self.gold_spent['villager'],
                                 self.buildings_data['tower'] * 150,
                                 self.buildings_data['barracks'] * 100)
-        statistics += "\n > Tasa de muerte (x min): \n    " \
-                      "Soldados: {} | Arqueros: {} | Mascotas: {} | " \
-                      "Aldeanos: {}"
-        statistics += "\n > Tasa de extracción de oro (x min): {}"
+        statistics += "\n > Tasa de muerte (x min): {}".format(
+            sum(self.tasa_muerte) / len(self.tasa_muerte))
+        statistics += "\n > Tasa de extracción de oro (x min): {}".format(
+            sum(self.gold_extraction) / len(self.gold_extraction))
         return statistics
 
     def show_power_effectiveness(self):
-        if len(self.powers_used) == 0:
-            return "ningun poder utilizado"
-        return "".join("\n{}: {}".format(power[0], power[1])
-                       for power in self.powers_used.items())
-
+        if self.god_power['uses'] == 0:
+            return "no se utilizo el poder"
+        else:
+            effects = sum(self.god_power['effectiveness']) / \
+                      len(self.god_power['effectiveness'])
+        return str(effects)
 
 
 if __name__ == "__main__":

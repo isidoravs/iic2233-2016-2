@@ -1,6 +1,4 @@
-# rates y power comentados para ahorrar tiempo RR
-# cambiado : por , por mientras RR
-# cambiar whiles por manejo de exepciones
+
 
 class Inicio:
     def __init__(self):
@@ -38,7 +36,7 @@ class Inicio:
         self.set_god()
 
         # powers
-        # self.set_power()
+        self.set_power()
 
         # rates
         self.set_rate()
@@ -125,28 +123,37 @@ class Inicio:
         rate1 = input("Ingrese razon de creacion 'guerreros:arqueros:"
                       "mascotas'\n >")
 
-        clean1 = rate1.replace(" ", "").split(",")
+        clean1 = rate1.replace(" ", "").split(":")
         valid = [n.isdigit() for n in clean1]
 
         while len(clean1) != 3 or False in valid:
             rate1 = input("TEAM 1: Ingrese en formato especificado\n >")
-            clean1 = rate1.replace(" ", "").split(",")
+            clean1 = rate1.replace(" ", "").split(":")
             valid = [n.isdigit() for n in clean1]
 
         print("[Team 2]")
         rate2 = input("Ingrese razon de creacion 'guerreros:arqueros:"
                       "mascotas'\n >")
 
-        clean2 = rate2.replace(" ", "").split(",")
+        clean2 = rate2.replace(" ", "").split(":")
         valid = [n.isdigit() for n in clean2]
 
         while len(clean2) != 3 or False in valid:
             rate2 = input("TEAM 2: Ingrese en formato especificado\n >")
-            clean2 = rate2.replace(" ", "").split(",")
+            clean2 = rate2.replace(" ", "").split(":")
             valid = [n.isdigit() for n in clean1]
 
         self.rate1 = {"warrior": clean1[0], "archer": clean1[1], "pet": clean1[2]}
+        if self.god1 == "flo":  # cambia proporcion
+            greatest = max(self.rate1['warrior'], self.rate1['archer'],
+                           self.rate1['pet'])
+            self.rate1['pet'] = greatest + 2
+
         self.rate2 = {"warrior": clean2[0], "archer": clean2[1], "pet": clean2[2]}
+        if self.god2 == "flo":  # cambia proporcion
+            greatest = max(self.rate2['warrior'], self.rate2['archer'],
+                           self.rate2['pet'])
+            self.rate2['pet'] = greatest + 2
 
     def set_heroe_rate(self):
         while True:

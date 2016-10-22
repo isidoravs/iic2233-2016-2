@@ -89,6 +89,7 @@ class Villager:  # NO es parte del ejercito
                                 self.unit.cord_y += 1
                             elif temple_location[1] == self.unit.cord_y:
                                 army.gold += self.load
+                                army.objective_qty += self.load
                                 self.load = 0  # reinicia
 
                             else:  # <
@@ -269,6 +270,7 @@ class Villager:  # NO es parte del ejercito
                 self.unit.show()
                 # lleva cierta cantidad de oro
                 self.load = self.strength  # depende de su fuerza
+                army.gold_extraction[-1] += self.load  # a ultimo minuto
 
         elif self.building != -1:  # esta construyendo
             if self.job is not None and self.job.in_construction:

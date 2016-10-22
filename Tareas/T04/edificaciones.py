@@ -9,7 +9,7 @@ class Cuartel(Building):  # unico
         self.cost = 100
         self.construction_time = 80  # no son segundos (relacion de trabajo)
         self.work_on = 0
-        super().__init__('barracks', pos=(x_pos, y_pos), hp=self.hp)  # self.k es el tipo 'barracks', 'tower', 'mine'
+        super().__init__('barracks', pos=(x_pos, y_pos), hp=self.hp)
 
 
 class Torreta(Building):  # property in_construction

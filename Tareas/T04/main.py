@@ -23,6 +23,7 @@ class Simulacion:
 
         # primer objetivo
         self.objective = None  # [ide, name, qty, target]
+        self.army_power = 0
         self.new_objective()
 
         self.winner = None
@@ -37,11 +38,16 @@ class Simulacion:
 
         if self.tiempo_sim < self.tiempo_max and self.winner is None:
             if self.count == 0:  # acaba de pasar un segundo
+                if self.tiempo_sim % 60 == 0:  # pasa un minuto
+                    # nuevo minuto
+                    self.army1.gold_extraction.append(0)
+                    self.army2.gold_extraction.append(0)
 
-                # prueba de reconstruccion RR
-                # if self.tiempo_sim == 2:
-                #     self.army2.cuartel.deleteLater()
-                #     self.army2.cuartel = None
+                    self.army1.tasa_creacion.append(0)
+                    self.army2.tasa_creacion.append(0)
+
+                    self.army1.tasa_muerte.append(0)
+                    self.army2.tasa_muerte.append(0)
 
                 # oro
                 gui.set_gold_t1(self.army1.gold)
@@ -59,8 +65,10 @@ class Simulacion:
                     if villager.new_building is not None:  # empezo edificacion
                         gui.add_entity(villager.new_building)
                         if villager.new_building.cost == 100:
+                            self.army1.gold -= 100
                             self.army1.buildings_data['barracks'] += 1
                         else:
+                            self.army1.gold -= 150
                             self.army1.buildings_data['tower'] += 1
                         villager.new_building = None
 
@@ -75,20 +83,26 @@ class Simulacion:
                     if villager.new_building is not None:  # empezo edificacion
                         gui.add_entity(villager.new_building)
                         if villager.new_building.cost == 100:
+                            self.army2.gold -= 100
                             self.army2.buildings_data['barracks'] += 1
                         else:
+                            self.army2.gold -= 150
                             self.army2.buildings_data['tower'] += 1
                         villager.new_building = None
 
                 # nuevas unidades
-                new_unit1 = self.army1.creation_cicle()
-                new_unit2 = self.army2.creation_cicle()
+                new_unit1, kind1 = self.army1.creation_cicle()
+                new_unit2, kind2 = self.army2.creation_cicle()
 
                 if new_unit1 is not None:  # se debe crear una unidad
                     gui.add_entity(new_unit1)
+                    if self.objective[0] == 2 and self.objective[3] == kind1:
+                        self.army1.objective_qty += 1
 
                 if new_unit2 is not None:
                     gui.add_entity(new_unit2)
+                    if self.objective[0] == 2 and self.objective[3] == kind1:
+                        self.army2.objective_qty += 1
 
                 hero1_arrival = self.army1.hero_arrival()
                 hero2_arrival = self.army2.hero_arrival()
@@ -111,6 +125,18 @@ class Simulacion:
                         self.army2.pets.append(pet)
                     self.army2.hero.new_entity = list()
 
+                if len(self.army1.to_revive) > 0:  # luego de invocar muertos
+                    for dead in self.army1.to_revive:
+                        gui.add_entity(dead)
+                        self.army1.god_power['effectiveness'][-1] += 1
+                    self.army1.to_revive = list()
+
+                if len(self.army2.to_revive) > 0:
+                    for dead in self.army2.to_revive:
+                        gui.add_entity(dead)
+                        self.army2.god_power['effectiveness'][-1] += 10
+                    self.army2.to_revive = list()
+
                 '''
                     ATAQUE Y AVANZAR
                 '''
@@ -124,120 +150,165 @@ class Simulacion:
                         torreta.check_perimeter(self.army1.complete_army)
 
                 # accion de ejercito ARMY1
-                if self.army1.race == "Human":
-                    if self.human_condition(self.army1, self.army2):
-                        strongest = sorted(self.army1.war_units, key=lambda x:
-                        x.move, reverse=True)
+                if self.army1.suffer_power == "glaciar":  # no se pueden mover ni atacar
+                    pass
+                else:
+                    if self.army1.race == "Human":
+                        if self.human_condition(self.army1, self.army2):
+                            strongest = sorted(self.army1.war_units, key=lambda x:
+                            x.move, reverse=True)
 
-                        for unit in strongest[: len(strongest) // 2]:
+                            for unit in strongest[: len(strongest) // 2]:
+                                unit.avanzar(self.army1.race, self.army2.temple,
+                                             self.army2.cuartel,
+                                             self.army2.torretas,
+                                             self.army2.complete_army,
+                                             self.army1.complete_army)
+
+                            list_defenders = strongest[len(strongest) // 2:]
+
+                            # heroe no defiende
+                            if self.army1.hero is not None and self.army1.hero in list_defenders:
+                                list_defenders.remove(self.army1.hero)
+                                self.army1.hero.avanzar(self.army1.race,
+                                                        self.army2.temple,
+                                                        self.army2.cuartel,
+                                                        self.army2.torretas,
+                                                        self.army2.complete_army,
+                                                        self.army1.complete_army)
+
+                            troop1, troop2, troop3 = self.split_defenders(list_defenders)
+
+                            for unit in troop1:  # cuartel
+                                if self.army1.cuartel is not None:
+                                    unit.defend(self.army1.cuartel,
+                                                self.army2.war_units)
+                                else:
+                                    unit.defend(self.army1.temple,
+                                                self.army2.war_units)
+
+                            for unit in troop2:  # torretas
+                                if len(self.army1.torretas) > 0 and \
+                                                self.army1.torretas[0] is not None:
+                                    unit.defend(self.army1.torretas[0],
+                                                self.army2.war_units)
+                                else:
+                                    unit.defend(self.army1.temple,
+                                                self.army2.war_units)
+
+                            for unit in troop3:
+                                unit.defend(self.army1.temple, self.army2.war_units)
+
+                        else:
+                            for unit in self.army1.war_units:
+                                unit.defend(self.army1.temple, self.army2.war_units)
+                    else:
+                        for unit in self.army1.war_units:
                             unit.avanzar(self.army1.race, self.army2.temple,
                                          self.army2.cuartel,
                                          self.army2.torretas,
                                          self.army2.complete_army,
                                          self.army1.complete_army)
 
-                        list_defenders = strongest[len(strongest) // 2:]
-
-                        # heroe no defiende
-                        if self.army1.hero is not None and self.army1.hero in list_defenders:
-                            list_defenders.remove(self.army1.hero)
-                            self.army1.hero.avanzar(self.army1.race,
-                                                    self.army2.temple,
-                                                    self.army2.cuartel,
-                                                    self.army2.torretas,
-                                                    self.army2.complete_army,
-                                                    self.army1.complete_army)
-
-                        troop1, troop2, troop3 = self.split_defenders(list_defenders)
-
-                        for unit in troop1:  # cuartel
-                            if self.army1.cuartel is not None:
-                                unit.defend(self.army1.cuartel,
-                                            self.army2.war_units)
-                            else:
-                                unit.defend(self.army1.temple,
-                                            self.army2.war_units)
-
-                        for unit in troop2:  # torretas
-                            if len(self.army1.torretas) > 0 and \
-                                            self.army1.torretas[0] is not None:
-                                unit.defend(self.army1.torretas[0],
-                                            self.army2.war_units)
-                            else:
-                                unit.defend(self.army1.temple,
-                                            self.army2.war_units)
-
-                        for unit in troop3:
-                            unit.defend(self.army1.temple, self.army2.war_units)
-
-                    else:
-                        for unit in self.army1.war_units:
-                            unit.defend(self.army1.temple, self.army2.war_units)
-                else:
-                    for unit in self.army1.war_units:
-                        unit.avanzar(self.army1.race, self.army2.temple,
-                                     self.army2.cuartel,
-                                     self.army2.torretas,
-                                     self.army2.complete_army,
-                                     self.army1.complete_army)
-
                 # accion ejercito ARMY2
-                if self.army2.race == "Human":
-                    if self.human_condition(self.army2, self.army1):
-                        strongest = sorted(self.army2.war_units, key=lambda x:
-                        x.move, reverse=True)
+                if self.army2.suffer_power == "glaciar":
+                    pass  # frozen
+                else:
+                    if self.army2.race == "Human":
+                        if self.human_condition(self.army2, self.army1):
+                            strongest = sorted(self.army2.war_units, key=lambda x:
+                            x.move, reverse=True)
 
-                        for unit in strongest[: len(strongest) // 2]:
+                            for unit in strongest[: len(strongest) // 2]:
+                                unit.avanzar(self.army2.race, self.army1.temple,
+                                             self.army1.cuartel,
+                                             self.army1.torretas,
+                                             self.army1.complete_army,
+                                             self.army2.complete_army)
+
+                            list_defenders = strongest[len(strongest) // 2:]
+                            # heroe no defiende
+                            if self.army2.hero is not None and self.army2.hero in list_defenders:
+                                list_defenders.remove(self.army1.hero)
+                                self.army2.hero.avanzar(self.army2.race,
+                                                        self.army1.temple,
+                                                        self.army1.cuartel,
+                                                        self.army1.torretas,
+                                                        self.army1.complete_army,
+                                                        self.army2.complete_army)
+
+                            troop1, troop2, troop3 = self.split_defenders(
+                                list_defenders)
+
+                            for unit in troop1:  # cuartel
+                                if self.army2.cuartel is not None:
+                                    unit.defend(self.army2.cuartel,
+                                                self.army1.war_units)
+                                else:
+                                    unit.defend(self.army2.temple,
+                                                self.army1.war_units)
+
+                            for unit in troop2:  # torretas
+                                if len(self.army2.torretas) > 0 and \
+                                                self.army2.torretas[0] is not None:
+                                    unit.defend(self.army2.torretas[0],
+                                                self.army1.war_units)
+                                else:
+                                    unit.defend(self.army2.temple,
+                                                self.army1.war_units)
+
+                            for unit in troop3:
+                                unit.defend(self.army2.temple, self.army1.war_units)
+
+                        else:
+                            for unit in self.army2.war_units:
+                                unit.defend(self.army2.temple, self.army1.war_units)
+                    else:
+                        for unit in self.army2.war_units:
                             unit.avanzar(self.army2.race, self.army1.temple,
                                          self.army1.cuartel,
                                          self.army1.torretas,
                                          self.army1.complete_army,
                                          self.army2.complete_army)
 
-                        list_defenders = strongest[len(strongest) // 2:]
-                        # heroe no defiende
-                        if self.army2.hero is not None and self.army2.hero in list_defenders:
-                            list_defenders.remove(self.army1.hero)
-                            self.army2.hero.avanzar(self.army2.race,
-                                                    self.army1.temple,
-                                                    self.army1.cuartel,
-                                                    self.army1.torretas,
-                                                    self.army1.complete_army,
-                                                    self.army2.complete_army)
+                '''
+                    EFECTOS DE PODER
+                '''
+                if self.army1.suffer_power == "terremoto":
+                    for torreta in self.army1.torretas:
+                        if torreta is not None:
+                            torreta.health -= 10
+                            self.army2.god_power['effectiveness'][-1] += 10
 
-                        troop1, troop2, troop3 = self.split_defenders(
-                            list_defenders)
+                    if self.army1.cuartel is not None:
+                        self.army1.cuartel.health -= 10
+                        self.army2.god_power['effectiveness'][-1] += 10
 
-                        for unit in troop1:  # cuartel
-                            if self.army2.cuartel is not None:
-                                unit.defend(self.army2.cuartel,
-                                            self.army1.war_units)
-                            else:
-                                unit.defend(self.army2.temple,
-                                            self.army1.war_units)
+                    if self.army1.temple.health >= 20:
+                        self.army1.temple.health -= 10
+                        self.army2.god_power['effectiveness'][-1] += 10
 
-                        for unit in troop2:  # torretas
-                            if len(self.army2.torretas) > 0 and \
-                                            self.army2.torretas[0] is not None:
-                                unit.defend(self.army2.torretas[0],
-                                            self.army1.war_units)
-                            else:
-                                unit.defend(self.army2.temple,
-                                            self.army1.war_units)
+                elif self.army1.suffer_power == "plaga":
+                    for unit in self.army1.complete_army:
+                        unit.unit.health -= 8
 
-                        for unit in troop3:
-                            unit.defend(self.army2.temple, self.army1.war_units)
+                if self.army2.suffer_power == "terremoto":
+                    for torreta in self.army2.torretas:
+                        if torreta is not None:
+                            torreta.health -= 10
+                            self.army1.god_power['effectiveness'][-1] += 10
 
-                    else:
-                        for unit in self.army2.war_units:
-                            unit.defend(self.army2.temple, self.army1.war_units)
-                else:
-                    for unit in self.army2.war_units:
-                        unit.avanzar(self.army2.race, self.army1.temple,
-                                     self.army1.cuartel,
-                                     self.army1.torretas,
-                                     self.army1.complete_army,
-                                     self.army2.complete_army)
+                    if self.army2.cuartel is not None:
+                        self.army2.cuartel.health -= 10
+                        self.army1.god_power['effectiveness'][-1] += 10
+
+                    if self.army2.temple.health >= 20:
+                        self.army2.temple.health -= 10
+                        self.army1.god_power['effectiveness'][-1] += 10
+
+                elif self.army2.suffer_power == "plaga":
+                    for unit in self.army2.complete_army:
+                        unit.unit.health -= 8
 
                 '''
                     EFECTOS DE ATAQUE
@@ -314,6 +385,9 @@ class Simulacion:
 
                 if len(deaths1) > 0:
                     for unit in deaths1:
+                        if self.army1.suffer_power == "plaga" or self.army1.suffer_power == "berserker" or self.army1.suffer_power == "glaciar":
+                            self.army2.god_power['effectiveness'][-1] += 1
+
                         unit[0].deleteLater()  # saca de simulacion
                         if self.objective[0] == 1 and self.objective[3] == unit[1]:
                             # suma al objetivo de matar
@@ -321,6 +395,8 @@ class Simulacion:
 
                 if len(deaths2) > 0:
                     for unit in deaths2:
+                        if self.army2.suffer_power == "plaga" or self.army2.suffer_power == "berserker" or self.army2.suffer_power == "glaciar":
+                            self.army1.god_power['effectiveness'][-1] += 1
                         unit[0].deleteLater()
                         if self.objective[0] == 1 and self.objective[3] == unit[1]:
                             self.army2.objective_qty += 1
@@ -329,10 +405,29 @@ class Simulacion:
                     REVISAR CUMPLIMIENTO DE OBJETIVO
                 '''
                 if self.army1.objective_qty == self.objective[2]:
-                    pass
+                    time = self.army1.activate_power(self.army2)
+                    self.objective = [4, time, "activate", 0]  # tiempo duracion
+                    gui.set_objective("PODER: {}".format(
+                        self.army1.god_power['name']))
+                    self.army1_power = 1
 
                 if self.army2.objective_qty == self.objective[2]:
-                    pass
+                    time = self.army2.activate_power(self.army1)
+                    self.objective = [4, time, "activate", 0]  # 0 es contador
+                    gui.set_objective("PODER: {}".format(
+                        self.army2.god_power['name']))
+                    self.army_power = 2
+
+                if self.objective[2] == "activate":
+                    self.objective[3] += 1  # suma tiempo
+                    if self.objective[3] == self.objective[1]:  # fin del tiempo
+                        if self.army_power == 1:
+                            self.army1.desactivate_power(self.army2)
+                        if self.army_power == 2:
+                            self.army2.desactivate_power(self.army1)
+
+                        self.army_power = 0
+                        self.new_objective()
 
         else:
             print(" -- End of Simulation -- ")
@@ -389,7 +484,7 @@ class Simulacion:
                 gui.add_entity(torreta)
         return
 
-    def show_statistics(self):
+    def show_statistics(self, to_print=True):
         statistics = " -- Estadisticas {} vs. {} -- ".format(self.army1.race,
                                                              self.army2.race)
         statistics += "\n[{}]".format(self.army1.race)
@@ -399,7 +494,8 @@ class Simulacion:
         statistics += "\n\n -- RESULTADO FINAL -- \n "
         statistics += self.set_winner()
 
-        print(statistics)
+        if to_print:
+            print(statistics)
         # escribir en archivo
         file_name = "statistics {} vs. {} war.txt".format(self.army1.race,
                                                           self.army2.race)
@@ -436,6 +532,9 @@ class Simulacion:
                 qty = randint(10, 20)
                 name = "Crear {} guerreros".format(qty)
                 self.objective = [2, name, qty, "guerreros"]
+
+        self.army1.objective_qty = 0
+        self.army2.objective_qty = 0
 
         gui.set_objective(self.objective[1])
         return

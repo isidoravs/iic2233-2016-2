@@ -718,8 +718,6 @@ class Pet:
 
 ''' funciones
 '''
-
-
 def in_perimeter(self, enemy, vision=True, archer=False):
     if enemy is None:
         return False
