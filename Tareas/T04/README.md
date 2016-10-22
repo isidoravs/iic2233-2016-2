@@ -46,12 +46,30 @@ Tiene distintas properties como `gold`, `total_units`, `villager_qty`, `all_buil
 * `show_power_effectiveness`: calcula la efectividad del poder. Para cada uso se calcula la cantidad de muertos en caso de **plaga**, **berserker** y **glaciar**, en caso de **terremoto** el daño a edificios y para **revivir** la cantidad de muertos invocados. Si el poder se utiliza más de una vez, muestra el promedio de efectividades.
 
 ```
-ejercito.py
+unidades.py
 ```
+Módulo que contiene las clases **Warrior**, **Archer** y **Pet**. Las tres determinan las carácterísticas de las unidades de combate y cuentan con métodos iguales o muy similares. Se diferencian principalmente en sus atributos:
 
+1. `move`: cantidad de movimientos por segundo. Número aleatorio entre: (2, 7) *warriors*, (2, 7) *archers* y (3, 6) *pets*. Disminuye en uno cuando es de raza **Orc** o aumenta en uno cuando es de raza **Skull**.
+2. `hp`: Vida de las unidades. Número aleatorio entre: (150, 250) *warriors*, (100, 200) *archers* y (100, 200) *pets*.
+3. `harm`: Daño que hace una unidad a un enemigo por segundo de simulación. Número aleatorio entre: (3, 8) *warriors*, (2, 6) *archers* y (2, 7) *pets*. Aumenta en uno cuando es de raza **Orc**.
+4. `creation_time`: tiempo de creación dado en el enunciado.
+5. `cost`: costo de creación dado en el enunciado
+6. `attack_range` / `shoot_range`: rango de ataque (o disparo en caso de arqueros), cuando enemigos se encuentran dentro de éste son atacados. Número aleatorio entre: (50, 80) *archers* y (20, 40) *pets*, en *warriors* es fijo 15 para que no sea necesario estár justo sobre otro al atacar. 
+7. `vision_range`: rango de visión de la unidad, permite identificar enemigos o aliados cerca. Útil para que orcos persigan a el enemigo más cercano dentro de ese rango o mascota defienda al aliado más cercano que es vulnerable o está siendo atacado (*rabia*). Valor de 50 para *warriors* y *archers*, 70 para *pets*.
+8. `unit`: almacena un objeto de la clase **Human**, **Orc** o **Skull** según la raza del ejército. Es el que luego es agregado a la interfaz gráfica y altera sus coordenadas y hp (que determina la property *health* de la clase **Warrior**, **Archer** o **Pet**). 
 
+El método más importante de las clases en este módulo (que es similar en las 3) es:
 
+`self.avanzar(race, enemy_temple, enemy_barrack, enemy_towers, enemy_army, allies)`
 
+Controla la cantidad de movimientos y/o acciones que debe llevar a cabo la unidad en cada segundo. Se rige por lo pedido en el enunciado y según cada raza se determina la estrategia a utilizar.
 
-### Valores asignados
-`HP`:
+### Human
+![alt text](https://media.giphy.com/media/kzaSXi0M3FFXG/giphy.gif "Humano")
+
+### Orc
+![alt text](https://media.giphy.com/media/3oEdvdm6gpQFguAK5i/giphy.gif "Orco")
+
+### Skull
+![alt text](https://media.giphy.com/media/qTD9EXZRgI1y0/giphy.gif "Muerto Viviente")
