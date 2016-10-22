@@ -145,8 +145,8 @@ class Inicio:
 
         self.rate1 = {"warrior": clean1[0], "archer": clean1[1], "pet": clean1[2]}
         if self.god1 == "flo":  # cambia proporcion
-            greatest = max(self.rate1['warrior'], self.rate1['archer'],
-                           self.rate1['pet'])
+            greatest = max(int(self.rate1['warrior']), int(self.rate1['archer']),
+                           int(self.rate1['pet']))
             self.rate1['pet'] = greatest + 2
 
         self.rate2 = {"warrior": clean2[0], "archer": clean2[1], "pet": clean2[2]}

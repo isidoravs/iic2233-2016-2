@@ -1,0 +1,32 @@
+ -- Estadisticas Human vs. Orc -- 
+[Human]
+ > Unidades creadas:
+    Soldados: 3 | Arqueros: 9 | Mascotas: 9
+ > Unidades muertas:
+    Soldados: 5 | Arqueros: 7 | Mascotas: 3
+ > N° poderes utilizados por pezoa: 0
+ > Efectividad del poder plaga: no se utilizo el poder
+ > Tasa de creacion (x min): 4.6
+ > Cantidad de oro gastada en:
+    Soldados: 60 | Arqueros: 270 | Mascotas: 450 | Aldeanos: 50
+    Torretas: 150 | Cuartel: 0
+ > Tasa de muerte (x min): 3.0
+ > Tasa de extracción de oro (x min): 11.8
+
+[Orc]
+ > Unidades creadas:
+    Soldados: 6 | Arqueros: 12 | Mascotas: 6
+ > Unidades muertas:
+    Soldados: 4 | Arqueros: 12 | Mascotas: 5
+ > N° poderes utilizados por june: 0
+ > Efectividad del poder berserker: no se utilizo el poder
+ > Tasa de creacion (x min): 5.4
+ > Cantidad de oro gastada en:
+    Soldados: 120 | Arqueros: 360 | Mascotas: 300 | Aldeanos: 50
+    Torretas: 0 | Cuartel: 0
+ > Tasa de muerte (x min): 4.4
+ > Tasa de extracción de oro (x min): 3.4
+
+ -- RESULTADO FINAL -- 
+ Ninguna raza ha logrado destruir el templo enemigo.
+ ~ EMPATE ~

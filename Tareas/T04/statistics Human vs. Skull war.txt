@@ -1,0 +1,32 @@
+ -- Estadisticas Human vs. Skull -- 
+[Human]
+ > Unidades creadas:
+    Soldados: 3 | Arqueros: 6 | Mascotas: 11
+ > Unidades muertas:
+    Soldados: 2 | Arqueros: 1 | Mascotas: 2
+ > N° poderes utilizados por flo: 0
+ > Efectividad del poder berserker: no se utilizo el poder
+ > Tasa de creacion (x min): 4.4
+ > Cantidad de oro gastada en:
+    Soldados: 60 | Arqueros: 180 | Mascotas: 550 | Aldeanos: 50
+    Torretas: 0 | Cuartel: 0
+ > Tasa de muerte (x min): 1.0
+ > Tasa de extracción de oro (x min): 11.0
+
+[Skull]
+ > Unidades creadas:
+    Soldados: 15 | Arqueros: 10 | Mascotas: 4
+ > Unidades muertas:
+    Soldados: 9 | Arqueros: 8 | Mascotas: 3
+ > N° poderes utilizados por june: 0
+ > Efectividad del poder invocar_muertos: no se utilizo el poder
+ > Tasa de creacion (x min): 7.0
+ > Cantidad de oro gastada en:
+    Soldados: 300 | Arqueros: 300 | Mascotas: 200 | Aldeanos: 150
+    Torretas: 0 | Cuartel: 100
+ > Tasa de muerte (x min): 5.8
+ > Tasa de extracción de oro (x min): 13.0
+
+ -- RESULTADO FINAL -- 
+  ~ GANADOR: Human ~
+ Dios: flo
