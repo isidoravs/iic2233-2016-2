@@ -8,7 +8,7 @@ main.py
 ```
 Módulo principal (**el que se debe ejecutar**) que contiene la clase `Simulacion` encargada del funcionamiento principal de la tarea. Se encarga de inicializar ambos ejércitos, los primeros aldeanos, mapa, objetivo, ganador, mostrar estadísticas y además coordinar la estrategia de los humanos (cuando son 3/4 del ejercito enemigo (mínimo) dividen su ejército para dejar defensores en la base).
 
-* `tick()`: método encargado de controlar la ocurrencia de eventos en cada tick de ejecución (*simulación síncrona*). Para controlar el paso del tiempo utiliza un contador; cada 7 ticks de simulación aumenta un segundo de simulación (para darle mayor realidad a los eventos que ocurren).
+`tick()`: método encargado de controlar la ocurrencia de eventos en cada tick de ejecución (*simulación síncrona*). Para controlar el paso del tiempo utiliza un contador; cada 7 ticks de simulación aumenta un segundo de simulación (para darle mayor realidad a los eventos que ocurren).
 
 **Obs:**
 
