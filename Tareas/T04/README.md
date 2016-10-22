@@ -73,3 +73,7 @@ Controla la cantidad de movimientos y/o acciones que debe llevar a cabo la unida
 
 ### Skull
 ![alt text](https://media.giphy.com/media/qTD9EXZRgI1y0/giphy.gif "Muerto Viviente")
+
+
+## Testeo
+En el módulo `test_module.py` llevo a cabo el testeo de mi simulación.
