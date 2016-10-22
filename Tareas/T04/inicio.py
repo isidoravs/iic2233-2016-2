@@ -151,8 +151,8 @@ class Inicio:
 
         self.rate2 = {"warrior": clean2[0], "archer": clean2[1], "pet": clean2[2]}
         if self.god2 == "flo":  # cambia proporcion
-            greatest = max(self.rate2['warrior'], self.rate2['archer'],
-                           self.rate2['pet'])
+            greatest = max(int(self.rate2['warrior']), int(self.rate2['archer']),
+                           int(self.rate2['pet']))
             self.rate2['pet'] = greatest + 2
 
     def set_heroe_rate(self):
