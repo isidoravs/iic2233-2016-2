@@ -30,7 +30,25 @@ Este módulo maneja las **excepciones** pedidas en el enunciado.
 ```
 ejercito.py
 ```
-Modulo encargado de modelar las funcionalidades de ambos ejércitos
+Modulo encargado de modelar las funcionalidades de ambos ejércitos, mediante la clase **Inicio**. Toma la información inicial dada por el usuario e inicializa las condiciones cada "army". Lleva la cuenta de las estadísticas por raza y tiene como atributos distintas listas con aldeanos, guerreros, arqueros, mascotas y torretas. Además guarda en distintos atributos al héroe (instancia de la clase **Hero**), templo (instancia de la clase **Templo**), cuartel (instancia de la clase **Cuartel**) y mina (instancia de la clase **Mina**). 
+
+Tiene distintas properties como `gold`, `total_units`, `villager_qty`, `all_buildings` (retorna booleano que determina si el ejército cuenta con cuartel y torretas, no en estado de construcción), `complete_army` (retorna una lista con todas las unidades de esta raza) y `war_units` (retorna lista con todas las unidades de combate del ejército, todas menos los aldeanos).
+
+### Métodos importantes
+* `creation_cicle`: encargado de la creación de unidades. Cumple con las condiciones dadas en el enunciado (mínimo 6 aldeanos, verifica que haya oro suficiente, que cumpla con la cantidad máxima de unidades mediante *set_max_units*)
+
+* `hero_arrival`: encargado de controlar la llegada del héroe y reaparición en caso de que muera.
+
+* `count_troops`: determina la cantidad de muertos en cada paso de segundo y los elimina de las tropas del ejército.
+
+* `activate_power` / `desactivate_power`:  se encarga de controlar los efectos del poder del dios y su activación/desactivación dependiendo del rango de tiempo que dure (generalmente un número aleatorio entre 8 y 15 segundos)
+
+* `show_power_effectiveness`: calcula la efectividad del poder. Para cada uso se calcula la cantidad de muertos en caso de **plaga**, **berserker** y **glaciar**, en caso de **terremoto** el daño a edificios y para **revivir** la cantidad de muertos invocados. Si el poder se utiliza más de una vez, muestra el promedio de efectividades.
+
+```
+ejercito.py
+```
+
 
 
 
