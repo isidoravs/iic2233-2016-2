@@ -79,6 +79,7 @@ A los orcos le interesa ir al templo (en un comienzo se dirigen a éste para ir 
 
 ### Skull
 ![alt text](https://media.giphy.com/media/qTD9EXZRgI1y0/giphy.gif "Muerto Viviente")
+
 Los muertos vivientes sólo buscan destruir el templo. Siempre buscan evitar al enemigo más cercano de su campo de visión (se alejan de él: `move_far`). Sin embargo, si hay enemigos u otras edificaciones enemigas en su rango de ataque no dudarán en dañarlas (manteniendo su dirección al templo).
 
 ```
