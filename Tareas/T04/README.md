@@ -20,6 +20,8 @@ Módulo principal (**el que se debe ejecutar**) que contiene la clase `Simulacio
 
 * Cuando se cumple la condición de los humanos para atacar, se manda a la mitad (o mitad menos uno en caso de impar) más **rápida** de las unidades de combate al templo (no deja a los mas debiles). Los defensores (no puede ser el héroe) se dividen entre templo, cuartel y torretas (si alguno de los anteriores esta en construccion, van al templo). Ellos buscan en campo de vision y persiguen si estan cerca de la edificacion que defienden (deambulan cerca de la edificación correspondiente gracias al método `random_move`).
 
+* Las tasas de creación y muertes por raza consideran a todas las unidades del ejército (aldeanos, guerreros, arqueros, mascotas y heroe).
+
 ```
 inicio.py
 ```
@@ -78,6 +80,25 @@ A los orcos le interesa ir al templo (en un comienzo se dirigen a éste para ir 
 ### Skull
 ![alt text](https://media.giphy.com/media/qTD9EXZRgI1y0/giphy.gif "Muerto Viviente")
 Los muertos vivientes sólo buscan destruir el templo. Siempre buscan evitar al enemigo más cercano de su campo de visión (se alejan de él: `move_far`). Sin embargo, si hay enemigos u otras edificaciones enemigas en su rango de ataque no dudarán en dañarlas (manteniendo su dirección al templo).
+
+```
+otras_unidades.py
+```
+Módulo que contiene las clases:
+
+1. **Villager**:
+Los aldeanos cuentan con velocidad, hp, creation_time, cost y unit al igual que las otras unidades. Pero además cuentan con los siguientes atributos:
+
+* `collect`: tiempo entre 5 y 10 segundos que demoran en sacar oro de la mina
+* `strenght`: capacidad de carga de oro que pueden transportar al templo.
+* `construction`: cantidad de piezas que aporta a la construcción de las edificaciones.
+* `working` / `building`: atributo que determina si el aldeano está sacando oro o construyendo edificios.
+
+También cuenta con el método `avanzar` que es distinto al de las otras unidades, debido a que no atacan a los enemigos y sólo transitan entre su mina y el templo, sacando y dejando oro. Además se encargan de ir a reconstruir las torretas o el cuartel si han sido destruidos (su hp debe haber llegado a 0, no reconstruyen si el hp es menor al total). **Obs:** si estas edificaciones están en construcción no pueden ser atacadas por los enemigos, son el único gasto que permite deuda (quedan con saldo negativo de oro si no tienen suficiente para pagar la reconstrucción). 
+
+Como `construction` determina la cantidad de piezas que aporta a la construcción de la edificación, si hay más aldeanos reconstruyendo ésta es terminada en menor tiempo. **Obs:** Los aldeanos no buscan construir más torretas que las con que parten la simulación. Son completamente sacrificados, si están construyendo y son atacados, continúan con su trabajo... *aunque sea hasta la muerte*. 
+
+2. **Hero**:
 
 ## Testeo
 En el módulo `test_module.py` llevo a cabo el testeo de mi simulación.
