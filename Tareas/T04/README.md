@@ -136,3 +136,7 @@ Cuenta con los métodos: `check_perimeter(self, enemy_army)` y `in_perimeter(sel
 En el módulo `test_module.py` llevo a cabo el testeo de mi simulación. Se testea más del 50% de las funciones implementadas. 
 
 **No implementado**: Cómo afecta la personalidad de los dioses en los ejércitos (únicamente cambia razón de creación de unidades en caso de que GodessFlo sea la diosa de uno de los dos ejércitos).
+
+![alt text](https://media.giphy.com/media/XcL6a7YHm4sWA/giphy.gif "FIN.")
+
+- Isidora Vizcaya
