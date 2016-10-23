@@ -142,5 +142,4 @@ En el módulo `test_module.py` llevo a cabo el testeo de mi simulación. Se test
 ---
 
 A ver el mundo arder! 
-
-Isidora Vizcaya
+~ Isidora Vizcaya
