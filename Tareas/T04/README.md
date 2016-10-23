@@ -47,6 +47,15 @@ Tiene distintas properties como `gold`, `total_units`, `villager_qty`, `all_buil
 
 * `show_power_effectiveness`: calcula la efectividad del poder. Para cada uso se calcula la cantidad de muertos en caso de **plaga**, **berserker** y **glaciar**, en caso de **terremoto** el daño a edificios y para **revivir** la cantidad de muertos invocados. Si el poder se utiliza más de una vez, muestra el promedio de efectividades.
 
+### Poderes
+Algunos comentarios sobre los poderes de los dioses:
+
+* **Plaga**: las unidades afectadas por la plaga disminuyen su *hp* en **8** por segundo, mientras que su *move* disminuye en **1** unidad en total. Luego de ésta recuperan la mitad del *hp* que tenían antes de la plaga.
+
+* **Terremoto**: las edificaciones (no mina), sufren un daño de **10** por segundo.
+
+* **Invocar a los muertos**: revive a los aldeanos, guerreros, arqueros o mascotas que correspondan. Éstas aparecen en el templo o cuartel según su tipo de unidad. 
+
 ```
 unidades.py
 ```
