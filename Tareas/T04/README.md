@@ -100,6 +100,30 @@ También cuenta con el método `avanzar` que es distinto al de las otras unidade
 Como `construction` determina la cantidad de piezas que aporta a la construcción de la edificación, si hay más aldeanos reconstruyendo ésta es terminada en menor tiempo. **Obs:** Los aldeanos no buscan construir más torretas que las con que parten la simulación. Son completamente sacrificados, si están construyendo y son atacados, continúan con su trabajo... *aunque sea hasta la muerte*. 
 
 2. **Hero**:
+Los objetos de esta clase cuentan con atributos y métodos muy similares a los de las otras unidades. Según su raza poseen distintas características (menor `harm` en el caso de Crsitián y menor `hp` en el caso de Hernán, dado que tiene tres vidas). Sin emabrgo su principal diferencia son los poderes con los que cuentan, éstos se determinan por `set_power_info` y `avanzar`. 
 
-## Testeo
-En el módulo `test_module.py` llevo a cabo el testeo de mi simulación.
+* *Cristián*: para su ritual debe permanecer quieto por **5** segundos con el enemigo en su rango de vision (mas reducido que otros, **25**). Para esto necesita total concentración, por lo tanto encuentra al enemigo más cercano en su rango y lo trata de convertir (unidad enemiga guardada en el atributo `objective`). Si otras unidades enemigas se cruzan en medio del ritual, este mago igual ataca. Su clon no tiene el poder pero tiene sus mismos atributos y apariencia (mitad del hp).
+
+* *Manu*: puede tener máximo dos mascotas protectoras a su lado (no agregar si siguen vivas). Cuando mueren ambas empieza el tiempo para nueva invocación de éstas (**30** segundos). Si este héroe muere, las mascotas mueren con él. Ellas siguen siempre a Manu protegiéndolo de los enemigos que estén dentro de sus rangos de ataque (mayor al de las mascotas comunes).
+
+* *Hernán*: tiempo en resucitar va a ser un tercio (aprox) de la tasa de invocacion del héroe. Éste revive en el mismo lugar en que murió (almacenado en el atributo `death_cord`).
+
+```
+edificaciones.py
+```
+Módulo que contiene las siguientes clases:
+
+1. `Cuartel`: hereda de **Building**. Tiene *hp* = 500, *cost* = 100 y *construction_time* = 80 (piezas para terminar su construcción). Además el atributo `work_on` lleva el conteo de cuántas piezas se han construido en caso de que los aldeanos estén trabajando en esta edificación.
+
+2. `Torreta`: hereda de **Building**. Tiene *hp* = 400, *cost* = 150, *construction_time* = 60 (piezas para terminar su construcción) y el mismo atributo `work_on`. Además cuenta con los atributos `attack_speed` que determina la cantidad de ataques por segundo, `harm` que es el daño que produce al enemigo (calculado en base a *speed*) y `shoot_range` que es su rango de ataque (radial, como todos los rangos en la tarea).
+
+Cuenta con los métodos: `check_perimeter(self, enemy_army)` y `in_perimeter(self, enemy)` que permiten a la torreta atacar a los enemigos que se encuentren dentro de su rango de ataque.
+
+3. `Mina`: hereda de **Building**. La mina no puede ser atacada y es indestructible (incluso en caso de terremoto).
+
+4. `Templo`: hereda de **Temple**. Cuenta con un *hp* inicial de 1250.
+
+### Testeo
+En el módulo `test_module.py` llevo a cabo el testeo de mi simulación. Se testea más del 50% de las funciones implementadas. 
+
+**No implementado**: Cómo afecta la personalidad de los dioses en los ejércitos (únicamente cambia razón de creación de unidades en caso de que GodessFlo sea la diosa de uno de los dos ejércitos).
