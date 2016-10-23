@@ -48,7 +48,7 @@ Tiene distintas properties como `gold`, `total_units`, `villager_qty`, `all_buil
 ```
 unidades.py
 ```
-Módulo que contiene las clases **Warrior**, **Archer** y **Pet**. Las tres determinan las carácterísticas de las unidades de combate y cuentan con métodos iguales o muy similares. Se diferencian principalmente en sus atributos:
+Módulo que contiene las clases **Warrior**, **Archer** y **Pet**. Las tres determinan las carácterísticas de las unidades de combate y cuentan con métodos iguales o muy similares (se testean variadamente en el módulo de testeo explicado más adelante). Se diferencian principalmente en sus atributos:
 
 1. `move`: cantidad de movimientos por segundo. Número aleatorio entre: (2, 7) *warriors*, (2, 7) *archers* y (3, 6) *pets*. Disminuye en uno cuando es de raza **Orc** o aumenta en uno cuando es de raza **Skull**.
 2. `hp`: Vida de las unidades. Número aleatorio entre: (150, 250) *warriors*, (100, 200) *archers* y (100, 200) *pets*.
@@ -68,12 +68,16 @@ Controla la cantidad de movimientos y/o acciones que debe llevar a cabo la unida
 ### Human
 ![alt text](https://media.giphy.com/media/kzaSXi0M3FFXG/giphy.gif "Humano")
 
+Los humanos cuando van a atacar avanzan al templo. Si hay un enemigo en su rango de ataque (que es menor al de vision) ataca y hace daño a éste pero continúa su rumbo al templo. Si hay torretas o cuarteles cerca los ataca también pero su objetivo es el templo.
+
 ### Orc
 ![alt text](https://media.giphy.com/media/3oEdvdm6gpQFguAK5i/giphy.gif "Orco")
 
+A los orcos le interesa ir al templo (en un comienzo se dirigen a éste para ir a atacar), pero si ve a algún enemigo (éste se encuentra en su campo de visión) cambia su foco y va directamente a atacarlo (`move_near`). Sólo puede dañarlo si está en su rango de ataque, pero el orco siempre persigue al enemigo más cercano en su rango de visión. Si el templo, torreta o cuartel están más cerca en su campo de visión que el enemigo cambian su foco de ataque y van hacia estas edificaciones. Son los más fuertes y por lo tanto causan más daño. Como son los más lentos, las unidades enemigas pueden escapar de éstos (saliendo de su campo de visión). Buscan pelear hasta la muerte si el enemigo está a asu alcance.
+
 ### Skull
 ![alt text](https://media.giphy.com/media/qTD9EXZRgI1y0/giphy.gif "Muerto Viviente")
-
+Los muertos vivientes sólo buscan destruir el templo. Siempre buscan evitar al enemigo más cercano de su campo de visión (se alejan de él: `move_far`). Sin embargo, si hay enemigos u otras edificaciones enemigas en su rango de ataque no dudarán en dañarlas (manteniendo su dirección al templo).
 
 ## Testeo
 En el módulo `test_module.py` llevo a cabo el testeo de mi simulación.
