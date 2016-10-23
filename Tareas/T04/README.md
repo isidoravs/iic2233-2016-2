@@ -139,4 +139,8 @@ En el módulo `test_module.py` llevo a cabo el testeo de mi simulación. Se test
 
 ![alt text](https://media.giphy.com/media/XcL6a7YHm4sWA/giphy.gif "FIN.")
 
-- Isidora Vizcaya
+---
+
+A ver el mundo arder! 
+
+Isidora Vizcaya
