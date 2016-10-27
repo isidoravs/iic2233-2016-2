@@ -98,6 +98,11 @@ def parte_dos(path):
             if (procesados / all_size) * 100 > 100:
                 break
 
+        with open('archivo_1.mp3', 'wb') as arc_uno:
+            arc_uno.write(bytearray(archivo_uno))
+        with open('archivo_2.gif', 'wb') as arc_uno:
+            arc_uno.write(bytearray(archivo_uno))
+
         return procesados, num_ab
 
 
