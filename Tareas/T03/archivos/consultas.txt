@@ -1,0 +1,11 @@
+f[x_] = Derivate[x^3 + 2*x - 1, x];
+f[1];
+h[y_] = Derivate[Sec[3*y^5 + 2*y - 4*y^2], y];
+g[z_] = Derivate[Ln[z], z];
+g[5];
+der[y_] = Derivate[Tan[3*x^5 - 1], x];
+pol[x_] = x^3+3*x^2+x-1;
+int1[x_] = Integrate[pol[x], {x}];
+int2[x_] = Integrate[Sin[2*x + 1], {x}];
+int2[1];
+int3[x_] = Integrate[ArcSin[3*x^2 - x], {x}];
