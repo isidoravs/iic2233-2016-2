@@ -33,18 +33,18 @@ class ANPF(QtGui.QWidget):
         self.boton1 = QtGui.QPushButton('Mostrar todos los jugadores', self)
         self.boton1.move(200, 400)
         self.boton1.resize(self.boton1.sizeHint())
-        self.boton1.clicked.connect(self.opcion)
+        self.boton1.clicked.connect(self.mostrar)
 
 
         self.boton1 = QtGui.QPushButton('Get player', self)
         self.boton1.move(200, 450)
         self.boton1.resize(self.boton1.sizeHint())
-        self.boton1.clicked.connect(self.opcion)
+        self.boton1.clicked.connect(self.get_player_gui)
 
         self.boton1 = QtGui.QPushButton('Change player', self)
         self.boton1.move(200, 500)
         self.boton1.resize(self.boton1.sizeHint())
-        self.boton1.clicked.connect(self.opcion)
+        self.boton1.clicked.connect(self.change_player_gui)
 
         self.boton1 = QtGui.QPushButton('Guardar archivos', self)
         self.boton1.move(150, 650)
@@ -101,10 +101,30 @@ class ANPF(QtGui.QWidget):
         self.msje2.move(150, 700)
         self.msje2.show()
 
-    def opcion(self):
-        pass
+    def mostrar(self):
+        with open("all_players.json", "r") as file:
+            json_data = json.load(file)
+
+        consultas = ConsultasANPF(json_data)
+        consultas.show_all()
+        self.msje3 = QtGui.QLabel('Jugadores mostrados en consola', self)
+        self.msje3.move(600, 400)
+        self.msje3.show()
+
+    def get_player_gui(self):
+        with open("all_players.json", "r") as file:
+            json_data = json.load(file)
+
+        consultas = ConsultasANPF(json_data)
+        consultas.get_player("920")
 
 
+    def change_player_gui(self):
+        with open("all_players.json", "r") as file:
+            json_data = json.load(file)
+
+        consultas = ConsultasANPF(json_data)
+        consultas.change_player("920", {"faltas": 1})
 
 
 if __name__ == '__main__':
