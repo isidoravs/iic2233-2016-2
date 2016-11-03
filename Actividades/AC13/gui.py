@@ -40,6 +40,8 @@ class ANPF(QtGui.QWidget):
         self.boton1.move(200, 450)
         self.boton1.resize(self.boton1.sizeHint())
         self.boton1.clicked.connect(self.get_player_gui)
+        self.label_id = QtGui.QLineEdit("", self)
+        self.label_id.move(320, 455)
 
         self.boton1 = QtGui.QPushButton('Change player', self)
         self.boton1.move(200, 500)
@@ -112,11 +114,12 @@ class ANPF(QtGui.QWidget):
         self.msje3.show()
 
     def get_player_gui(self):
+        ide = self.label_id.text()
         with open("all_players.json", "r") as file:
             json_data = json.load(file)
 
         consultas = ConsultasANPF(json_data)
-        consultas.get_player("920")
+        consultas.get_player(ide)
 
 
     def change_player_gui(self):
