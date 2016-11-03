@@ -128,17 +128,11 @@ def main():
         '''
             Comentar estas lineas, eran para comprobar
         '''
-        with open("orden_equipos/{}".format(team), "rb") as file:
-            equipo = pickle.load(file)  # comprobar
-            print("\n {}".format(equipo))
-            print(type(equipo))
-            print(equipo.tiempo_serializacion)
-
-    # PARTE 4
-    
-
-
-
+        # with open("orden_equipos/{}".format(team), "rb") as file:
+        #     equipo = pickle.load(file)  # comprobar
+        #     print("\n {}".format(equipo))
+        #     print(type(equipo))
+        #     print(equipo.tiempo_serializacion)
 
 
 if __name__ == '__main__':
