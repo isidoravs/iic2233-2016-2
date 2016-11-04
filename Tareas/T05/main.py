@@ -1,5 +1,5 @@
 import gui
-from gui.environment import Wall
+from gui.environment import Wall, Coin
 from gui.tanks import Tank
 import time
 import sys
@@ -181,9 +181,17 @@ class HackerTanks:
         for wall in self.walls:
             gui.add_entity(wall)
 
-            gui.add_forbidden_cords([(x, y)
-                                     for x in range(wall.cord_x, wall.cord_x + wall.width())
-                                     for y in range(wall.cord_y, wall.cord_y + wall.height())])
+            to_add = list()
+            to_add.extend([(wall.cord_x, y) for y in
+                           range(wall.cord_y, wall.cord_y + wall.height())])
+            to_add.extend([(wall.cord_x + wall.width(), y) for y in
+                           range(wall.cord_y, wall.cord_y + wall.height())])
+            to_add.extend([(x, wall.cord_y) for x in
+                           range(wall.cord_x, wall.cord_x + wall.width())])
+            to_add.extend([(x, wall.cord_y + wall.height()) for x in
+                           range(wall.cord_x, wall.cord_x + wall.width())])
+
+            gui.add_forbidden_cords(to_add)
         return
 
     def tick(self):
@@ -213,8 +221,21 @@ class HackerTanks:
                             if tank.direction is not None:
                                 self.move_tank_center(tank)
 
+                forbidden = gui.forbidden_cords()
                 for tank in self.enemies:
-                    tank.make_movement(self.tank)
+                    if tank.color == "Red" or tank.color == "Black":
+                        old_cord = (tank.cord_x, tank.cord_y)
+                        old_barrel_cord = (tank.barrel.cord_x, tank.barrel.cord_y)
+                        tank.make_movement(self.tank)
+                        if not self.valid_movement(tank, forbidden):
+                            tank.cord_x = old_cord[0]
+                            tank.cord_y = old_cord[1]
+
+                            tank.barrel.cord_x = old_barrel_cord[0]
+                            tank.barrel.cord_y = old_barrel_cord[1]
+                    else:
+                        tank.make_movement(self.tank)
+
 
                 if self.mode == "Stages":
                     lapse = self.actual_time - self.start_time
@@ -341,6 +362,30 @@ class HackerTanks:
                              for y in range(wall.cord_y, wall.cord_y + wall.height())])
 
                         wall.deleteLater()
+
+    def valid_movement(self, tank, forbidden):
+        all_borders = list()
+        all_borders.extend([(tank.cord_x, y) for y in
+                       range(int(tank.cord_y), int(tank.cord_y + tank.size[0]))])
+        all_borders.extend([(tank.cord_x + tank.size[0], y) for y in
+                       range(int(tank.cord_y), int(tank.cord_y + tank.size[0]))])
+        all_borders.extend([(x, tank.cord_y) for x in
+                       range(int(tank.cord_x), int(tank.cord_x + tank.size[0]))])
+        all_borders.extend([(x, tank.cord_y + tank.size[0]) for x in
+                       range(int(tank.cord_x), int(tank.cord_x + tank.size[0]))])
+
+        x_pos = tank.cord_x
+        y_pos = tank.cord_y
+
+        if x_pos < 88 or x_pos + tank.width() > 750 \
+                or y_pos < 83 or y_pos + tank.width() > 597:  # bordes
+            return False
+
+        for cord in all_borders:
+            if cord in forbidden:
+                return False
+
+        return True
 
     def check_game_info(self):
         if self.mode is not None:

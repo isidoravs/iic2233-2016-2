@@ -3,6 +3,7 @@ from .utils import get_asset_path
 from math import cos, sin, atan, degrees, radians
 
 
+
 class Tank(Entity):
     def __init__(self, color, move, stats, hp=75, pos=(88, 83), size=(45, 45),
                  center=(0, 0), radio=30, direction=None):  # "x>", "x<" o "y>", "y<"

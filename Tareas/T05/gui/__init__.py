@@ -47,6 +47,10 @@ def start_explotion(position):
     __main_widget.start_explotion(pos=position)
 
 
+def forbidden_cords():
+    return __main_widget.forbidden_cords
+
+
 def restart_game():
     __main_widget.restart_game()
 

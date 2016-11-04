@@ -3,6 +3,7 @@ from PyQt4.QtGui import QRadioButton, QLineEdit, QPushButton
 from PyQt4.QtCore import QTimer, Qt
 from .utils import get_asset_path
 from .power_ups import Bomb
+from .store import Store
 import time
 '''
     bastante codigo sacado de la gui T04
@@ -23,9 +24,14 @@ class MainWindow(QWidget):
         self.__entities = []
         self._bombs = []  # ppal bombs
 
+        self.store = QLabel(self)
+        self.store.setGeometry(670, 120, 45, 45)
+        self.store.setPixmap(QPixmap(get_asset_path(["environment", "cross.png"])).scaled(45, 45))
+
         self.mode = None
         self.stage = None
         self.final_score = 0
+        self._score = 0
 
         self.is_paused = False
         self.start_pause = 0
@@ -39,9 +45,20 @@ class MainWindow(QWidget):
 
         self.start_menu()
 
+        self.back_to_store = 0  # permitido para volver a entrar
+        self.cooldown = False
+
         # teclas simultaneas
         self.last_key = ""
         self.last_key_time = 0
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, other):
+        self._score = other
 
     def start_menu(self):
         self.label_start = QLabel(" -- Hacker Tanks! -- \n\n\n Mode:", self)
@@ -130,7 +147,7 @@ class MainWindow(QWidget):
         self.button_quit.clicked.connect(self.quit)
         self.button_quit.show()
 
-    def startMain(self, main, delay=25):  # RR no entiendo su uso
+    def startMain(self, main, delay=25):
         self.__timer.timeout.connect(main)
         self.__timer.start(delay)
 
@@ -203,6 +220,20 @@ class MainWindow(QWidget):
 
         if self.is_paused:
             return
+
+        if self.tank.cord_x in range(650, 690) and self.tank.cord_y in range(100, 140):
+            if self.cooldown:
+                if int(time.clock()) > self.back_to_store:  # paso el tiempo
+                    self.cooldown = False
+
+            if not self.cooldown:
+                # sector tienda
+                self.pause()  # pausa juego
+
+                # nueva ventana
+                self.start_store()
+                self.cooldown = True
+                return
 
         old_cord = (self.tank.cord_x, self.tank.cord_y)
         old_barrel_cord = (self.tank.barrel.cord_x, self.tank.barrel.cord_y)
@@ -340,6 +371,10 @@ class MainWindow(QWidget):
         self.last_key_time = time.clock()
         return
 
+    def start_store(self):
+        self.store = Store(self.score)
+        self.store.show()
+
     def show_explotion(self, position):
         self.explotion = QLabel(self)
         self.explotion.setPixmap(QPixmap(get_asset_path(
@@ -367,6 +402,16 @@ class MainWindow(QWidget):
                     self.set_bombs_left(self.tank)
 
     def valid_movement(self, tank):
+        all_borders = list()
+        all_borders.extend([(tank.cord_x, y) for y in
+                       range(tank.cord_y, tank.cord_y + tank.size[0])])
+        all_borders.extend([(tank.cord_x + tank.size[0], y) for y in
+                       range(tank.cord_y, tank.cord_y + tank.size[0])])
+        all_borders.extend([(x, tank.cord_y) for x in
+                       range(tank.cord_x, tank.cord_x + tank.size[0])])
+        all_borders.extend([(x, tank.cord_y + tank.size[0]) for x in
+                       range(tank.cord_x, tank.cord_x + tank.size[0])])
+
         x_pos = tank.cord_x
         y_pos = tank.cord_y
 
@@ -374,17 +419,9 @@ class MainWindow(QWidget):
                 or y_pos < 83 or y_pos + tank.width() > 597:  # bordes
             return False
 
-        if (x_pos, y_pos) in self.forbidden_cords:
-            return False
-
-        if (x_pos + tank.size[0], y_pos) in self.forbidden_cords:
-            return False
-
-        if (x_pos, y_pos + tank.size[0]) in self.forbidden_cords:
-            return False
-
-        if (x_pos + tank.size[0], y_pos + tank.size[0]) in self.forbidden_cords:
-            return False
+        for cord in all_borders:
+            if cord in self.forbidden_cords:
+                return False
 
         return True
 
@@ -424,6 +461,9 @@ class MainWindow(QWidget):
         self.error_label.show()
 
     def restart(self):
+        if self.cooldown:  # vuelve de la tienda
+            self.back_to_store = int(time.clock()) + 10
+
         self.button_restart.deleteLater()
         self.set_message("")
         self.is_paused = False
