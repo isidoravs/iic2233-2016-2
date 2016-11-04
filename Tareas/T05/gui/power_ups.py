@@ -24,6 +24,13 @@ class Explotion:  # QTimer
     pass
 
 
+class PowerUp(Entity):
+    def __init__(self, kind, pos=(0, 0), size=(20, 35)):
+        self.kind = kind
+        super().__init__(["bullets", self.kind + ".png"], size=size,
+                         hp=0, pos=pos)
+
+
 class Bullet(Entity):  # QTimer
     def __init__(self, kind):
         self.kind = kind

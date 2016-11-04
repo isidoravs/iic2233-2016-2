@@ -10,6 +10,7 @@ class Tank(Entity):
         self.color = color
         self.harm = stats[0]
         self.size = size
+        self.max_hp = hp
 
         # tanque_circulo
         self.center = center

@@ -1,6 +1,8 @@
 import gui
 from gui.environment import Wall, Coin
 from gui.tanks import Tank
+from gui.power_ups import PowerUp
+from random import randint, choice
 import time
 import sys
 
@@ -9,7 +11,6 @@ class HackerTanks:
 
     def __init__(self):
         self.borders = list()
-        self.coins = list()
         self._bombs = list()
         self.walls = list()
 
@@ -21,7 +22,7 @@ class HackerTanks:
         self.actual_time = 0  # segundos
         self.aux_timer = list()
 
-        self.score = 0
+        self._score = 200
 
         self.set_borders()
         self.set_walls(1)  # coordinar con etapas RR
@@ -32,6 +33,16 @@ class HackerTanks:
 
         self.start_time = None
         self.game_over = False
+
+        self.power_ups = list()
+
+    @property
+    def score(self):
+        return self._score
+
+    @score.setter
+    def score(self, other):
+        self._score = other
 
     @property
     def paused_time(self):
@@ -203,6 +214,9 @@ class HackerTanks:
             self.check_game_info()
         else:
             if not self.game_over and not gui.is_paused():
+                # mouse
+                gui.track_mouse()
+
                 # mantengo actualizado el tiempo
                 self.actual_time = int(time.clock()) - gui.paused_time()
 
@@ -221,6 +235,12 @@ class HackerTanks:
                             if tank.direction is not None:
                                 self.move_tank_center(tank)
 
+                    # creacion de power ups, random
+                    aux1 = randint(0, 15)
+                    aux2 = randint(0, 15)
+                    if aux1 == aux2:
+                        self.show_power_up()
+
                 forbidden = gui.forbidden_cords()
                 for tank in self.enemies:
                     if tank.color == "Red" or tank.color == "Black":
@@ -235,6 +255,24 @@ class HackerTanks:
                             tank.barrel.cord_y = old_barrel_cord[1]
                     else:
                         tank.make_movement(self.tank)
+
+                # atrapa un power_up
+                for powerup in self.power_ups:
+                    if powerup.cord_x in range(self.tank.cord_x, self.tank.cord_x + 45):
+                        if powerup.cord_y in range(self.tank.cord_y, self.tank.cord_y + 45):
+                            if powerup.kind == "coin":
+                                self.score += 250
+                                gui.score(self.score)
+                            elif "Explosive" in powerup.kind:
+                                self.tank.bullets.extend(["e"] * 3)
+                            elif "Penetrante" in powerup.kind:
+                                self.tank.bullets.extend(["p"] * 3)
+                            elif "Ralentizante" in powerup.kind:
+                                self.tank.bullets.extend(["r"] * 3)
+
+                            self.power_ups.remove(powerup)
+                            powerup.deleteLater()
+                            break
 
 
                 if self.mode == "Stages":
@@ -254,6 +292,7 @@ class HackerTanks:
                         # dio vuelta
                         gui.set_message("All stages complete!")
                         self.score += 1000
+                        gui.score(self.score)
                         self.game_over = True
 
                     else:
@@ -266,6 +305,7 @@ class HackerTanks:
                         # score
                         self.score += lapse
                         self.score += self.tank.health
+                        gui.score(self.score)
 
                         # restart
                         self.tank.deleteLater()
@@ -284,7 +324,11 @@ class HackerTanks:
                         gui.set_next_bullets(self.tank)
 
                 # mantiene actualizado
+                actual = gui.current_score()
+                self.score = actual
                 gui.set_score(str(self.score))
+
+                gui.set_next_bullets(self.tank)
 
             elif self.game_over:  # no funciona RR
                 self.tank.deleteLater()
@@ -386,6 +430,22 @@ class HackerTanks:
                 return False
 
         return True
+
+    def show_power_up(self):
+        power_up = ["coin", "bulletExplosive", "bulletPenetrante", "bulletRalentizante"]
+        positions = [(320, 300), (325, 515), (515, 400)]
+
+        aux = choice(power_up)
+        if aux == "coin":
+            size = (25, 25)
+        else:
+            size = (16, 28)
+
+        to_show = PowerUp(aux, pos=choice(positions), size=size)
+        self.power_ups.append(to_show)
+        gui.add_entity(to_show)
+        return
+
 
     def check_game_info(self):
         if self.mode is not None:

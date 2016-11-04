@@ -1,9 +1,10 @@
-from PyQt4.QtGui import QWidget, QLabel, QPixmap, QApplication, QFont
-from PyQt4.QtGui import QRadioButton, QLineEdit, QPushButton
-from PyQt4.QtCore import QTimer, Qt
+from PyQt4.QtGui import QWidget, QLabel, QPixmap, QApplication, QFont, QCursor
+from PyQt4.QtGui import QRadioButton, QLineEdit, QPushButton, QMouseEvent
+from PyQt4.QtCore import QTimer, Qt, QEvent
 from .utils import get_asset_path
 from .power_ups import Bomb
 from .store import Store
+from math import atan, degrees
 import time
 '''
     bastante codigo sacado de la gui T04
@@ -31,7 +32,7 @@ class MainWindow(QWidget):
         self.mode = None
         self.stage = None
         self.final_score = 0
-        self._score = 0
+        self._score = 200
 
         self.is_paused = False
         self.start_pause = 0
@@ -51,6 +52,9 @@ class MainWindow(QWidget):
         # teclas simultaneas
         self.last_key = ""
         self.last_key_time = 0
+
+        self.cursor = QCursor()
+
 
     @property
     def score(self):
@@ -93,7 +97,7 @@ class MainWindow(QWidget):
         self.label_score_fix.move(830, 100)
         self.label_score_fix.show()
 
-        self.label_score = QLabel("0", self)  # actualiza
+        self.label_score = QLabel(str(self.score), self)  # actualiza
         self.label_score.move(850, 120)
         self.label_score.show()
 
@@ -372,7 +376,13 @@ class MainWindow(QWidget):
         return
 
     def start_store(self):
-        self.store = Store(self.score)
+        actual_stats = {"harm": self.tank.harm, "hp": self.tank.max_hp,
+                        "resistance": self.tank.resistance,
+                        "speed": self.tank.speed,
+                        "shoot": self.tank.shoot,
+                        "bomb_range": self.tank.bomb_range}
+
+        self.store = Store(self.score, actual_stats)
         self.store.show()
 
     def show_explotion(self, position):
@@ -425,6 +435,34 @@ class MainWindow(QWidget):
 
         return True
 
+    def move_barrel(self):
+        point = self.mapFromGlobal(self.cursor.pos())  # posicion relativa a widget
+
+        x_pos = point.x()
+        y_pos = point.y()
+
+        opuesto = x_pos - self.tank.cord_x
+        adyacente = self.tank.cord_y - y_pos
+        if adyacente == 0:
+            if opuesto > 0:
+                new_angle = 90
+            else:
+                new_angle = 270
+
+        elif opuesto == 0:
+            if adyacente > 0:
+                new_angle = 0
+            else:
+                new_angle = 180
+
+        elif adyacente < 0:
+            new_angle = degrees(atan(opuesto / adyacente)) + 180
+        else:
+            new_angle = degrees(atan(opuesto / adyacente))
+
+        self.tank.barrel.angle = new_angle
+        return
+
     def start(self):
         self.error_label.show()
         if self.option1.isChecked():  # stages
@@ -463,6 +501,24 @@ class MainWindow(QWidget):
     def restart(self):
         if self.cooldown:  # vuelve de la tienda
             self.back_to_store = int(time.clock()) + 10
+
+            self.score = self.store.score
+
+            # cambiar stats de tanque
+            self.tank.bombs += self.store.bombs_bought
+            self.tank.bullets.extend(self.store.bullets_bought)
+
+            stats = self.store.actual_stats
+            self.tank.max_hp = stats["hp"]
+            self.tank.harm = stats["harm"]
+            self.tank.resistance = stats["resistance"]
+            self.tank.shoot = stats["shoot"]
+            self.tank.bomb_range = stats["bomb_range"]
+            self.tank.speed = stats["speed"]
+
+            # mostrar en interfaz
+            self.set_bombs_left(self.tank)
+            self.set_next_bullets(self.tank)
 
         self.button_restart.deleteLater()
         self.set_message("")

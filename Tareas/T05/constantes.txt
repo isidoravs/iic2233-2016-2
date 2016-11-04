@@ -14,3 +14,4 @@ stats4,6,2,3,6,90
 bombHarm,10
 startBombs,3
 startBullets,10
+Coin,250

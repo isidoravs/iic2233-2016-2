@@ -26,6 +26,10 @@ def paused_time():
     return __main_widget.paused_time
 
 
+def current_score():
+    return __main_widget.score
+
+
 def show_explotion(position):
     # usar QTimers
     __main_widget.show_explotion(position)
@@ -57,10 +61,16 @@ def restart_game():
 def set_score(score):
     __main_widget.set_score(score)
 
+def score(score):
+    __main_widget.score = score
 
 def add_forbidden_cords(cords_list):
     for cord in cords_list:
         __main_widget.forbidden_cords.append(cord)
+
+
+def track_mouse():
+    __main_widget.move_barrel()
 
 
 def remove_forbidden_cords(cords_list):
