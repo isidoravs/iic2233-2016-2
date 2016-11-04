@@ -1,0 +1,10 @@
+isidora,2345
+isidoravs,30
+emiliana,30
+usuario,70
+sebastian,30
+eduardo,30
+elena,30
+luis,1673
+jorge,30
+
