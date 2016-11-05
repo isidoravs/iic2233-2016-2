@@ -63,6 +63,14 @@ def forbidden_cords():
     return __main_widget.forbidden_cords
 
 
+def flying_portals():
+    return __main_widget.flying_portals
+
+
+def remove_portal(portal):
+    __main_widget.flying_portals.remove(portal)
+
+
 def restart_game():
     __main_widget.restart_game()
 

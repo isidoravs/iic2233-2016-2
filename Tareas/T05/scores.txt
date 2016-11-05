@@ -3,9 +3,8 @@ isidoravs,30
 emiliana,30
 usuario,70
 sebastian,30
-eduardo,30
+eduardo,50
 elena,30
-luis,1673
-jorge,30
+jorge,60
 5am,200
 wujuu,650

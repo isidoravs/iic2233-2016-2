@@ -110,7 +110,6 @@ class Entity(QWidget):
         self.__pixmap = self.__pixmap.transformed(QTransform().rotate(self.angle))
         self._base_label.setPixmap(self.__pixmap)
         self._base_label.show()
-        # self.setFixedSize(self.__pixmap.width(), self.__pixmap.height())
 
     def setFixedSize(self, x, y):
         super().setFixedSize(x, y)

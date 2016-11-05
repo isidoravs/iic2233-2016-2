@@ -152,5 +152,82 @@ class Bullet(Entity):
             self.cord_y -= 5 / tan(radians(self.angle))
 
         self.distance -= 5
+        return
+
+
+class Portal(Entity):
+    def __init__(self, pos=(10,10)):
+        self._flying = True
+        self.to_remove = False
+        super().__init__(["bullets", "portal.png"], size=(40, 40), hp=0, pos=pos)
+
+    @property
+    def flying(self):
+        return self._flying
+
+    @flying.setter
+    def flying(self, other):
+        self._flying = other
+        self.updatePixmap()
+
+    def updatePixmap(self):
+        if self.flying:
+            self._base_image = ["bullets", "portal.png"]
+        else:
+            self._base_image = ["bullets", "portalWall.png"]
+        super().updatePixmap()
+
+    def shoot_move(self, forbidden_cords, enemies):
+        if self.cord_x < 88 or self.cord_x > 750 \
+                or self.cord_y < 83 or self.cord_y > 597:  # bordes
+            self.flying = False
+            return
+
+        for enemy in enemies:  # tambien incluye principal
+            if self.cord_x > enemy.cord_x and self.cord_x < enemy.cord_x + enemy.width():
+                if self.cord_y > enemy.cord_y and self.cord_y < enemy.cord_y + enemy.height():
+                    self.to_remove = True
+                    return
+
+        all_borders = list()
+        all_borders.extend([(self.cord_x, y) for y in
+                            range(int(self.cord_y),
+                                  int(self.cord_y + self.height()))])
+        all_borders.extend([(self.cord_x + self.width(), y) for y in
+                            range(int(self.cord_y),
+                                  int(self.cord_y + self.height()))])
+        all_borders.extend([(x, self.cord_y) for x in
+                            range(int(self.cord_x),
+                                  int(self.cord_x + self.width()))])
+        all_borders.extend([(x, self.cord_y + self.height()) for x in
+                            range(int(self.cord_x),
+                                  int(self.cord_x + self.width()))])
+
+        for cord in all_borders:
+            if cord in forbidden_cords:
+                self.flying = False
+                return
+
+        if int(self.angle) in range(0, 10):
+            self.cord_y -= 5
+
+        elif int(self.angle) in range(170, 190):
+            self.cord_y += 5
+
+        elif int(self.angle) in range(80, 100):
+            self.cord_x += 5
+
+        elif self.angle < 0:  # II cuadrante
+            self.cord_x -= 5
+            self.cord_y += 5 / tan(radians(self.angle))
+
+        elif int(self.angle) in range(190, 271):
+            self.cord_x -= 5
+            self.cord_y += 5 / tan(radians(self.angle))
+
+        else:
+            self.cord_x += 5
+            self.cord_y -= 5 / tan(radians(self.angle))
 
         return
+

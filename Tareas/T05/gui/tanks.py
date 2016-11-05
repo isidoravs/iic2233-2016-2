@@ -12,6 +12,7 @@ class Tank(Entity):
         self.harm = stats[0]
         self.size = size
         self.max_hp = hp
+        self.portal_shoots = 2
 
         # tanque_circulo
         self.center = center

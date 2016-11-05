@@ -37,6 +37,8 @@ class HackerTanks:
         self.start_time = None
         self.game_over = False
 
+        self.portals = list()
+
         self.power_ups = list()
 
         self.death_score = self.set_death_score()
@@ -233,6 +235,18 @@ class HackerTanks:
                 # mouse
                 gui.track_mouse()
 
+                for portal in gui.flying_portals():
+                    # portal quieto
+                    if not portal.flying:
+                        if portal not in self.portals:
+                            self.portals.append(portal)
+                    else:
+                        portal.shoot_move(gui.forbidden_cords(), self.enemies)
+                        if portal.to_remove:  # choca enemigo
+                            self.tank.portal_shoots += 1
+                            gui.remove_portal(portal)
+                            portal.deleteLater()
+
                 for bullet in gui.bullets_list() + self.enemies_bullets:
                     bullet.shoot_move(gui.forbidden_cords(),
                                       self.enemies + [self.tank])
@@ -424,6 +438,11 @@ class HackerTanks:
                         self.score += self.tank.health
                         gui.score(self.score)
 
+                        self.portals = list()
+
+                        for portal in self.portals:
+                            portal.deleteLater()
+
                         # restart
                         self.tank.deleteLater()
                         self.tank.barrel.deleteLater()
@@ -484,6 +503,11 @@ class HackerTanks:
 
                 for bullet in self.enemies_bullets:
                     bullet.deleteLater()
+
+                self.portals = list()
+
+                for portal in self.portals:
+                    portal.deleteLater()
 
                 self._bombs = list()
                 self.enemies = list()

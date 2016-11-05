@@ -2,7 +2,7 @@ from PyQt4.QtGui import QWidget, QLabel, QPixmap, QApplication, QFont, QCursor
 from PyQt4.QtGui import QRadioButton, QLineEdit, QPushButton, QMouseEvent
 from PyQt4.QtCore import QTimer, Qt, QEvent, SIGNAL
 from .utils import get_asset_path
-from .power_ups import Bomb, Bullet
+from .power_ups import Bomb, Bullet, Portal
 from .store import Store
 from math import atan, degrees
 import time
@@ -34,6 +34,7 @@ class MainWindow(QWidget):
         self.stage = None
         self.final_score = 0
         self._score = 200
+        self.flying_portals = list()
 
         self.is_paused = False
         self.start_pause = 0
@@ -368,8 +369,56 @@ class MainWindow(QWidget):
             return
 
         elif event.key() == 16777220:  # Enter
-            # portales
-            pass
+            # portal
+            if self.tank.portal_shoots == 0:
+                return
+
+            else:
+                self.tank.portal_shoots -= 1
+
+                aux_angle = int(self.tank.barrel.angle)
+
+                if aux_angle in range(-20, 20):
+                    x_pos = self.tank.cord_x + 45 // 2
+                    y_pos = self.tank.cord_y
+
+                elif aux_angle in range(20, 65):
+                    x_pos = self.tank.cord_x + 45
+                    y_pos = self.tank.cord_y
+
+                elif aux_angle in range(65, 115):
+                    x_pos = self.tank.cord_x + 45
+                    y_pos = self.tank.cord_y + 45 // 2
+
+                elif aux_angle in range(115, 155):
+                    x_pos = self.tank.cord_x + 45
+                    y_pos = self.tank.cord_y + 45
+
+                elif aux_angle in range(155, 200):
+                    x_pos = self.tank.cord_x + 45 // 2
+                    y_pos = self.tank.cord_y + 45
+
+                elif aux_angle in range(200, 245):
+                    x_pos = self.tank.cord_x
+                    y_pos = self.tank.cord_y + 45
+
+                elif aux_angle in range(245, 270):
+                    x_pos = self.tank.cord_x
+                    y_pos = self.tank.cord_y + 45 // 2
+
+                elif aux_angle < 0:
+                    x_pos = self.tank.cord_x
+                    y_pos = self.tank.cord_y
+
+                else:
+                    x_pos = self.tank.barrel.cord_x + self.tank.barrel.width() // 2
+                    y_pos = self.tank.barrel.cord_y + self.tank.barrel.height() // 2
+
+                portal = Portal(pos=(int(x_pos), int(y_pos)))
+                self.flying_portals.append(portal)
+                portal.move(int(x_pos), int(y_pos))
+                portal.angle = self.tank.barrel.angle
+                self.add_entity(portal)
 
         if not self.valid_movement(self.tank):
             self.tank.cord_x = old_cord[0]
@@ -380,6 +429,7 @@ class MainWindow(QWidget):
 
         self.last_key = key
         self.last_key_time = time.clock()
+
         return
 
     def start_store(self):
@@ -483,14 +533,14 @@ class MainWindow(QWidget):
 
     def valid_movement(self, tank):
         all_borders = list()
-        all_borders.extend([(tank.cord_x, y) for y in
-                       range(tank.cord_y, tank.cord_y + tank.size[0])])
-        all_borders.extend([(tank.cord_x + tank.size[0], y) for y in
-                       range(tank.cord_y, tank.cord_y + tank.size[0])])
-        all_borders.extend([(x, tank.cord_y) for x in
-                       range(tank.cord_x, tank.cord_x + tank.size[0])])
-        all_borders.extend([(x, tank.cord_y + tank.size[0]) for x in
-                       range(tank.cord_x, tank.cord_x + tank.size[0])])
+        all_borders.extend([(int(tank.cord_x), y) for y in
+                       range(int(tank.cord_y), int(tank.cord_y + tank.size[0]))])
+        all_borders.extend([(int(tank.cord_x + tank.size[0]), y) for y in
+                       range(int(tank.cord_y), int(tank.cord_y + tank.size[0]))])
+        all_borders.extend([(x, int(tank.cord_y)) for x in
+                       range(int(tank.cord_x), int(tank.cord_x) + int(tank.size[0]))])
+        all_borders.extend([(x, int(tank.cord_y + tank.size[0])) for x in
+                       range(int(tank.cord_x), int(tank.cord_x + tank.size[0]))])
 
         x_pos = tank.cord_x
         y_pos = tank.cord_y
@@ -605,6 +655,7 @@ class MainWindow(QWidget):
         self.stage = None
 
         self.all_bullets = list()
+        self.flying_portals = list()
 
         self.label_level.hide()
         self.label_time.hide()
