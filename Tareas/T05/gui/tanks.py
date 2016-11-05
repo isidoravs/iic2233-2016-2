@@ -1,6 +1,7 @@
 from .entity import Entity
 from .utils import get_asset_path
-from math import cos, sin, atan, degrees, radians
+from .power_ups import Bullet
+from math import sin, cos, atan, degrees, radians, sqrt
 
 
 
@@ -21,12 +22,9 @@ class Tank(Entity):
         self.bullets = self.start_bullets()  # solo para ppal, PILA
 
         if color == "Black":
-            self.barrel = self.barrel = Barrel(self.color,
-                                               pos=(pos[0] - 13, pos[1] - 13),
-                                               size=(105, 105))
+            self.barrel = Barrel(self.color, pos=(pos[0] - 13, pos[1] - 13), size=(105, 105))
         else:
-            self.barrel = self.barrel = Barrel(self.color, pos=(pos[0] - 13,
-                                                                pos[1] - 13))
+            self.barrel = Barrel(self.color, pos=(pos[0] - 13, pos[1] - 13))
 
         self.resistance = stats[1]
         self.speed = stats[2]  # movimientos por tecla
@@ -135,6 +133,141 @@ class Tank(Entity):
 
             for _ in range(self.speed):  # revisar no chocar RR
                 self.move_near(objective)
+
+    def in_vision(self, objective):
+        if self.color == "Beige":
+            if self.angle == 0:
+                if objective.cord_y <= self.cord_y:
+                    if objective.cord_x in range(self.cord_x - 30, self.cord_x + 30) or (objective.cord_x + 30) in range(self.cord_x - 30, self.cord_x + 30):
+                        return True
+
+            elif self.angle == 45:
+                all_borders = list()
+                all_borders.extend([(objective.cord_x, y) for y in
+                                    range(int(objective.cord_y),
+                                          int(objective.cord_y + objective.size[0]))])
+                all_borders.extend([(objective.cord_x + objective.size[0], y) for y in
+                                    range(int(objective.cord_y),
+                                          int(objective.cord_y + objective.size[0]))])
+                all_borders.extend([(x, objective.cord_y) for x in
+                                    range(int(objective.cord_x),
+                                          int(objective.cord_x + objective.size[0]))])
+                all_borders.extend([(x, objective.cord_y + objective.size[0]) for x in
+                                    range(int(objective.cord_x),
+                                          int(objective.cord_x + objective.size[0]))])
+
+                for cord in all_borders:
+                    delta_x = cord[0] - self.cord_x
+                    delta_y = self.cord_y - cord[1]
+                    if delta_x in range(delta_y - 30, delta_y + 30):
+                        return True
+
+            elif self.angle == 315:
+                all_borders = list()
+                all_borders.extend([(objective.cord_x, y) for y in
+                                    range(int(objective.cord_y),
+                                          int(objective.cord_y + objective.size[
+                                              0]))])
+                all_borders.extend(
+                    [(objective.cord_x + objective.size[0], y) for y in
+                     range(int(objective.cord_y),
+                           int(objective.cord_y + objective.size[0]))])
+                all_borders.extend([(x, objective.cord_y) for x in
+                                    range(int(objective.cord_x),
+                                          int(objective.cord_x + objective.size[
+                                              0]))])
+                all_borders.extend(
+                    [(x, objective.cord_y + objective.size[0]) for x in
+                     range(int(objective.cord_x),
+                           int(objective.cord_x + objective.size[0]))])
+
+                for cord in all_borders:
+                    delta_x = self.cord_x - cord[0]
+                    delta_y = self.cord_y - cord[1]
+                    if delta_x in range(delta_y - 30, delta_y + 30):
+                        return True
+
+            elif self.angle == 180:
+                if objective.cord_y >= self.cord_y:
+                    if objective.cord_x in range(self.cord_x - 30, self.cord_x + 30) or (objective.cord_x + 30) in range(self.cord_x - 30, self.cord_x + 30):
+                        return True
+
+            elif self.angle == 90:
+                if objective.cord_x >= self.cord_x:
+                    if objective.cord_y in range(self.cord_y - 30, self.cord_y + 30) or (objective.cord_y + 30) in range(self.cord_y - 30, self.cord_y + 30):
+                        return True
+
+            elif self.angle == 270:
+                if objective.cord_x <= self.cord_x:
+                    if objective.cord_y in range(self.cord_y - 30, self.cord_y + 30) or (objective.cord_y + 30) in range(self.cord_y - 30, self.cord_y + 30):
+                        return True
+
+        elif self.color == "Green":
+            distance = sqrt((objective.cord_x - self.cord_x
+                             ) ** 2 + (objective.cord_y - self.cord_y) ** 2)
+
+            if distance < 100:
+                return True
+
+        elif self.color == "Red":
+            distance = sqrt((objective.cord_x - self.cord_x
+                             ) ** 2 + (objective.cord_y - self.cord_y) ** 2)
+
+            if distance < 250:
+                return True
+
+        elif self.color == "Black":
+            distance = sqrt((objective.cord_x - self.cord_x
+                             ) ** 2 + (objective.cord_y - self.cord_y) ** 2)
+
+            if distance < 300:
+                return True
+
+        return False
+
+    def start_shooting(self):
+        aux_angle = int(self.barrel.angle)
+
+        if aux_angle in range(-20, 20):
+            x_pos = self.cord_x + 45 // 2
+            y_pos = self.cord_y
+
+        elif aux_angle in range(20, 65):
+            x_pos = self.cord_x + 45
+            y_pos = self.cord_y
+
+        elif aux_angle in range(65, 115):
+            x_pos = self.cord_x + 45
+            y_pos = self.cord_y + 45 // 2
+
+        elif aux_angle in range(115, 155):
+            x_pos = self.cord_x + 45
+            y_pos = self.cord_y + 45
+
+        elif aux_angle in range(155, 200):
+            x_pos = self.cord_x + 45 // 2
+            y_pos = self.cord_y + 45
+
+        elif aux_angle in range(200, 245):
+            x_pos = self.cord_x
+            y_pos = self.cord_y + 45
+
+        elif aux_angle in range(245, 271):
+            x_pos = self.cord_x
+            y_pos = self.cord_y + 45 // 2
+
+        elif aux_angle < 0:
+            x_pos = self.cord_x
+            y_pos = self.cord_y
+
+        else:
+            x_pos = self.barrel.cord_x + self.barrel.width() // 2
+            y_pos = self.barrel.cord_y + self.barrel.height() // 2
+
+        bullet = Bullet("{}Enemy".format(self.color), self.harm,
+                        pos=(int(x_pos), int(y_pos)), owner=self)
+        bullet.angle = self.barrel.angle
+        return bullet
 
     def move_near(self, objective):
         if objective.cord_x == self.cord_x:

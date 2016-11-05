@@ -1,8 +1,9 @@
 import gui
 from gui.environment import Wall
 from gui.tanks import Tank
-from gui.power_ups import PowerUp
+from gui.power_ups import PowerUp, Explotion
 from random import randint, choice
+from math import sqrt
 import time
 import sys
 
@@ -13,8 +14,10 @@ class HackerTanks:
         self.borders = list()
         self._bombs = list()
         self.walls = list()
+        self.explotions = list()
 
         self.enemies = list()
+        self.enemies_bullets = list()
 
         self.tank = None  # principal
 
@@ -128,11 +131,11 @@ class HackerTanks:
                 self.walls.append(new_wall)
 
         elif level == 6:
-            for i in range(5):
+            for i in range(4):
                 if i < 3:
-                    new_wall = Wall("indestructible", pos=(95 + 97*i, 450))
+                    new_wall = Wall("indestructible", pos=(95 + 97*i, 420))
                 else:
-                    new_wall = Wall("indestructible", pos=(163 + 97 * i, 450))
+                    new_wall = Wall("indestructible", pos=(163 + 97 * (i + 1), 420))
                 self.walls.append(new_wall)
 
             for i in range(3):
@@ -227,14 +230,54 @@ class HackerTanks:
                 # mouse
                 gui.track_mouse()
 
-                for bullet in gui.bullets_list():
+                for bullet in gui.bullets_list() + self.enemies_bullets:
                     bullet.shoot_move(gui.forbidden_cords(),
-                                      self.enemies,
-                                      self.tank.harm,
-                                      self.tank)
+                                      self.enemies + [self.tank])
                     if bullet.to_remove:
-                        gui.remove_bullet(bullet)
+                        if "Enemy" in bullet.kind:
+                            self.enemies_bullets.remove(bullet)
+                        else:
+                            gui.remove_bullet(bullet)
                         bullet.deleteLater()
+
+                    else:
+                        for other in gui.bullets_list() + self.enemies_bullets:
+                            if bullet != other:
+                                if int(bullet.cord_x) in range(int(other.cord_x) - 5, int(other.cord_x) + 5):
+                                    if int(bullet.cord_y) in range(int(other.cord_y) - 10, int(other.cord_y) + 10):
+                                        # colision
+                                        explotion = Explotion("bullet",
+                                                              pos=(bullet.cord_x, bullet.cord_y),
+                                                              exp=6,
+                                                              size=(30, 30))
+                                        self.explotions.append(explotion)
+                                        gui.add_entity(explotion)
+
+                                        for enemy in self.enemies:
+                                            if self.distance(enemy, (bullet.cord_x, bullet.cord_y)) <= 30:
+                                                enemy.health -= 5
+
+                                        if self.distance(self.tank, (bullet.cord_x, bullet.cord_y)) <= 30:
+                                            self.tank.health -= 5
+
+                                        if "Enemy" in bullet.kind:
+                                            self.enemies_bullets.remove(bullet)
+                                        else:
+                                            gui.remove_bullet(bullet)
+                                        bullet.deleteLater()
+
+                                        if "Enemy" in other.kind:
+                                            self.enemies_bullets.remove(other)
+                                        else:
+                                            gui.remove_bullet(other)
+                                        other.deleteLater()
+
+                # dinamica de explosiones
+                for explotion in self.explotions:
+                    explotion.counter -= 1
+                    if explotion.counter == 0:
+                        self.explotions.remove(explotion)
+                        explotion.deleteLater()
 
                 # mantengo actualizado el tiempo
                 self.actual_time = int(time.clock()) - gui.paused_time()
@@ -258,6 +301,20 @@ class HackerTanks:
                     if aux1 == aux2:
                         self.show_power_up()
 
+                    # cada dos segundos dispara enemigo
+                    if self.actual_time % 2 == 0:
+                        for enemy in self.enemies:
+                            if enemy.in_vision(self.tank):
+                                bullet = enemy.start_shooting()
+                                self.enemies_bullets.append(bullet)
+                                gui.add_entity(bullet)
+
+                    # tanque principal choque
+                    for enemy in self.enemies:
+                        if self.distance(self.tank, (enemy.cord_x, enemy.cord_y)) <= 25:
+                            self.tank.health -= 1
+                            enemy.health -= 1
+
                 forbidden = gui.forbidden_cords()
                 for tank in self.enemies:
                     if tank.color == "Red" or tank.color == "Black":
@@ -265,6 +322,24 @@ class HackerTanks:
                         old_barrel_cord = (tank.barrel.cord_x, tank.barrel.cord_y)
                         tank.make_movement(self.tank)
                         if not self.valid_movement(tank, forbidden):
+                            # caso especial tanque negro
+                            if tank.color == "Black":
+                                destructibles = [wall for wall in self.walls
+                                                 if "indestructible" not in wall.kind]
+
+                                for wall in destructibles:
+                                    corners = [(wall.cord_x, wall.cord_y),
+                                                    (wall.cord_x + wall.width(), wall.cord_y),
+                                                    (wall.cord_x, wall.cord_y + wall.height()),
+                                                    (wall.cord_x + wall.width(), wall.cord_y + wall.height())]
+
+                                    for corner in corners:
+                                        if self.distance(tank, corner) <= 100:
+                                            self.walls.remove(wall)
+                                            self.remove_forbidden_cords(wall)
+                                            wall.deleteLater()
+                                            return
+
                             tank.cord_x = old_cord[0]
                             tank.cord_y = old_cord[1]
 
@@ -290,7 +365,6 @@ class HackerTanks:
                             self.power_ups.remove(powerup)
                             powerup.deleteLater()
                             break
-
 
                 if self.mode == "Stages":
                     lapse = self.actual_time - self.start_time
@@ -326,12 +400,15 @@ class HackerTanks:
 
                         # restart
                         self.tank.deleteLater()
+                        self.tank.barrel.deleteLater()
                         self.tank = None
 
                         self.stage = next_stage
                         self.set_walls(next_stage)
                         self.set_max_time(next_stage)
                         self.start_stage()
+
+                        gui.set_level(self.stage)
 
                         self.actual_time = 0  # segundos
                         self.aux_timer = list()
@@ -363,6 +440,7 @@ class HackerTanks:
                 gui.set_next_bullets(self.tank)
 
             elif self.game_over:  # no funciona RR
+                self.tank.barrel.hide()
                 self.tank.barrel.deleteLater()
                 self.tank.deleteLater()
                 self.tank = None
@@ -401,7 +479,10 @@ class HackerTanks:
                 else:
                     self._bombs.remove(bomb)
 
-                # gui.show_explotion((bomb.cord_x, bomb.cord_y))
+                # explotion
+                explotion = Explotion("bomb", pos=(bomb.cord_x, bomb.cord_y))
+                self.explotions.append(explotion)
+                gui.add_entity(explotion)
                 self.bomb_destruction(bomb)
 
                 # elimino
@@ -432,35 +513,29 @@ class HackerTanks:
                 if x_limit1 < wall.cord_x and x_limit2 > wall.cord_x:
                     if y_limit1 < wall.cord_y and y_limit2 > wall.cord_y:
                         self.walls.remove(wall)
-
-                        to_remove = list()
-                        to_remove.extend([(wall.cord_x, y) for y in
-                                       range(wall.cord_y,
-                                             wall.cord_y + wall.height())])
-                        to_remove.extend([(wall.cord_x + wall.width(), y) for y in
-                                       range(wall.cord_y,
-                                             wall.cord_y + wall.height())])
-                        to_remove.extend([(x, wall.cord_y) for x in
-                                       range(wall.cord_x,
-                                             wall.cord_x + wall.width())])
-                        to_remove.extend([(x, wall.cord_y + wall.height()) for x in
-                                       range(wall.cord_x,
-                                             wall.cord_x + wall.width())])
-
-                        gui.remove_forbidden_cords(to_remove)
-
+                        self.remove_forbidden_cords(wall)
                         wall.deleteLater()
 
+    def remove_forbidden_cords(self, wall):
+        to_remove = list()
+        to_remove.extend([(wall.cord_x, y) for y in
+                          range(wall.cord_y,
+                                wall.cord_y + wall.height())])
+        to_remove.extend([(wall.cord_x + wall.width(), y) for y in
+                          range(wall.cord_y,
+                                wall.cord_y + wall.height())])
+        to_remove.extend([(x, wall.cord_y) for x in
+                          range(wall.cord_x,
+                                wall.cord_x + wall.width())])
+        to_remove.extend([(x, wall.cord_y + wall.height()) for x in
+                          range(wall.cord_x,
+                                wall.cord_x + wall.width())])
+
+        gui.remove_forbidden_cords(to_remove)
+        return
+
     def valid_movement(self, tank, forbidden):
-        all_borders = list()
-        all_borders.extend([(tank.cord_x, y) for y in
-                       range(int(tank.cord_y), int(tank.cord_y + tank.size[0]))])
-        all_borders.extend([(tank.cord_x + tank.size[0], y) for y in
-                       range(int(tank.cord_y), int(tank.cord_y + tank.size[0]))])
-        all_borders.extend([(x, tank.cord_y) for x in
-                       range(int(tank.cord_x), int(tank.cord_x + tank.size[0]))])
-        all_borders.extend([(x, tank.cord_y + tank.size[0]) for x in
-                       range(int(tank.cord_x), int(tank.cord_x + tank.size[0]))])
+        all_borders = self.all_tank_borders(tank)
 
         x_pos = tank.cord_x
         y_pos = tank.cord_y
@@ -475,9 +550,26 @@ class HackerTanks:
 
         return True
 
+    def all_tank_borders(self, tank):
+        all_borders = list()
+        all_borders.extend([(tank.cord_x, y) for y in
+                            range(int(tank.cord_y),
+                                  int(tank.cord_y + tank.size[0]))])
+        all_borders.extend([(tank.cord_x + tank.size[0], y) for y in
+                            range(int(tank.cord_y),
+                                  int(tank.cord_y + tank.size[0]))])
+        all_borders.extend([(x, tank.cord_y) for x in
+                            range(int(tank.cord_x),
+                                  int(tank.cord_x + tank.size[0]))])
+        all_borders.extend([(x, tank.cord_y + tank.size[0]) for x in
+                            range(int(tank.cord_x),
+                                  int(tank.cord_x + tank.size[0]))])
+        return all_borders
+
     def show_power_up(self):
-        power_up = ["coin", "bulletExplosive", "bulletPenetrante", "bulletRalentizante"]
-        positions = [(320, 300), (325, 515), (515, 400)]
+        power_up = ["coin", "bulletExplosive", "bulletPenetrante",
+                    "bulletRalentizante"]
+        positions = [(320, 305), (325, 515), (515, 400)]
 
         aux = choice(power_up)
         if aux == "coin":
@@ -489,7 +581,6 @@ class HackerTanks:
         self.power_ups.append(to_show)
         gui.add_entity(to_show)
         return
-
 
     def check_game_info(self):
         if self.mode is not None:
@@ -745,6 +836,9 @@ class HackerTanks:
 
     def game_over_survival(self):
         gui.game_over_survival(self.score)
+
+    def distance(self, obj, cord):
+        return sqrt((obj.cord_x - cord[0]) ** 2 + (obj.cord_y - cord[1]) ** 2)
 
 
 if __name__ == "__main__":

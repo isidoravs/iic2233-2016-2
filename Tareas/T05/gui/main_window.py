@@ -461,7 +461,8 @@ class MainWindow(QWidget):
                     x_pos = self.tank.barrel.cord_x + self.tank.barrel.width()//2
                     y_pos = self.tank.barrel.cord_y + self.tank.barrel.height()//2
 
-                bullet = Bullet(kind, pos=(int(x_pos), int(y_pos)))
+                bullet = Bullet(kind, self.tank.harm,
+                                pos=(int(x_pos), int(y_pos)), owner=self.tank)
                 self.all_bullets.append(bullet)
                 bullet.move(int(x_pos), int(y_pos))
                 bullet.angle = self.tank.barrel.angle

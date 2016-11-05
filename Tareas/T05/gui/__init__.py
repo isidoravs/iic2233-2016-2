@@ -66,11 +66,18 @@ def forbidden_cords():
 def restart_game():
     __main_widget.restart_game()
 
+
 def set_score(score):
     __main_widget.set_score(score)
 
+
+def set_level(level):
+    __main_widget.set_level("Stages", level)
+
+
 def score(score):
     __main_widget.score = score
+
 
 def add_forbidden_cords(cords_list):
     for cord in cords_list:
