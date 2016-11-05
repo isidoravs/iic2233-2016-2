@@ -6,11 +6,11 @@ timeMax5,100
 timeMax6,110
 timeMax7,120
 timeMax8,130
-stats0,2,0,3,5,20
+stats0,2,0,4,5,20
 stats1,3,0,0,2,10
 stats2,5,0,1,3,10
 stats3,8,1,1,4,10
-stats4,12,2,2,6,10
+stats4,12,2,3,6,10
 bombHarm,50
 startBombs,3
 startBullets,10

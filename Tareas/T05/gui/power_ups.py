@@ -75,17 +75,29 @@ class Bullet(Entity):
             if enemy != self.owner:
                 if self.cord_x > enemy.cord_x and self.cord_x < enemy.cord_x + enemy.width():
                     if self.cord_y > enemy.cord_y and self.cord_y < enemy.cord_y + enemy.height():
-                        # choca a enemigo
-                        alpha = int(self.distance // 200)
-                        if alpha < 1:
-                            alpha = 1
+                        if self.kind == "Explosive":  # detonacion no harm directo
+                            pass
+                        else:
+                            if self.kind == "Ralentizante":
+                                if enemy.speed < 1:
+                                    pass
+                                elif enemy.speed == 1:
+                                    enemy.speed = 0.5
+                                else:
+                                    enemy.speed = int(enemy.speed // 2)
 
-                        new_harm = self.base_harm * alpha
-                        enemy.health -= new_harm
+                            # choca a enemigo
+                            alpha = int(self.distance // 200)
+                            if alpha < 1:
+                                alpha = 1
+
+                            new_harm = self.base_harm * alpha
+                            enemy.health -= new_harm
+
                         self.to_remove = True
                         return
 
-        # if self.rebounds == 1:  # ya reboto permite autoimpacto
+        # if self.rebounds == 1:
         #     if self.cord_x > tank.cord_x and self.cord_x < tank.cord_x + tank.width():
         #         if self.cord_y > tank.cord_y and self.cord_y < tank.cord_y + tank.height():
         #             # autoimpacto
@@ -98,24 +110,25 @@ class Bullet(Entity):
         #             self.to_remove = True
         #             return
 
-        all_borders = list()
-        all_borders.extend([(self.cord_x, y) for y in
-                            range(int(self.cord_y),
-                                  int(self.cord_y + self.height()))])
-        all_borders.extend([(self.cord_x + self.width(), y) for y in
-                            range(int(self.cord_y),
-                                  int(self.cord_y + self.height()))])
-        all_borders.extend([(x, self.cord_y) for x in
-                            range(int(self.cord_x),
-                                  int(self.cord_x + self.width()))])
-        all_borders.extend([(x, self.cord_y + self.height()) for x in
-                            range(int(self.cord_x),
-                                  int(self.cord_x + self.width()))])
+        if self.kind != "Penetrante":  # si pueden atravesar walls
+            all_borders = list()
+            all_borders.extend([(self.cord_x, y) for y in
+                                range(int(self.cord_y),
+                                      int(self.cord_y + self.height()))])
+            all_borders.extend([(self.cord_x + self.width(), y) for y in
+                                range(int(self.cord_y),
+                                      int(self.cord_y + self.height()))])
+            all_borders.extend([(x, self.cord_y) for x in
+                                range(int(self.cord_x),
+                                      int(self.cord_x + self.width()))])
+            all_borders.extend([(x, self.cord_y + self.height()) for x in
+                                range(int(self.cord_x),
+                                      int(self.cord_x + self.width()))])
 
-        for cord in all_borders:
-            if cord in forbidden_cords:
-                self.to_remove = True
-                return
+            for cord in all_borders:
+                if cord in forbidden_cords:
+                    self.to_remove = True
+                    return
 
         if int(self.angle) in range(0, 10):
             self.cord_y -= 5

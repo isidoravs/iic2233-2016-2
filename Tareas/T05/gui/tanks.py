@@ -97,8 +97,11 @@ class Tank(Entity):
             self.angle = new_angle
             self.barrel.angle = new_angle
 
-            for _ in range(self.speed):  # revisar no chocar RR
+            if self.speed == 0.5:
                 self.move_near(objective)
+            else:
+                for _ in range(self.speed):
+                    self.move_near(objective)
 
         elif self.color == "Green":  # circulo
             self.angle -= self.speed
@@ -131,8 +134,11 @@ class Tank(Entity):
             self.angle = new_angle
             self.barrel.angle = new_angle
 
-            for _ in range(self.speed):  # revisar no chocar RR
+            if self.speed == 0.5:
                 self.move_near(objective)
+            else:
+                for _ in range(self.speed):
+                    self.move_near(objective)
 
     def in_vision(self, objective):
         if self.color == "Beige":

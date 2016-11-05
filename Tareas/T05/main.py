@@ -41,6 +41,9 @@ class HackerTanks:
 
         self.death_score = self.set_death_score()
 
+        self.survival_delta = 30
+        self.last_appearance = 0
+
     @property
     def score(self):
         return self._score
@@ -238,6 +241,20 @@ class HackerTanks:
                             self.enemies_bullets.remove(bullet)
                         else:
                             gui.remove_bullet(bullet)
+
+                        # en caso de explosiva
+                        if bullet.kind == "Explosive":
+                            explotion = Explotion("expbullet",
+                                                  pos=(bullet.cord_x, bullet.cord_y),
+                                                  exp=6,
+                                                  size=(30, 30))
+                            self.explotions.append(explotion)
+                            gui.add_entity(explotion)
+
+                            for enemy in self.enemies:
+                                if self.distance(enemy, (bullet.cord_x, bullet.cord_y)) <= 100:
+                                    enemy.health -= 5
+
                         bullet.deleteLater()
 
                     else:
@@ -254,10 +271,10 @@ class HackerTanks:
                                         gui.add_entity(explotion)
 
                                         for enemy in self.enemies:
-                                            if self.distance(enemy, (bullet.cord_x, bullet.cord_y)) <= 30:
+                                            if self.distance(enemy, (bullet.cord_x, bullet.cord_y)) <= 50:
                                                 enemy.health -= 5
 
-                                        if self.distance(self.tank, (bullet.cord_x, bullet.cord_y)) <= 30:
+                                        if self.distance(self.tank, (bullet.cord_x, bullet.cord_y)) <= 50:
                                             self.tank.health -= 5
 
                                         if "Enemy" in bullet.kind:
@@ -317,36 +334,41 @@ class HackerTanks:
 
                 forbidden = gui.forbidden_cords()
                 for tank in self.enemies:
-                    if tank.color == "Red" or tank.color == "Black":
-                        old_cord = (tank.cord_x, tank.cord_y)
-                        old_barrel_cord = (tank.barrel.cord_x, tank.barrel.cord_y)
-                        tank.make_movement(self.tank)
-                        if not self.valid_movement(tank, forbidden):
-                            # caso especial tanque negro
-                            if tank.color == "Black":
-                                destructibles = [wall for wall in self.walls
-                                                 if "indestructible" not in wall.kind]
+                    to_move = True
+                    if tank.speed == 0.5 and self.actual_time % 2 != 0:
+                        to_move = False
 
-                                for wall in destructibles:
-                                    corners = [(wall.cord_x, wall.cord_y),
-                                                    (wall.cord_x + wall.width(), wall.cord_y),
-                                                    (wall.cord_x, wall.cord_y + wall.height()),
-                                                    (wall.cord_x + wall.width(), wall.cord_y + wall.height())]
+                    if to_move:
+                        if tank.color == "Red" or tank.color == "Black":
+                            old_cord = (tank.cord_x, tank.cord_y)
+                            old_barrel_cord = (tank.barrel.cord_x, tank.barrel.cord_y)
+                            tank.make_movement(self.tank)
+                            if not self.valid_movement(tank, forbidden):
+                                # caso especial tanque negro
+                                if tank.color == "Black":
+                                    destructibles = [wall for wall in self.walls
+                                                     if "indestructible" not in wall.kind]
 
-                                    for corner in corners:
-                                        if self.distance(tank, corner) <= 100:
-                                            self.walls.remove(wall)
-                                            self.remove_forbidden_cords(wall)
-                                            wall.deleteLater()
-                                            return
+                                    for wall in destructibles:
+                                        corners = [(wall.cord_x, wall.cord_y),
+                                                        (wall.cord_x + wall.width(), wall.cord_y),
+                                                        (wall.cord_x, wall.cord_y + wall.height()),
+                                                        (wall.cord_x + wall.width(), wall.cord_y + wall.height())]
 
-                            tank.cord_x = old_cord[0]
-                            tank.cord_y = old_cord[1]
+                                        for corner in corners:
+                                            if self.distance(tank, corner) <= 100:
+                                                self.walls.remove(wall)
+                                                self.remove_forbidden_cords(wall)
+                                                wall.deleteLater()
+                                                return
 
-                            tank.barrel.cord_x = old_barrel_cord[0]
-                            tank.barrel.cord_y = old_barrel_cord[1]
-                    else:
-                        tank.make_movement(self.tank)
+                                tank.cord_x = old_cord[0]
+                                tank.cord_y = old_cord[1]
+
+                                tank.barrel.cord_x = old_barrel_cord[0]
+                                tank.barrel.cord_y = old_barrel_cord[1]
+                        else:
+                            tank.make_movement(self.tank)
 
                 # atrapa un power_up
                 for powerup in self.power_ups:
@@ -375,6 +397,10 @@ class HackerTanks:
                         gui.set_message("GAME OVER")
                 else:
                     gui.set_time(self.actual_time)
+                    if self.actual_time % 50 == 0:
+                        self.set_walls(9)
+
+                    self.random_enemies()
 
                 # reviso si paso etapa
                 if self.mode == "Stages" and len(self.enemies) == 0:
@@ -421,16 +447,18 @@ class HackerTanks:
                 deaths = [enemy for enemy in self.enemies if enemy.health <= 0]
                 for dead in deaths:
                     self.score += self.death_score[dead.color]
-                    gui.set_score(str(self.score))
+                    gui.score(self.score)
                     self.enemies.remove(dead)
                     dead.barrel.deleteLater()
                     dead.deleteLater()
 
-                # RR propio hp
+                # reviso propio hp
                 if self.tank.health <= 0:
                     # game over
-                    print("u dead")
                     self.game_over = True
+
+                    if self.mode == "Survival":
+                        self.game_over_survival()
 
                 # mantiene actualizado
                 actual = gui.current_score()
@@ -439,8 +467,10 @@ class HackerTanks:
 
                 gui.set_next_bullets(self.tank)
 
-            elif self.game_over:  # no funciona RR
-                self.tank.barrel.hide()
+            elif self.game_over:
+                if self.mode == "Survival":
+                    return
+
                 self.tank.barrel.deleteLater()
                 self.tank.deleteLater()
                 self.tank = None
@@ -452,14 +482,12 @@ class HackerTanks:
                     enemy.barrel.deleteLater()
                     enemy.deleteLater()
 
-                self.set_walls(1)
+                for bullet in self.enemies_bullets:
+                    bullet.deleteLater()
+
                 self._bombs = list()
                 self.enemies = list()
-
-                self.max_time = 0
-                self.actual_time = 0  # segundos
-                self.aux_timer = list()
-                self.score = 0
+                self.enemies_bullets = list()
 
                 self.mode = None
                 self.stage = None
@@ -467,13 +495,39 @@ class HackerTanks:
 
                 self.start_time = None
                 self.game_over = False
+
+                self.power_ups = list()
+
+                self.death_score = self.set_death_score()
+
+                self.survival_delta = 30
+                self.last_appearance = 0
+
+                gui.score(0)
+
                 gui.restart_game()
 
     def update_bombs(self):
         for bomb in self.bombs:
             bomb.health -= 1  # time_to_explode en bombas
-            if bomb.health == 0:
 
+            to_explode = False
+            if bomb.health == 0:  # fin tiempo
+                to_explode = True
+
+            for bullet in gui.bullets_list() + self.enemies_bullets:  # choque bala
+                if self.distance(bullet, (bomb.cord_x, bomb.cord_y)) <= 100:
+                    to_explode = True
+
+                    if "Enemy" in bullet.kind:
+                        self.enemies_bullets.remove(bullet)
+                    else:
+                        gui.remove_bullet(bullet)
+                    bullet.deleteLater()
+                    break
+
+            # todos los casos
+            if to_explode:
                 if bomb in gui.ppal_bombs():
                     gui.delete_bomb(bomb)
                 else:
@@ -580,6 +634,60 @@ class HackerTanks:
         to_show = PowerUp(aux, pos=choice(positions), size=size)
         self.power_ups.append(to_show)
         gui.add_entity(to_show)
+        return
+
+    def random_enemies(self):
+        if self.actual_time != self.last_appearance + self.survival_delta:
+            return
+
+        # aparicion de tanques
+        self.last_appearance = self.actual_time
+        if self.survival_delta > 6:
+            self.survival_delta -= 1
+
+        qty = int(self.actual_time // 30) + 1
+        for _ in range(qty):
+            option = randint(0, 5)
+
+            if option == 1:
+                tank = Tank("Beige", 1, self.tank_stats(1), pos=(350, 100))
+                tank.angle = 270
+                tank.barrel.angle = 270
+
+            elif option == 2:
+                tank = Tank("Red", 1, self.tank_stats(3),pos=(100, 500))
+
+            elif option == 3:
+                tank = Tank("Red", 1, self.tank_stats(3), pos=(300, 500))
+
+            elif option == 4:
+                tank = Tank("Green", 1, self.tank_stats(2),
+                             pos=(400 + 55, 400),
+                             center=(400, 400), radio=55,
+                             direction="x<")  # circulo
+            elif option == 5:
+                tank = Tank("Black", 1, self.tank_stats(4), hp=100,
+                             size=(55, 55), pos=(160, 250))  # grande
+                tank.angle = 90
+                tank.barrel.angle = 90
+
+            elif option == 0:
+                tank = Tank("Beige", 1, self.tank_stats(1), pos=(380, 300))
+                tank.angle = 180
+                tank.barrel.angle = 180
+
+
+            gui.add_entity(tank)
+            repeated = False
+
+            for enemy in self.enemies:
+                if enemy.cord_x == tank.cord_x and enemy.cord_y == tank.cord_y:
+                    tank.barrel.deleteLater()
+                    tank.deleteLater()
+                    repeated = True
+
+            if not repeated:
+                self.enemies.append(tank)
         return
 
     def check_game_info(self):

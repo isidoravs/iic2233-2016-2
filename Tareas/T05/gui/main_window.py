@@ -161,7 +161,7 @@ class MainWindow(QWidget):
         entity.show()
         self.__entities.append(entity)
 
-    def set_score(self, score):  # RR ver si se corta
+    def set_score(self, score):
         self.label_score.setText(score)
         self.label_score.setFixedWidth(self.label_score.sizeHint().width())
 
@@ -601,6 +601,11 @@ class MainWindow(QWidget):
         self.end_pause = 0
 
     def restart_game(self):
+        self.mode = None
+        self.stage = None
+
+        self.all_bullets = list()
+
         self.label_level.hide()
         self.label_time.hide()
         self.label_time_fix.hide()
@@ -687,7 +692,8 @@ class MainWindow(QWidget):
 
     def show_highscores(self):
         with open("scores.txt", "r") as file:
-            all_scores = [tuple(line.strip().split(",")) for line in file]
+            all_scores = [tuple(line.strip().split(",")) for line in file
+                          if "," in line]
 
         sorted_scores = sorted(all_scores, key=lambda x: int(x[1]), reverse=True)
 
@@ -695,7 +701,7 @@ class MainWindow(QWidget):
         i = 1
         while i <= 10 and (i - 1) < len(sorted_scores):
             score_tuple = sorted_scores[i - 1]
-            rep += "{0: <3d}th|{1: ^30s}|{2: ^8d}\n".format(i, score_tuple[0],
+            rep += "{0: <3d}th {1: ^30s}{2: ^8d}\n".format(i, score_tuple[0],
                                                             int(score_tuple[1]))
             i += 1
 
@@ -710,6 +716,9 @@ class MainWindow(QWidget):
         self.score_font.setBold(True)
         self.show_score.setFont(self.score_font)
         self.show_score.move(165, 195)
+        self.button_submit.hide()
+
+        self.is_paused = True
         self.show_score.show()
 
     def quit(self):
