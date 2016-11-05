@@ -10,10 +10,6 @@ class Wall(Entity):
         super().__init__(["obstacles", self.kind + ".png"], size=size,
                          hp=0, pos=pos)
 
-class Coin(Entity):
-    def __init__(self, pos=(100, 100), size=(10, 10)):
-        super().__init__(["obstacles", "coin.png"], size=size, hp=0, pos=pos)
-
 
     # @property
     # def destroyed(self):

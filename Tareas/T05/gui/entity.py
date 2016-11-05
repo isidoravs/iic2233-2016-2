@@ -14,8 +14,8 @@ class Entity(QWidget):
         self._base_label = QLabel(self)
         if len(base_image) > 1:
             if "tank" in base_image[1] or "barrel" in base_image[1] or "bullet" in base_image[1]:
-                self._base_label.setFixedSize(size[0] * sqrt(2),
-                                              size[1] * sqrt(2))
+                aux = max(size[0], size[1])
+                self._base_label.setFixedSize(aux * sqrt(2), aux * sqrt(2))
         self._base_image = base_image
         self._size = size
         self._decor_label = None

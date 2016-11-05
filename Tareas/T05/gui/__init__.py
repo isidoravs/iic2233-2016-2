@@ -43,6 +43,14 @@ def add_entity(entity):
         entity.barrel.move(entity.barrel.cord_x, entity.barrel.cord_y)
 
 
+def bullets_list():
+    return __main_widget.all_bullets
+
+
+def remove_bullet(bullet):
+    __main_widget.all_bullets.remove(bullet)
+
+
 def get_info():
     return __main_widget.mode, __main_widget.stage
 

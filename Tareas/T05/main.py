@@ -1,5 +1,5 @@
 import gui
-from gui.environment import Wall, Coin
+from gui.environment import Wall
 from gui.tanks import Tank
 from gui.power_ups import PowerUp
 from random import randint, choice
@@ -36,6 +36,8 @@ class HackerTanks:
 
         self.power_ups = list()
 
+        self.death_score = self.set_death_score()
+
     @property
     def score(self):
         return self._score
@@ -71,6 +73,14 @@ class HackerTanks:
 
             self.borders.append(new_border_left)
             gui.add_entity(new_border_left)
+
+    def set_death_score(self):
+        with open("constantes.txt", "r") as file:
+            for line in file:
+                if "deathScore" in line:
+                    aux = line.strip().split(",")
+                    return {"Beige": int(aux[1]), "Green": int(aux[2]),
+                            "Red": int(aux[3]), "Black": int(aux[4])}
 
     def set_walls(self, level):
         for old_wall in self.walls:  # eliminar anteriores
@@ -217,6 +227,15 @@ class HackerTanks:
                 # mouse
                 gui.track_mouse()
 
+                for bullet in gui.bullets_list():
+                    bullet.shoot_move(gui.forbidden_cords(),
+                                      self.enemies,
+                                      self.tank.harm,
+                                      self.tank)
+                    if bullet.to_remove:
+                        gui.remove_bullet(bullet)
+                        bullet.deleteLater()
+
                 # mantengo actualizado el tiempo
                 self.actual_time = int(time.clock()) - gui.paused_time()
 
@@ -227,8 +246,6 @@ class HackerTanks:
                     if len(self.bombs) > 0:
                         self.update_bombs()
 
-                    # estados de movimiento
-                    self.tank.movement += 1
                     for tank in self.enemies:
                         if tank.color != "Beige":  # quieto
                             tank.movement += 1
@@ -236,8 +253,8 @@ class HackerTanks:
                                 self.move_tank_center(tank)
 
                     # creacion de power ups, random
-                    aux1 = randint(0, 15)
-                    aux2 = randint(0, 15)
+                    aux1 = randint(0, 20)
+                    aux2 = randint(0, 20)
                     if aux1 == aux2:
                         self.show_power_up()
 
@@ -323,6 +340,21 @@ class HackerTanks:
                         gui.set_bombs_left(self.tank)
                         gui.set_next_bullets(self.tank)
 
+                # revisa enemigos muertos
+                deaths = [enemy for enemy in self.enemies if enemy.health <= 0]
+                for dead in deaths:
+                    self.score += self.death_score[dead.color]
+                    gui.set_score(str(self.score))
+                    self.enemies.remove(dead)
+                    dead.barrel.deleteLater()
+                    dead.deleteLater()
+
+                # RR propio hp
+                if self.tank.health <= 0:
+                    # game over
+                    print("u dead")
+                    self.game_over = True
+
                 # mantiene actualizado
                 actual = gui.current_score()
                 self.score = actual
@@ -331,6 +363,7 @@ class HackerTanks:
                 gui.set_next_bullets(self.tank)
 
             elif self.game_over:  # no funciona RR
+                self.tank.barrel.deleteLater()
                 self.tank.deleteLater()
                 self.tank = None
 
@@ -338,11 +371,10 @@ class HackerTanks:
                     wall.deleteLater()
 
                 for enemy in self.enemies:
-                    enemy.hide()
+                    enemy.barrel.deleteLater()
                     enemy.deleteLater()
 
                 self.set_walls(1)
-                self.coins = list()
                 self._bombs = list()
                 self.enemies = list()
 
@@ -369,7 +401,6 @@ class HackerTanks:
                 else:
                     self._bombs.remove(bomb)
 
-                # explota QTimers RR
                 # gui.show_explotion((bomb.cord_x, bomb.cord_y))
                 self.bomb_destruction(bomb)
 
@@ -401,9 +432,22 @@ class HackerTanks:
                 if x_limit1 < wall.cord_x and x_limit2 > wall.cord_x:
                     if y_limit1 < wall.cord_y and y_limit2 > wall.cord_y:
                         self.walls.remove(wall)
-                        gui.remove_forbidden_cords(
-                            [(x, y) for x in range(wall.cord_x, wall.cord_x + wall.width())
-                             for y in range(wall.cord_y, wall.cord_y + wall.height())])
+
+                        to_remove = list()
+                        to_remove.extend([(wall.cord_x, y) for y in
+                                       range(wall.cord_y,
+                                             wall.cord_y + wall.height())])
+                        to_remove.extend([(wall.cord_x + wall.width(), y) for y in
+                                       range(wall.cord_y,
+                                             wall.cord_y + wall.height())])
+                        to_remove.extend([(x, wall.cord_y) for x in
+                                       range(wall.cord_x,
+                                             wall.cord_x + wall.width())])
+                        to_remove.extend([(x, wall.cord_y + wall.height()) for x in
+                                       range(wall.cord_x,
+                                             wall.cord_x + wall.width())])
+
+                        gui.remove_forbidden_cords(to_remove)
 
                         wall.deleteLater()
 

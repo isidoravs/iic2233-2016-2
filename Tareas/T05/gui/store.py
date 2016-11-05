@@ -140,7 +140,11 @@ class Store(QWidget):
 
     def upgrade_stats(self):
         if self.stats1.isChecked():
-            cost = 5 * self.actual_stats["harm"]
+            aux = self.actual_stats["harm"]
+            if aux == 0:
+                aux = 1
+
+            cost = 5 * aux
             if self.score >= cost:
                 self.actual_stats["harm"] += 1
                 self.edit_buy_message("SUCCESS! Cost: {}".format(cost))
@@ -149,7 +153,11 @@ class Store(QWidget):
                 self.edit_buy_message("ERROR: not enough score")
 
         elif self.stats2.isChecked():
-            cost = 5 * self.actual_stats["hp"]
+            aux = self.actual_stats["hp"]
+            if aux == 0:
+                aux = 1
+
+            cost = 5 * aux
             if self.score >= cost:
                 self.actual_stats["hp"] += 1
                 self.edit_buy_message("SUCCESS! Cost: {}".format(cost))
@@ -158,7 +166,11 @@ class Store(QWidget):
                 self.edit_buy_message("ERROR: not enough score")
 
         elif self.stats3.isChecked():
-            cost = 5 * self.actual_stats["speed"]
+            aux = self.actual_stats["speed"]
+            if aux == 0:
+                aux = 1
+
+            cost = 5 * aux
             if self.score >= cost:
                 self.actual_stats["speed"] += 1
                 self.edit_buy_message("SUCCESS! Cost: {}".format(cost))
@@ -167,7 +179,11 @@ class Store(QWidget):
                 self.edit_buy_message("ERROR: not enough score")
 
         elif self.stats4.isChecked():
-            cost = 5 * self.actual_stats["shoot"]
+            aux = self.actual_stats["shoot"]
+            if aux == 0:
+                aux = 1
+
+            cost = 5 * aux
             if self.score >= cost:
                 self.actual_stats["shoot"] += 1
                 self.edit_buy_message("SUCCESS! Cost: {}".format(cost))
@@ -176,7 +192,11 @@ class Store(QWidget):
                 self.edit_buy_message("ERROR: not enough score")
 
         elif self.stats5.isChecked():
-            cost = 5 * self.actual_stats["resistance"]
+            aux = self.actual_stats["resistance"]
+            if aux == 0:
+                aux = 1
+
+            cost = 5 * aux
             if self.score >= cost:
                 self.actual_stats["resistance"] += 1
                 self.edit_buy_message("SUCCESS! Cost: {}".format(cost))
@@ -185,7 +205,11 @@ class Store(QWidget):
                 self.edit_buy_message("ERROR: not enough score")
 
         elif self.stats6.isChecked():
-            cost = 5 * self.actual_stats["bomb_range"]
+            aux = self.actual_stats["bomb_range"]
+            if aux == 0:
+                aux = 1
+
+            cost = 5 * aux
             if self.score >= cost:
                 self.actual_stats["bomb_range"] += 1
                 self.edit_buy_message("SUCCESS! Cost: {}".format(cost))

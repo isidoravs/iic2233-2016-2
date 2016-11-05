@@ -1,8 +1,8 @@
 from PyQt4.QtGui import QWidget, QLabel, QPixmap, QApplication, QFont, QCursor
 from PyQt4.QtGui import QRadioButton, QLineEdit, QPushButton, QMouseEvent
-from PyQt4.QtCore import QTimer, Qt, QEvent
+from PyQt4.QtCore import QTimer, Qt, QEvent, SIGNAL
 from .utils import get_asset_path
-from .power_ups import Bomb
+from .power_ups import Bomb, Bullet
 from .store import Store
 from math import atan, degrees
 import time
@@ -24,6 +24,7 @@ class MainWindow(QWidget):
         self.background.setPixmap(QPixmap(get_asset_path(["background.png"])))
         self.__entities = []
         self._bombs = []  # ppal bombs
+        self.all_bullets = list()
 
         self.store = QLabel(self)
         self.store.setGeometry(670, 120, 45, 45)
@@ -181,6 +182,10 @@ class MainWindow(QWidget):
                 self.bullet1.show()
                 self.bullet2.show()
                 self.bullet3.show()
+            else:
+                self.bullet1.hide()
+                self.bullet2.hide()
+                self.bullet3.hide()
 
     def bullet_path(self, bullet_id):
         if bullet_id == "n":
@@ -238,6 +243,8 @@ class MainWindow(QWidget):
                 self.start_store()
                 self.cooldown = True
                 return
+
+        self.tank.movement += 1
 
         old_cord = (self.tank.cord_x, self.tank.cord_y)
         old_barrel_cord = (self.tank.barrel.cord_x, self.tank.barrel.cord_y)
@@ -396,9 +403,71 @@ class MainWindow(QWidget):
         if self.is_paused:
             return
 
+        if self.mode is None:
+            return
+
         if event.button() == Qt.LeftButton:
             # disparo
-            pass
+            if len(self.tank.bullets) == 0:
+                return
+
+            else:
+                next_bullet = self.tank.bullets.pop()
+                self.set_next_bullets(self.tank)
+                if next_bullet == "n":
+                    kind = "Normal"
+                elif next_bullet == "e":
+                    kind = "Explosive"
+                elif next_bullet == "p":
+                    kind = "Penetrante"
+                else:  # r
+                    kind = "Ralentizante"
+
+                aux_angle = int(self.tank.barrel.angle)
+
+                if aux_angle in range(-20, 20):
+                    x_pos = self.tank.cord_x + 45//2
+                    y_pos = self.tank.cord_y
+
+                elif aux_angle in range(20, 65):
+                    x_pos = self.tank.cord_x + 45
+                    y_pos = self.tank.cord_y
+
+                elif aux_angle in range(65, 115):
+                    x_pos = self.tank.cord_x + 45
+                    y_pos = self.tank.cord_y + 45//2
+
+                elif aux_angle in range(115, 155):
+                    x_pos = self.tank.cord_x + 45
+                    y_pos = self.tank.cord_y + 45
+
+                elif aux_angle in range(155, 200):
+                    x_pos = self.tank.cord_x + 45 // 2
+                    y_pos = self.tank.cord_y + 45
+
+                elif aux_angle in range(200, 245):
+                    x_pos = self.tank.cord_x
+                    y_pos = self.tank.cord_y + 45
+
+                elif aux_angle in range(245, 270):
+                    x_pos = self.tank.cord_x
+                    y_pos = self.tank.cord_y + 45//2
+
+                elif aux_angle < 0:
+                    x_pos = self.tank.cord_x
+                    y_pos = self.tank.cord_y
+
+                else:
+                    x_pos = self.tank.barrel.cord_x + self.tank.barrel.width()//2
+                    y_pos = self.tank.barrel.cord_y + self.tank.barrel.height()//2
+
+                bullet = Bullet(kind, pos=(int(x_pos), int(y_pos)))
+                self.all_bullets.append(bullet)
+                bullet.move(int(x_pos), int(y_pos))
+                bullet.angle = self.tank.barrel.angle
+
+                self.add_entity(bullet)
+
 
         elif event.button() == Qt.RightButton:
             # bomba
