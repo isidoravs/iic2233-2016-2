@@ -58,23 +58,30 @@ Módulos muy similares a los entregados en la T04. Permiten obtener path de arch
 La licencia de uso de los assets se encuentra en la carpeta *Kenney_topdownTanks*.
 
 * Tanque principal
-<img src="https://goo.gl/eS1oo2" width="300" height="300" />
+
+<img src="https://goo.gl/eS1oo2" width="150" height="150" />
 
 * Tanque quieto
-<img src="https://goo.gl/IvRCnU" width="300" height="300" />
+
+<img src="https://goo.gl/IvRCnU" width="150" height="150" />
 
 * Tanque círculo
-<img src="https://goo.gl/NcEr0Y" width="300" height="300" />
+
+<img src="https://goo.gl/NcEr0Y" width="150" height="150" />
 
 * Tanque guiador
-<img src="https://goo.gl/usKv6h" width="300" height="300" />
+
+<img src="https://goo.gl/usKv6h" width="150" height="150" />
 
 * Tanque grande
-<img src="https://goo.gl/XKPFQQ" width="400" height="400" />
+
+<img src="https://goo.gl/XKPFQQ" width="200" height="200" />
 
 * Bomba
-<img src="https://goo.gl/C4Bm73" width="400" height="400" />
+
+<img src="https://goo.gl/C4Bm73" width="150" height="150" />
 
 * Entrada a la tienda:
-<img src="https://goo.gl/82YoSd" width="400" height="400" />
+
+<img src="https://goo.gl/82YoSd" width="150" height="150" />
 
