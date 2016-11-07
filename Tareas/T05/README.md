@@ -26,11 +26,14 @@ Contiene la clase `MainWindow` que hereda de *QWidget*. Controla la ventana prin
 store.py
 ```
 En este módulo está la clase `Store` que hereda de *QWidget* y controla la ventana de la tienda. Permite comprar balas especiales y bombas, además de aumentar los stats del tanque principal. Avisa cuando no se tienen puntos suficientes y actualiza el puntaje luego de una compra exitosa. Al cerrar, el juego se encuentra en pausa.
+<img src="https://scontent.fgru3-1.fna.fbcdn.net/t31.0-8/14918915_1217287888317529_5701768199751596402_o.jpg" width="800" height="600" />
+*Lo más lindo que he hecho en esta tarea!*
 
 ```
 tanks.py
 ```
 Este módulo contiene la clase `Tank` que cuenta con tre métodos principales: **make_movement** que controla el movimiento del tanque segun su tipo, **in_vision** que para los tanques enemigos termina si el principal está en su rango de ataque (retorna un booleano) y **start_shooting** que retorna una instancia de la clase `Bala` cuando debe comenzar a disparar (las balas enemigas tienen una línea blanca para distinguirlas y las del tanque principal cambian de color según su tipo - se ve en la tienda).
+
 ```
 power_ups.py
 ```
@@ -51,8 +54,6 @@ Contiene la clase `Wall` que define bordes y paredes de cada etapa. Segun sea de
 entity.py y utils.py
 ```
 Módulos muy similares a los entregados en la T04. Permiten obtener path de archivos (*utils*) y las características que comparten todas las entidades como tanques, balas, bombas y paredes (cuyas clases heredan de ésta). 
-
-
 
 ### T05/gui/assets
 La licencia de uso de los assets se encuentra en la carpeta *Kenney_topdownTanks*.
@@ -84,4 +85,3 @@ La licencia de uso de los assets se encuentra en la carpeta *Kenney_topdownTanks
 * Entrada a la tienda:
 
 <img src="https://goo.gl/82YoSd" width="150" height="150" />
-
