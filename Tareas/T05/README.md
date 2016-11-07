@@ -1,5 +1,5 @@
 # Tarea 5
-![alt text](https://scontent.fgru3-1.fna.fbcdn.net/t31.0-8/15016356_1217287821650869_4907137500733162404_o.jpg =250x "HackerTanks!")
+![alt text](https://scontent.fgru3-1.fna.fbcdn.net/t31.0-8/15016356_1217287821650869_4907137500733162404_o.jpg "HackerTanks!")
 {:height="36px" width="36px"}
 
 > Bienvenido a **HackerTanks**!
