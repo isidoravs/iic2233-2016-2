@@ -26,7 +26,8 @@ Contiene la clase `MainWindow` que hereda de *QWidget*. Controla la ventana prin
 store.py
 ```
 En este módulo está la clase `Store` que hereda de *QWidget* y controla la ventana de la tienda. Permite comprar balas especiales y bombas, además de aumentar los stats del tanque principal. Avisa cuando no se tienen puntos suficientes y actualiza el puntaje luego de una compra exitosa. Al cerrar, el juego se encuentra en pausa.
-<img src="https://scontent.fgru3-1.fna.fbcdn.net/t31.0-8/14918915_1217287888317529_5701768199751596402_o.jpg" width="800" height="600" />
+<img src="https://scontent.fgru3-1.fna.fbcdn.net/t31.0-8/14918915_1217287888317529_5701768199751596402_o.jpg" width="900" height="500" />
+
 *Lo más lindo que he hecho en esta tarea!*
 
 ```
