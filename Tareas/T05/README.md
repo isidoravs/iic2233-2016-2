@@ -41,9 +41,13 @@ power_ups.py
 Modela la mayoría de los elementos extra que forman parte del juego. Contiene las clases:
 
 * `Bomb`: cuenta con atributos como daño, rango de ataque y tiempo para explotar
-* `Explotion`: permite la aparición de explosiones en caso de bomba, bala explosiva y colisión de balas
-* `Bullet`: su método principal *shoot_move* permite el movimiento de la bala en el juego y su detención cuando corresponde (choca con paredes -excepto bala penetrante-, ataca a enemigo o colisiona una bomba).
+
+* `Explotion`: permite la aparición de explosiones en caso de bomba, bala explosiva y colisión de balas (Causa daño de 5 puntos, es preciosa!).
+
+* `Bullet`: su método principal *shoot_move* permite el movimiento de la bala en el juego y su detención cuando corresponde (choca con paredes -excepto bala penetrante-, ataca a enemigo o colisiona una bomba). Su daño es proporcional a la distancia desde la que fue lanzado.
+
 * `Portal`: funciona similar a una bala pero no causa daño. Cambia su pixmap al encontrar una pared. Como pide el enunciado, sólo se pueden lanzar dos portales por etapa (pero si choca a enemigo desaparece y otorga otra oportunidad de lanzamiento al tanque).
+
 * `PowerUp`: las instancias de esta clase son los elementos que aparecen aleatoriamente en el juego y pueden ser recogidos por el tanque principal. Estos son: balas especiales y monedas (**250** puntos). *Obs:* escudo no implementado.
 
 ```
@@ -86,3 +90,25 @@ La licencia de uso de los assets se encuentra en la carpeta *Kenney_topdownTanks
 * Entrada a la tienda:
 
 <img src="https://goo.gl/82YoSd" width="150" height="150" />
+
+### Observaciones:
+
+1. Controles (cambiados para mayor comodidad):
+
+| Tecla         | Efecto        |
+| ------------- |:-------------:|
+| A             | izquierda     |
+| D             | derecha       |
+| W             | adelante      |
+| S             | atras         |
+| Left click    | disparo       |
+| Right click   | bomba         |
+| Enter         | portal        |
+
+2. Tanque principal siempre comienza en esquina superior izquieda y 200 hp. Los tanques enemigos comienzan con 75 hp (excepto el tanque grande que parte con 100).
+
+3. El archivo *constantes.txt* contiene tiempo máximo por etapa, stats con que comienza cada tanque (segun id: 0 azul, 1 quieto, 2 circulo, 3 guiador y 4 grande), daño standard de bomba, bombas con que comienza el tanque principal (tanques enemigos no tienen bombas y cuentan con infinitas balas) y puntaje por muerte de cada tanque enemigo (en el orden mencionado). Además tiene la contante de comienzo de balas (ésta se multiplica según el número de etapa).
+
+4. Bomba muestra en barra tiempo para explotar (excepto que una bala lo colisione). En cas de que un tanque pase sobre una bomba no explota (sería fome la estartegia de juego).
+
+5. Algunas contantes no modificables son: inicio con 200 puntos, cooldown de tienda dura 10 segundos (**tiempo se mide en segundos durante todo el juego**) y bonificación por completar todos los niveles es de 1000 puntos (da lo mismo el orden, se lleva registro de los niveles pasados, si pasa último nivel y no los ha completado todos, empieza uno que no haya ganado).
