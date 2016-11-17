@@ -39,13 +39,7 @@ work3 = response3.json()['lista']
 
 string3 = ""
 for word in work3:
-    if re.match('el[+](terrible|odiado|amado\?)x1[0]*', word):
-        string3 += word
-
-    elif re.match('el[+](terrible|odiado|amado\?)[jJ][eE][fF][eE]x1[0]*', word):
-        string3 += word
-
-    elif re.match('el[+](terrible|odiado|amado\?)[bB][oO][sS][sS]x1[0]*', word):
+    if re.match('el[+](terrible|odiado|amado\?)([jJ][eE][fF][eE]|[bB][oO][sS][sS])?x1[0]*', word):
         string3 += word
 
 to_send3 = json.dumps({"username": "isidoravs", "string": string3})
