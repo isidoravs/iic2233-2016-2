@@ -121,7 +121,7 @@ for nombre in ayudantes:
 
 print("Debo ir a recorregir con {}".format(recorregir_ayudante))  # alguno de los dos
 
-print("\n 3. Ayudante mas tierno")
+print("\n 2. Ayudante mas tierno")
 
 mas_tierno = ""
 ama_a = 0
@@ -135,39 +135,42 @@ for (nombre_ayud, id_ayud) in ayudantes.items():
 
 print("  > {}".format(mas_tierno))
 
-print("\n 2. Ayudante mas odiado")
+print("\n 3. Ayudante que odia a mas alumnos \n(la Ivania me dijo que lo cambiara)")
 
-mas_odiado = ""
+# elimino a bamavrakis
+del ayudantes['bamavrakis']
+
+mas_odia = ""
 odio = 0
 
 for (nombre_ayud, id_ayud) in ayudantes.items():
-    odian_ayud = 0
-    for (nombre_alum, id_alum) in alumnos.items():
-        relacion_alum = check_alumno(id_alum)
-        if relacion_alum[id_ayud] == 2:
-            odian_ayud += 1
-
-    if odian_ayud > odio:
-        odio = odian_ayud
-        print("Ya no es {}, es {}".format(mas_odiado, nombre_ayud))
-        mas_odiado = nombre_ayud
-
-print("  > {}".format(mas_odiado))
-
-
-print("\n 3. Ayudante mas tierno")
-
-mas_tierno = ""
-ama_a = 0
-
-for (nombre_ayud, id_ayud) in ayudantes.items():
     relaciones = check_ayudante(id_ayud)
-    amor = relaciones.count(1)
-    if amor > ama_a:
-        ama_a = amor
-        mas_tierno = nombre_ayud
+    odio_ayud = relaciones.count(2)
+    if odio_ayud > odio:
+        odio = odio_ayud
+        mas_odia = nombre_ayud
 
-print("  > {}".format(mas_tierno))
+print("  > {}".format(mas_odia))
+
+# print("\n 3. Ayudante mas odiado")
+#
+# mas_odiado = ""
+# odio = 0
+#
+#
+# for (nombre_ayud, id_ayud) in ayudantes.items():
+#     odian_ayud = 0
+#     for (nombre_alum, id_alum) in alumnos.items():
+#         relacion_alum = check_alumno(id_alum)
+#         if relacion_alum[id_ayud] == 2:
+#             odian_ayud += 1
+#
+#     if odian_ayud > odio:
+#         odio = odian_ayud
+#         print("Ya no es {}, es {}".format(mas_odiado, nombre_ayud))
+#         mas_odiado = nombre_ayud
+#
+# print("  > {}".format(mas_odiado))
 
 
 
