@@ -161,8 +161,14 @@ class Client(QObject):
         elif aux[0] == "game":
             if aux[1] == "add":
                 participants = aux[2:]
-                if self.username in participants:
-                    self.emit(SIGNAL("add_game"), ";".join(participants))
+                self.emit(SIGNAL("add_game"), ";".join(participants))
+
+            elif aux[1] == "close":
+                self.emit(SIGNAL("no_game"))
+
+            elif aux[1] == "offline":
+                user = aux[2]
+                self.emit(SIGNAL("user_offline"), user)
 
 
 class MiGUI(GUI):

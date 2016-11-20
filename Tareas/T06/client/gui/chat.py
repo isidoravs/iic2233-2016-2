@@ -37,7 +37,6 @@ class Chat(QWidget):
         self.button_start = QPushButton("&Ok!", self)
         self.button_start.move(420, 15)
         self.button_start.resize(70, 35)
-        self.button_start.clicked.connect(self.start_game)
 
         self.chat = QListWidget(self)
         self.chat.setGeometry(20, 70, 450, 390)
@@ -59,12 +58,6 @@ class Chat(QWidget):
                                                      message,
                                                      participants))
         return
-
-    def start_game(self):
-        if len(self.messages) == 0:  # no han conversado
-            return
-
-        pass
 
     def add_chat(self, message):
         if ":)" or ":(" or ":o" in message:

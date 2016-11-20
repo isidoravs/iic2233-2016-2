@@ -121,18 +121,49 @@ class Server:
                                 self.send(extra, client)
 
                         else:
-                            aux = resp.split(";")
+                            try:
+                                aux = resp.split(";")
 
-                            if aux[0] == "success":
-                                if aux[1] == "game":
-                                    participants = aux[3:]
-                                    to_send = [dicc['socket'] for dicc in self.connected.values()
-                                               if dicc['username'] in participants]
+                                if aux[0] == "success":
+                                    if aux[1] == "game":
+                                        participants = aux[3:]
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
 
-                                    for socket in to_send:
-                                        self.send(resp, socket)
+                                        for socket in to_send:
+                                            self.send(resp, socket)
 
-                            else:
+                                elif aux[0] == "game":
+                                    if aux[1] == "close":
+                                        username = aux[2]
+                                        participants = extra
+                                        participants.remove(username)
+
+                                        # elimino game_online
+                                        self.send(resp, client_socket)
+
+                                        # muestro como offline RR
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+
+                                        for socket in to_send:
+                                            self.send("game;offline;{}".format(username),
+                                                      socket)
+
+                                    elif aux[1] == "add":
+                                        participants = aux[2:]
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+
+                                        for socket in to_send:
+                                            self.send(resp, socket)
+
+
+                                else:
+                                    for client in all_sockets:
+                                        self.send(resp, client)
+
+                            except TypeError:
                                 for client in all_sockets:
                                     self.send(resp, client)
 
@@ -325,6 +356,9 @@ class Server:
                 str_participants = ";".join(participants)
                 return ("success;game;start;{}".format(str_participants), participants)
 
+            elif aux[1] == "close":
+                participants = aux[3:]
+                return (received, participants)
 
         elif received == "exit":
             to_remove = None

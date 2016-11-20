@@ -48,6 +48,8 @@ class GUI(QMainWindow):
         self.connect(self.client, SIGNAL("add_game"), self.add_game)
         self.connect(self.client, SIGNAL("start_game"), self.open_game)
         self.connect(self.client, SIGNAL("add_friend"), self.add_friend)
+        self.connect(self.client, SIGNAL("no_game"), self.reset_game)
+        self.connect(self.client, SIGNAL("user_offline"), self.user_offline)
 
     def start_interface(self):
         if self.username is None:
@@ -154,6 +156,8 @@ class GUI(QMainWindow):
             # crear chat y abrir
             new_chat = Chat(self.client, self.username, participants, messages)
             new_chat.setWindowTitle("Chat - {}".format(", ".join(participants)))
+            new_chat.button_start.clicked.connect(lambda: self.create_game_from_chat(participants, new_chat))
+
             self.all_chats.append(new_chat)
             new_chat.show()
 
@@ -191,9 +195,26 @@ class GUI(QMainWindow):
                     repeated = True
 
             if not repeated:
-                self.programillo.display_games.add_game(participants)
+                # self.programillo.display_games.add_game(participants)
                 self.client.send("game;add;{};{}".format(self.username,
                                                          participants))
+
+    def create_game_from_chat(self, participants_list, chat):
+        participants = ";".join(participants_list)
+
+        repeated = False
+        for game in self.programillo.display_games.all_games:
+            if participants == game:
+                # ya existe
+                self.client.send("game;start;{}".format(participants))
+                repeated = True
+                break
+
+        if not repeated:
+            self.programillo.display_games.add_game(participants)
+            self.client.send("game;add;{};{}".format(self.username,
+                                                     participants))
+            self.client.send("game;start;{}".format(participants))
 
     def add_game(self, participants):
         repeated = False
@@ -233,8 +254,28 @@ class GUI(QMainWindow):
         if not success:
             self.programillo.set_games_message("Tus amigos no estan online para jugar")
         else:
-            self.game_online = Game(self.username, participants)
+            self.game_online = Game(self.client, self.username, participants, participants)
             self.game_online.show()
+            self.game_online.button_invite.clicked.connect(self.invite_friend)
+
+            for chat in self.all_chats:
+                if chat.participants == participants:
+                    chat.add_chat(" ~ PARTIDA COMENZADA ~")
+
+    def invite_friend(self):
+        pass
+
+    def reset_game(self):
+        self.game_online = None
+
+    def user_offline(self, user):
+        if self.game_online is not None:
+            self.game_online.online.remove(user)
+            self.game_online.offline.append(user)
+            self.game_online.update_chat(" > {} ha cerrado el juego".format(user))
+            if len(self.game_online.online) == 1:
+                self.game_online.update_chat(" > Solo estás tu online!")
+                self.game_online.update_chat("Cierra la venta o espera que un amigo se una para jugar.")
 
 
 class Programillo(QWidget):
