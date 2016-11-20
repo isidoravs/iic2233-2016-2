@@ -2,6 +2,7 @@ from threading import Thread
 from os import urandom
 from random import randint
 from hashlib import sha256
+from random import choice
 import socket
 import pickle
 
@@ -158,6 +159,14 @@ class Server:
                                         for socket in to_send:
                                             self.send(resp, socket)
 
+                                    elif aux[1] == "choose_word":
+                                        participants = aux[3:]
+
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+
+                                        for socket in to_send:
+                                            self.send(resp, socket)
 
                                 else:
                                     for client in all_sockets:
@@ -209,11 +218,7 @@ class Server:
             elif aux[1] == "close":
                 i = aux.index("messages")
                 friends = ";".join(aux[3:i])
-                # messages = aux[i + 1:]
-                #
-                # with open("db/chats/{}.txt".format(friends), "w") as file:  # reemplaza
-                #     for msge in messages:
-                #         file.write("{}\n".format(msge))
+
                 return "chat;close;{}".format(friends)
 
         elif "signup" == aux[0]:
@@ -355,6 +360,14 @@ class Server:
 
                 str_participants = ";".join(participants)
                 return ("success;game;start;{}".format(str_participants), participants)
+
+            elif aux[1] == "choose_word":
+                with open("db/words.txt", "r") as file:
+                    all_words = file.readlines()
+                    selected = choice(all_words)
+
+                aux.insert(2, selected)
+                return (";".join(aux), None)
 
             elif aux[1] == "close":
                 participants = aux[3:]

@@ -50,6 +50,8 @@ class GUI(QMainWindow):
         self.connect(self.client, SIGNAL("add_friend"), self.add_friend)
         self.connect(self.client, SIGNAL("no_game"), self.reset_game)
         self.connect(self.client, SIGNAL("user_offline"), self.user_offline)
+        self.connect(self.client, SIGNAL("choose_word"), self.set_word)
+
 
     def start_interface(self):
         if self.username is None:
@@ -254,9 +256,12 @@ class GUI(QMainWindow):
         if not success:
             self.programillo.set_games_message("Tus amigos no estan online para jugar")
         else:
-            self.game_online = Game(self.client, self.username, participants, participants)
+            self.game_online = Game(self.client, self.username, participants, participants, participants)
             self.game_online.show()
             self.game_online.button_invite.clicked.connect(self.invite_friend)
+            self.game_online.update_chat(" ~ Inicio de la partida ~ ")
+            self.game_online.update_chat(" > Participantes:")
+            self.game_online.update_chat("{}".format(", ".join(participants)))
 
             for chat in self.all_chats:
                 if chat.participants == participants:
@@ -273,9 +278,16 @@ class GUI(QMainWindow):
             self.game_online.online.remove(user)
             self.game_online.offline.append(user)
             self.game_online.update_chat(" > {} ha cerrado el juego".format(user))
+
+            if user not in self.have_painted:
+                self.have_painted.append(user)
+
             if len(self.game_online.online) == 1:
                 self.game_online.update_chat(" > Solo estás tu online!")
                 self.game_online.update_chat("Cierra la venta o espera que un amigo se una para jugar.")
+
+    def set_game_word(self, word):
+        self.game.word = word
 
 
 class Programillo(QWidget):

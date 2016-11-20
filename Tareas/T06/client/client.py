@@ -170,6 +170,11 @@ class Client(QObject):
                 user = aux[2]
                 self.emit(SIGNAL("user_offline"), user)
 
+            elif aux[1] == "choose_word":
+                word = aux[2]
+                self.emit(SIGNAL("choose_word"), word)
+                print(word)
+
 
 class MiGUI(GUI):
     def __init__(self):
