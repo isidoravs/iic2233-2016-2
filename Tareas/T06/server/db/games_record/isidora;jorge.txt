@@ -1,0 +1,9 @@
+ ~ Inicio de la partida ~ 
+ > Participantes:
+isidora, jorge
+ > Ahora dibuja jorge
+ > Todos los jugadores han adivinado!
+ > jorge gana 100 puntos
+ > PUNTAJES:
+isidora > 50
+jorge > 100

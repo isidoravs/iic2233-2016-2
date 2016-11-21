@@ -302,13 +302,13 @@ class GUI(QMainWindow):
             self.game_online.messages.append(message)
 
     def start_round(self, word, painter):
-        print(word)
         if self.game_online is not None:
             self.game_online.start_round_signal(word)
             self.game_online.painter = painter
             if painter == self.username:
                 self.game_online.button_send.hide()
                 self.game_online.paint.painter = True
+                self.game_online.game_chat.addItem(" ~ Debes dibujar: {}".format(word))
 
     def guess_player(self, player):
         if self.game_online is not None:
@@ -340,8 +340,6 @@ class GUI(QMainWindow):
         if self.game_online is not None:
             if not self.game_online.paint.painter:
                 self.game_online.paint.draw_polygon(template, x, y, r, g, b, linewidth)
-
-
 
 
 class Programillo(QWidget):

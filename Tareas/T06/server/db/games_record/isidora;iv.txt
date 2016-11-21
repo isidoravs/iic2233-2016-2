@@ -7,3 +7,12 @@ isidora, iv
  > PUNTAJES:
 iv > 50
 isidora > 100
+ ~ Inicio de la partida ~ 
+ > Participantes:
+isidora, iv
+ > Ahora dibuja iv
+ > Todos los jugadores han adivinado!
+ > iv gana 100 puntos
+ > PUNTAJES:
+isidora > 50
+iv > 100

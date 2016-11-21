@@ -243,8 +243,6 @@ class Game(QWidget):
     def everybody_guessed(self):
         self.end_round()
 
-        print("hola")
-
         path = self.save_image()
         self.winner_images.append(path)
         self.display_drawings.add_drawing(path)
