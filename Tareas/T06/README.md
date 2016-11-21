@@ -7,14 +7,15 @@
 * **Templates:** tienen tamaño predeterminado, se insertan en dibujo al seleccionar su botón y al siguiente click determina su posición final (del centro de la figura).
 
 ### Asignación de puntajes
-1. Dibujante
+1. *Dibujante*
 Si todos los jugadores adivinan su dibujo se le otorgan 100 puntos.
+![alt text](https://media.giphy.com/media/AVcFVGSYI4Ijm/giphy.gif "Bonus dotes artísticos")
 
-2. Adivinador
+2. *Adivinador*
 Si adivina la palabra su puntaje es `100 // (<puesto_en_adivinar> + 1)`
 
 ### Observaciones
-
+![alt text](https://media.giphy.com/media/sBvF7qaDyze8M/giphy.gif "<3")
 - Largo de sal random entre 32 y 64
 - Si un usuario inicia chat con otro se abre una ventana para chat, si lo cierra no siguen llegando mensajes (no le interesa), pero si la vuelve a abrir puede seguir participando de la conversacion.
 - Si se selecciona a mas de un amigo en el chat se crea uno grupal al seleccionar el botón de "Chat".
@@ -35,3 +36,8 @@ Si adivina la palabra su puntaje es `100 // (<puesto_en_adivinar> + 1)`
 ![alt text](https://media.giphy.com/media/zZupZVoFnuLyE/giphy.gif ":(")
 * Invitar amigos
 * Guardar imagen (con procesamiento de bytes)
+
+
+![alt text](https://media.giphy.com/media/Av2ZEqfmeJZeM/giphy.gif "Última tarea!")
+
+~ Isidora Vizcaya
