@@ -37,7 +37,4 @@ Si adivina la palabra su puntaje es `100 // (<puesto_en_adivinar> + 1)`
 * Invitar amigos
 * Guardar imagen (con procesamiento de bytes)
 
-
-![alt text](https://media.giphy.com/media/Av2ZEqfmeJZeM/giphy.gif "Última tarea!")
-
 ~ Isidora Vizcaya
