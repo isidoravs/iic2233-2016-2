@@ -188,7 +188,7 @@ class Game(QWidget):
         self.button_rectangle.clicked.connect(self.rectangle)
 
         # dibujo
-        self.paint = PaintView(self, self.client)
+        self.paint = PaintView(self, self.client, self.participants)
         self.paint.setGeometry(300, 80, 520, 520)
 
     def send_chat(self):
@@ -212,15 +212,17 @@ class Game(QWidget):
 
                 # todos adivinan
                 if len(self.guessed) == len(self.participants) - 1:
-                    self.update_chat(" > Todos los jugadores han adivinado!\n > {} gana 100 puntos".format(self.painter))
-
                     # bonus artistico
                     self.scores[self.painter] += 100
 
+                    scores = ["{} > {}".format(key, value) for (key, value) in
+                              self.scores.items()]
+
+                    self.update_chat(" > Todos los jugadores han adivinado!\n"
+                                     " > {} gana 100 puntos\n > PUNTAJES:\n{}".format(self.painter, "\n".join(scores)))
+
                     self.end_round()
-                    scores = ["{} > {}".format(key, value) for (key, value) in self.scores.items()]
-                    self.update_chat("PUNTAJES:\n{}".format("\n".join(scores)))
-                    # self.client.send(<guardar imagen y agregar>)
+                    self.client.send("game;save_image;{}".format(";".join(self.participants)))
 
             elif similar_word(guess.lower(), self.word.lower()):
                 self.game_chat.addItem(" > Estás cerca!")
@@ -239,6 +241,10 @@ class Game(QWidget):
         return
 
     def everybody_guessed(self):
+        self.end_round()
+
+        print("hola")
+
         path = self.save_image()
         self.winner_images.append(path)
         self.display_drawings.add_drawing(path)
@@ -250,7 +256,7 @@ class Game(QWidget):
         return
 
     def choose_painter(self):
-        if len(self.not_painted) == 0:
+        if len(self.not_painted) == 1:
             self.end_game()
             return ""
 
@@ -273,7 +279,7 @@ class Game(QWidget):
         painter.end()
 
         participants = ";".join(self.participants)
-        path = ".games_images/image{}-{}.png".format(self.image_ide, participants)
+        path = get_absolute_path("games_images/image{}-{}.png".format(self.image_ide, participants))
 
         image.save(path)
         self.image_ide += 1
@@ -505,10 +511,11 @@ class DrawingsList(QListWidget):
 
 
 class PaintView(QGraphicsView):
-    def __init__(self, parent, client):
+    def __init__(self, parent, client, participants):
         QGraphicsView.__init__(self, parent)
 
         self.client = client
+        self.participants = participants
         self.painter = False
         self.pause = False
 
@@ -546,6 +553,16 @@ class PaintView(QGraphicsView):
 
                 line.setPen(pen)
                 self.scene().addItem(line)
+
+                self.client.send("draw;free;{};{};{};{};{};{};{};{};{}"
+                                 "".format(start.x(), start.y(),
+                                           self.next_point.x(), self.next_point.y(),
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
+
                 self.next_point = start
 
             else:
@@ -555,6 +572,16 @@ class PaintView(QGraphicsView):
 
                 line.setPen(pen)
                 self.scene().addItem(line)
+
+                self.client.send("draw;free;{};{};{};{};{};{};{};{};{}"
+                                 "".format(start.x(), start.y(),
+                                           start.x(), start.y(),
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
+
                 self.next_point = start
 
     def mousePressEvent(self, event):
@@ -575,18 +602,71 @@ class PaintView(QGraphicsView):
             else:  # fin
                 self.curve3 = event.pos()
 
-        elif self.style == "circle" or self.style == "rectangle":
+        elif self.style == "circle":
             if self.add_item is not None:
                 pos = QPointF(self.mapToScene(event.pos()))
-                self.add_item.setPos(pos.x() - self.add_item.boundingRect().width()//2,
-                                     pos.y() - self.add_item.boundingRect().height()//2)
+                x_pos = pos.x() - self.add_item.boundingRect().width() // 2
+                y_pos = pos.y() - self.add_item.boundingRect().height() // 2
+
+                self.add_item.setPos(x_pos, y_pos)
                 self.add_item = None
 
-        elif self.style == "square" or self.style == "triangle":
+                self.client.send("draw;polygon;{};{};{};{};{};{};{};{}"
+                                 "".format("circle",
+                                           x_pos, y_pos,
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
+
+        elif self.style == "rectangle":
+            if self.add_item is not None:
+                pos = QPointF(self.mapToScene(event.pos()))
+                x_pos = pos.x() - self.add_item.boundingRect().width() // 2
+                y_pos = pos.y() - self.add_item.boundingRect().height() // 2
+
+                self.add_item.setPos(x_pos, y_pos)
+                self.add_item = None
+
+                self.client.send("draw;polygon;{};{};{};{};{};{};{};{}"
+                                 "".format("rectangle",
+                                           x_pos, y_pos,
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
+
+        elif self.style == "square":
             if self.add_item is not None:
                 pos = QPointF(self.mapToScene(event.pos()))
                 self.add_item.setPos(pos.x(), pos.y())
                 self.add_item = None
+
+                self.client.send("draw;polygon;{};{};{};{};{};{};{};{}"
+                                 "".format("square",
+                                           pos.x(), pos.y(),
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
+
+        elif self.style == "triangle":
+            if self.add_item is not None:
+                pos = QPointF(self.mapToScene(event.pos()))
+                self.add_item.setPos(pos.x(), pos.y())
+                self.add_item = None
+
+                self.client.send("draw;polygon;{};{};{};{};{};{};{};{}"
+                                 "".format("triangle",
+                                           pos.x(), pos.y(),
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
 
         elif self.style == "drawfree":
             self.drawing = True
@@ -607,6 +687,15 @@ class PaintView(QGraphicsView):
                 line.setPen(pen)
                 self.scene().addItem(line)
 
+                self.client.send("draw;line;{};{};{};{};{};{};{};{};{}"
+                                 "".format(self.line_start.x(), self.line_start.y(),
+                                           self.line_end.x(), self.line_end.y(),
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
+
                 self.line_start = None
                 self.line_end = None
 
@@ -623,6 +712,16 @@ class PaintView(QGraphicsView):
                 pen.setWidth(self.actual_linewidth)
 
                 self.scene().addPath(cubicPath, pen)
+
+                self.client.send("draw;curve;{};{};{};{};{};{};{};{};{};{};{}"
+                                 "".format(self.curve1.x(), self.curve1.y(),
+                                           self.curve2.x(), self.curve2.y(),
+                                           self.curve3.x(), self.curve3.y(),
+                                           self.color[0],
+                                           self.color[1],
+                                           self.color[2],
+                                           self.actual_linewidth,
+                                           ";".join(self.participants)))
 
                 self.curve1 = None
                 self.curve2 = None
@@ -679,6 +778,17 @@ class PaintView(QGraphicsView):
     def draw_line(self, x1, y1, x2, y2, r, g, b, linewidth):  # para envio
         start = QPointF(self.mapToScene(QPoint(x1, y1)))
         end = QPointF(self.mapToScene(QPoint(x2, y2)))
+
+        line = QGraphicsLineItem(QLineF(start, end))
+        pen = QPen(QColor(r, g, b))
+        pen.setWidth(linewidth)
+
+        line.setPen(pen)
+        self.scene().addItem(line)
+
+    def draw_free(self, x1, y1, x2, y2, r, g, b, linewidth):  # para envio
+        start = QPointF(x1, y1)
+        end = QPointF(x2, y2)
 
         line = QGraphicsLineItem(QLineF(start, end))
         pen = QPen(QColor(r, g, b))

@@ -143,6 +143,28 @@ class Server:
                                             self.send("game;send;{}".format(all_messages),
                                                       socket)
 
+                                elif aux[0] == "draw":
+                                    if aux[1] == "line" or aux[1] == "free":
+                                        participants = aux[10:]
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+                                        for socket in to_send:
+                                            self.send(resp, socket)
+
+                                    elif aux[1] == "curve":
+                                        participants = aux[12:]
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+                                        for socket in to_send:
+                                            self.send(resp, socket)
+
+                                    elif aux[1] == "polygon":
+                                        participants = aux[9:]
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+                                        for socket in to_send:
+                                            self.send(resp, socket)
+
                                 elif aux[0] == "game":
                                     if aux[1] == "close":
                                         username = aux[2]
@@ -190,6 +212,15 @@ class Server:
                                     elif aux[1] == "guess":
                                         user = aux[2]
                                         participants = aux[3:]
+
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+
+                                        for socket in to_send:
+                                            self.send(resp, socket)
+
+                                    elif aux[1] == "save_image":
+                                        participants = aux[2:]
 
                                         to_send = [dicc['socket'] for dicc in self.connected.values()
                                                    if dicc['username'] in participants]
@@ -355,6 +386,9 @@ class Server:
                     else:
                         return "error;friend;{}".format(friend)
 
+        elif "draw" == aux[0]:
+            return (received, [])
+
         elif "game" == aux[0]:
             if aux[1] == "add":
                 participants = aux[3:]
@@ -441,6 +475,9 @@ class Server:
                 return (received, participants)
 
             elif aux[1] == "guess":
+                return (received, [])
+
+            elif aux[1] == "save_image":
                 return (received, [])
 
         elif received == "exit":

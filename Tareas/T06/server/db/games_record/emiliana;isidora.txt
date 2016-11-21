@@ -1,0 +1,6 @@
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, isidora
+ > Ahora dibuja isidora
+ > Todos los jugadores han adivinado!
+ > isidora gana 100 puntos

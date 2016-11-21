@@ -160,6 +160,52 @@ class Client(QObject):
                 self.gui.friends = friends
                 self.gui.games = games
 
+        elif aux[0] == "draw":
+            if aux[1] == "line":
+                x1 = float(aux[2])
+                y1 = float(aux[3])
+                x2 = float(aux[4])
+                y2 = float(aux[5])
+                r = int(aux[6])
+                g = int(aux[7])
+                b = int(aux[8])
+                linewidth = int(aux[9])
+                self.emit(SIGNAL("draw_line"), x1, y1, x2, y2, r, g, b, linewidth)
+
+            elif aux[1] == "free":
+                x1 = float(aux[2])
+                y1 = float(aux[3])
+                x2 = float(aux[4])
+                y2 = float(aux[5])
+                r = int(aux[6])
+                g = int(aux[7])
+                b = int(aux[8])
+                linewidth = int(aux[9])
+                self.emit(SIGNAL("draw_free"), x1, y1, x2, y2, r, g, b, linewidth)
+
+            elif aux[1] == "curve":
+                x1 = float(aux[2])
+                y1 = float(aux[3])
+                x2 = float(aux[4])
+                y2 = float(aux[5])
+                x3 = float(aux[6])
+                y3 = float(aux[7])
+                r = int(aux[8])
+                g = int(aux[9])
+                b = int(aux[10])
+                linewidth = int(aux[11])
+                self.emit(SIGNAL("draw_curve"), x1, y1, x2, y2, x3, y3, r, g, b, linewidth)
+
+            elif aux[1] == "polygon":
+                template = aux[2]
+                x = float(aux[3])
+                y = float(aux[4])
+                r = int(aux[5])
+                g = int(aux[6])
+                b = int(aux[7])
+                linewidth = int(aux[8])
+                self.emit(SIGNAL("draw_polygon"), template, x, y, r, g, b, linewidth)
+
         elif aux[0] == "game":
             if aux[1] == "add":
                 participants = aux[2:]
@@ -182,6 +228,9 @@ class Client(QObject):
 
             elif aux[1] == "guess":
                 self.emit(SIGNAL("game_guess"), aux[2])
+
+            elif aux[1] == "save_image":
+                self.emit(SIGNAL("everybody_guessed"))
 
 
 class MiGUI(GUI):

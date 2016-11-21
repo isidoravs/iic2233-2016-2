@@ -1,0 +1,9 @@
+ ~ Inicio de la partida ~ 
+ > Participantes:
+isidora, iv
+ > Ahora dibuja isidora
+ > Todos los jugadores han adivinado!
+ > isidora gana 100 puntos
+ > PUNTAJES:
+iv > 50
+isidora > 100

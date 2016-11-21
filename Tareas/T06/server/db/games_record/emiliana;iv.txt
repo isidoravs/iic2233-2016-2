@@ -29,3 +29,155 @@ emiliana, iv
 PUNTAJES:
 emiliana > 100
 {}iv > 50
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ > Ahora dibuja iv
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ > PUNTAJES:
+emiliana > 100
+iv > 50
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja iv
+ > Todos los jugadores han adivinado!
+ > iv gana 100 puntos
+ > PUNTAJES:
+emiliana > 50
+iv > 100
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja iv
+ ~ Fin de la partida ~ 
+ > Ganador: iv
+ > Los dibujos ganadores fueron actualizados
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja iv
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ > PUNTAJES:
+iv > 50
+emiliana > 100
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ > PUNTAJES:
+iv > 50
+emiliana > 100
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja iv
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja iv
+ > Todos los jugadores han adivinado!
+ > iv gana 100 puntos
+ > PUNTAJES:
+emiliana > 50
+iv > 100
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ > PUNTAJES:
+emiliana > 100
+iv > 50
+ > Ahora dibuja iv
+ ~ Fin de la partida ~ 
+ > Ganador: iv
+ > Los dibujos ganadores fueron actualizados
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ ~ Fin de la partida ~ 
+ > Ganador: emiliana
+ > Los dibujos ganadores fueron actualizados
+ ~ Inicio de la partida ~ 
+ > Participantes:
+emiliana, iv
+ > Ahora dibuja emiliana
+ > Todos los jugadores han adivinado!
+ > emiliana gana 100 puntos
+ > PUNTAJES:
+iv > 50
+emiliana > 100

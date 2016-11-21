@@ -53,6 +53,12 @@ class GUI(QMainWindow):
         self.connect(self.client, SIGNAL("send_game_chat"), self.add_game_chat)
         self.connect(self.client, SIGNAL("start_round"), self.start_round)
         self.connect(self.client, SIGNAL("game_guess"), self.guess_player)
+        self.connect(self.client, SIGNAL("everybody_guessed"), self.everybody_guessed)
+
+        self.connect(self.client, SIGNAL("draw_line"), self.draw_line)
+        self.connect(self.client, SIGNAL("draw_free"), self.draw_free)
+        self.connect(self.client, SIGNAL("draw_curve"), self.draw_curve)
+        self.connect(self.client, SIGNAL("draw_polygon"), self.draw_polygon)
 
 
     def start_interface(self):
@@ -310,6 +316,32 @@ class GUI(QMainWindow):
                 self.game_online.guessed.append(player)
             if self.username == player:
                 self.have_guessed = True
+
+    def everybody_guessed(self):
+        if self.game_online is not None:
+            self.game_online.everybody_guessed()
+
+    def draw_line(self, x1, y1, x2, y2, r, g, b, linewidth):
+        if self.game_online is not None:
+            if not self.game_online.paint.painter:
+                self.game_online.paint.draw_line(x1, y1, x2, y2, r, g, b, linewidth)
+
+    def draw_free(self, x1, y1, x2, y2, r, g, b, linewidth):
+        if self.game_online is not None:
+            if not self.game_online.paint.painter:
+                self.game_online.paint.draw_free(x1, y1, x2, y2, r, g, b, linewidth)
+
+    def draw_curve(self, x1, y1, x2, y2, x3, y3, r, g, b, linewidth):
+        if self.game_online is not None:
+            if not self.game_online.paint.painter:
+                self.game_online.paint.draw_curve(x1, y1, x2, y2, x3, y3, r, g, b, linewidth)
+
+    def draw_polygon(self, template, x, y, r, g, b, linewidth):
+        if self.game_online is not None:
+            if not self.game_online.paint.painter:
+                self.game_online.paint.draw_polygon(template, x, y, r, g, b, linewidth)
+
+
 
 
 class Programillo(QWidget):
