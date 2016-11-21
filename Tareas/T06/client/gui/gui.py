@@ -50,7 +50,9 @@ class GUI(QMainWindow):
         self.connect(self.client, SIGNAL("add_friend"), self.add_friend)
         self.connect(self.client, SIGNAL("no_game"), self.reset_game)
         self.connect(self.client, SIGNAL("user_offline"), self.user_offline)
-        self.connect(self.client, SIGNAL("choose_word"), self.set_word)
+        self.connect(self.client, SIGNAL("send_game_chat"), self.add_game_chat)
+        self.connect(self.client, SIGNAL("start_round"), self.start_round)
+        self.connect(self.client, SIGNAL("game_guess"), self.guess_player)
 
 
     def start_interface(self):
@@ -259,9 +261,9 @@ class GUI(QMainWindow):
             self.game_online = Game(self.client, self.username, participants, participants, participants)
             self.game_online.show()
             self.game_online.button_invite.clicked.connect(self.invite_friend)
-            self.game_online.update_chat(" ~ Inicio de la partida ~ ")
-            self.game_online.update_chat(" > Participantes:")
-            self.game_online.update_chat("{}".format(", ".join(participants)))
+            # self.add_game_chat(" ~ Inicio de la partida ~ ")
+            # self.add_game_chat(" > Participantes:")
+            # self.add_game_chat("{}".format(", ".join(participants)))
 
             for chat in self.all_chats:
                 if chat.participants == participants:
@@ -275,19 +277,39 @@ class GUI(QMainWindow):
 
     def user_offline(self, user):
         if self.game_online is not None:
-            self.game_online.online.remove(user)
-            self.game_online.offline.append(user)
-            self.game_online.update_chat(" > {} ha cerrado el juego".format(user))
+            if user in self.game_online.online:
+                self.game_online.online.remove(user)
+                self.game_online.offline.append(user)
+            self.game_online.game_chat.addItem(" > {} ha cerrado el juego".format(user))
 
-            if user not in self.have_painted:
-                self.have_painted.append(user)
+            if user in self.game_online.not_painted:
+                self.game_online.not_painted.append(user)
 
             if len(self.game_online.online) == 1:
-                self.game_online.update_chat(" > Solo estás tu online!")
-                self.game_online.update_chat("Cierra la venta o espera que un amigo se una para jugar.")
+                self.game_online.game_chat.addItem(" > Solo estás tu online!")
+                self.game_online.game_chat.addItem("Cierra la venta o espera que un amigo se una para jugar.")
+                self.game_online.button_start.hide()
 
-    def set_game_word(self, word):
-        self.game.word = word
+    def add_game_chat(self, message):
+        if self.game_online is not None:
+            self.game_online.game_chat.addItem(message)
+            self.game_online.messages.append(message)
+
+    def start_round(self, word, painter):
+        print(word)
+        if self.game_online is not None:
+            self.game_online.start_round_signal(word)
+            self.game_online.painter = painter
+            if painter == self.username:
+                self.game_online.button_send.hide()
+                self.game_online.paint.painter = True
+
+    def guess_player(self, player):
+        if self.game_online is not None:
+            if player not in self.game_online.guessed:
+                self.game_online.guessed.append(player)
+            if self.username == player:
+                self.have_guessed = True
 
 
 class Programillo(QWidget):

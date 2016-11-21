@@ -8,11 +8,13 @@ import pickle
 '''
     Host y port de facil acceso
 '''
-HOST = socket.gethostname()
+HOST = "192.168.1.181"
 PORT = 12336
 
 
 class Client(QObject):
+    '''Base de material de clases
+    '''
     def __init__(self, port, host, username, gui):
         print("Inicializando cliente...")
         super().__init__()
@@ -170,10 +172,16 @@ class Client(QObject):
                 user = aux[2]
                 self.emit(SIGNAL("user_offline"), user)
 
-            elif aux[1] == "choose_word":
-                word = aux[2]
-                self.emit(SIGNAL("choose_word"), word)
-                print(word)
+            elif aux[1] == "send":
+                chat = aux[2:]
+                for c in chat:
+                    self.emit(SIGNAL("send_game_chat"), c)
+
+            elif aux[1] == "start_round":
+                self.emit(SIGNAL("start_round"), aux[-1], aux[-2])
+
+            elif aux[1] == "guess":
+                self.emit(SIGNAL("game_guess"), aux[2])
 
 
 class MiGUI(GUI):

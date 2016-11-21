@@ -5,7 +5,8 @@ def similar_word(a, b):  # asumo que s1 y s2 son distintos
     i = 0
 
     if len(a) != len(b):
-        if len(a) < len(b):
+        if len(b) < len(a):
+            distance += len(a) - len(b)
             while i < len(b):
                 if b[i] != a[i]:
                     distance += 1
@@ -16,6 +17,7 @@ def similar_word(a, b):  # asumo que s1 y s2 son distintos
                 else:
                     i += 1
         else:
+            distance += len(b) - len(a)
             while i < len(a):
                 if a[i] != b[i]:
                     distance += 1

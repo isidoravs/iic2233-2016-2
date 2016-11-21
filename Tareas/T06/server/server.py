@@ -10,11 +10,13 @@ import pickle
 '''
     Host y port de facil acceso
 '''
-HOST = socket.gethostname()
+HOST = "192.168.1.181"
 PORT = 12336
 
 
 class Server:
+    '''Base de material de clases
+    '''
     def __init__(self, port, host):
         # Inicializar socket principal del servidor.
         self.host = host
@@ -127,18 +129,26 @@ class Server:
 
                                 if aux[0] == "success":
                                     if aux[1] == "game":
-                                        participants = aux[3:]
+                                        i = aux.index("messages")
+                                        participants = aux[3:i]
+                                        messages = aux[i + 1:]
                                         to_send = [dicc['socket'] for dicc in self.connected.values()
                                                    if dicc['username'] in participants]
 
+                                        rep = ";".join(aux[:i])
+                                        all_messages = ";".join(messages)
+
                                         for socket in to_send:
-                                            self.send(resp, socket)
+                                            self.send(rep, socket)
+                                            self.send("game;send;{}".format(all_messages),
+                                                      socket)
 
                                 elif aux[0] == "game":
                                     if aux[1] == "close":
                                         username = aux[2]
                                         participants = extra
-                                        participants.remove(username)
+                                        if username in participants:
+                                            participants.remove(username)
 
                                         # elimino game_online
                                         self.send(resp, client_socket)
@@ -159,7 +169,26 @@ class Server:
                                         for socket in to_send:
                                             self.send(resp, socket)
 
-                                    elif aux[1] == "choose_word":
+                                    elif aux[1] == "send":
+                                        participants = aux[3:]
+
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+
+                                        for socket in to_send:
+                                            self.send(";".join(aux[:3]), socket)
+
+                                    elif aux[1] == "start_round":
+                                        participants = aux[2:-2]
+
+                                        to_send = [dicc['socket'] for dicc in self.connected.values()
+                                                   if dicc['username'] in participants]
+
+                                        for socket in to_send:
+                                            self.send(resp, socket)
+
+                                    elif aux[1] == "guess":
+                                        user = aux[2]
                                         participants = aux[3:]
 
                                         to_send = [dicc['socket'] for dicc in self.connected.values()
@@ -358,20 +387,61 @@ class Server:
                     if participant not in all_users:
                         return "error;game;start"
 
-                str_participants = ";".join(participants)
-                return ("success;game;start;{}".format(str_participants), participants)
+                path = "db/games_record/{}.txt".format(";".join(participants))
+                text1 = " ~ Inicio de la partida ~ "
+                text2 = " > Participantes:"
+                text3 = ", ".join(participants)
 
-            elif aux[1] == "choose_word":
+                try:
+                    with open(path, "a") as file:
+                        file.write("{}\n".format(text1))
+                        file.write("{}\n".format(text2))
+                        file.write("{}\n".format(text3))
+
+                except FileNotFoundError:
+                    with open(path, "w") as file:
+                        file.write("{}\n".format(text1))
+                        file.write("{}\n".format(text2))
+                        file.write("{}\n".format(text3))
+
+                with open(path, "r") as file:
+                    all_messages = ";".join([x.strip() for x in file.readlines()])
+
+                str_participants = ";".join(participants)
+                return ("success;game;start;{};messages;{}".format(str_participants, all_messages),
+                        participants)
+
+            elif aux[1] == "send":
+                message = aux[2]
+                participants = aux[3:]
+
+                path = "db/games_record/{}.txt".format(";".join(participants))
+
+                try:
+                    with open(path, "a") as file:
+                        file.write("{}\n".format(message))
+                except FileNotFoundError:
+                    with open(path, "w") as file:
+                        file.write("{}\n".format(message))
+                except ValueError as err:
+                    print(err)
+
+                return (received, [])
+
+            elif aux[1] == "start_round":
                 with open("db/words.txt", "r") as file:
                     all_words = file.readlines()
-                    selected = choice(all_words)
+                    selected = choice(all_words).strip()
 
-                aux.insert(2, selected)
-                return (";".join(aux), None)
+                aux.append(selected)
+                return (";".join(aux), [])
 
             elif aux[1] == "close":
                 participants = aux[3:]
                 return (received, participants)
+
+            elif aux[1] == "guess":
+                return (received, [])
 
         elif received == "exit":
             to_remove = None

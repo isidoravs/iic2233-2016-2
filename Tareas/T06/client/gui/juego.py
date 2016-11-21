@@ -33,7 +33,7 @@ class Game(QWidget):
 
         # participantes
         self.player = player
-        self.participants = participants
+        self.participants = list(participants)
         self.client = client
 
         # puntajes
@@ -56,7 +56,7 @@ class Game(QWidget):
         self.timer.start(1000)
 
         # online / offline
-        self.online = online
+        self.online = list(online)
         self.offline = [x for x in participants if x not in self.online]
 
         # chat
@@ -66,7 +66,7 @@ class Game(QWidget):
 
         # painter
         self.painter = None
-        self.not_painted = not_painted
+        self.not_painted = list(not_painted)
 
         self.button_send = QPushButton("&>", self)
         self.button_send.move(1170, 619)
@@ -192,16 +192,19 @@ class Game(QWidget):
         self.paint.setGeometry(300, 80, 520, 520)
 
     def send_chat(self):
-        # actualizar todos los amigos RR
         guess = self.label_message.text().strip()
         if self.word is not None and not self.have_guessed:
             if guess.lower() == self.word.lower():
                 # no se muestra al resto, adivina
                 self.game_chat.addItem(" > Has acertado! {} es la palabra".format(guess))
                 self.game_chat.addItem(" > Ahora solo veran tus chats los amigos que adivinen")
-                self.guessed.append(self.player)
 
-                pts = 100 // len(self.guessed)
+                # se agregue a todos RR
+                if self.player not in self.guessed:
+                    self.guessed.append(self.player)
+                self.client.send("game;guess;{};{}".format(self.player, ";".join(self.participants)))
+
+                pts = 100 // (len(self.guessed) + 1)
                 self.scores[self.player] += pts
 
                 self.game_chat.addItem(" > + {} puntos".format(pts))
@@ -209,17 +212,23 @@ class Game(QWidget):
 
                 # todos adivinan
                 if len(self.guessed) == len(self.participants) - 1:
-                    self.update_chat(" > Todos los jugadores han adivinado!")
-                    self.update_chat(" > {} gana 100 puntos".format(self.painter))
+                    self.update_chat(" > Todos los jugadores han adivinado!\n > {} gana 100 puntos".format(self.painter))
 
                     # bonus artistico
                     self.scores[self.painter] += 100
 
                     self.end_round()
+                    scores = ["{} > {}".format(key, value) for (key, value) in self.scores.items()]
+                    self.update_chat("PUNTAJES:\n{}".format("\n".join(scores)))
                     # self.client.send(<guardar imagen y agregar>)
 
             elif similar_word(guess.lower(), self.word.lower()):
                 self.game_chat.addItem(" > Estás cerca!")
+
+            else:
+                message = "{}: {}".format(self.player, guess)
+                self.update_chat(message)
+
 
             self.label_message.setText("")
             return
@@ -235,22 +244,22 @@ class Game(QWidget):
         self.display_drawings.add_drawing(path)
 
     def update_chat(self, message):
-        self.game_chat.addItem(message)
-        self.messages.append(message)
+        # self.game_chat.addItem(message)
+        # self.messages.append(message)
+        self.client.send("game;send;{};{}".format(message, ";".join(self.participants)))
         return
 
     def choose_painter(self):
         if len(self.not_painted) == 0:
             self.end_game()
+            return ""
 
         else:
             to_paint = choice(self.not_painted)
             self.not_painted.remove(to_paint)
             self.update_chat(" > Ahora dibuja {}".format(to_paint))
 
-            if to_paint == self.player:
-                self.button_send.hide()
-                self.client.send("game;choose_word;{}".format(";".join(self.online)))
+            return to_paint
 
     def winner_drawing(self, path):
         self.display_drawings.add_drawing(path)
@@ -264,20 +273,23 @@ class Game(QWidget):
         painter.end()
 
         participants = ";".join(self.participants)
-        path = "./image{}-{}.png".format(self.image_ide, participants)
+        path = ".games_images/image{}-{}.png".format(self.image_ide, participants)
 
         image.save(path)
         self.image_ide += 1
         return path
 
-    def start_round(self):
+    def start_round(self):  # primero que apreta
+        painter = self.choose_painter()
+        self.client.send("game;start_round;{};{}".format(";".join(self.participants), painter))
+
+    def start_round_signal(self, word):
         self.pause = False
         self.paint.pause = False
-
-        self.choose_painter()
         self.button_start.hide()
         self.button_save.hide()
         self.paint.scene().clear()  # borra dibujo anterior
+        self.word = word
 
     def end_round(self):
         if self.player == self.painter:
@@ -286,6 +298,7 @@ class Game(QWidget):
         self.painter = None
         self.pause = True
         self.paint.pause = True
+        self.paint.painter = False
         self.guessed = list()
         self.word = None
         self.have_guessed = False
@@ -296,10 +309,8 @@ class Game(QWidget):
     def end_game(self):
         scores = sorted(self.scores.items(), key=lambda x: x[1], reverse=True)
         winner = scores[0][0]
-        self.update_chat(" ~ Fin de la partida ~ ")
-        self.update_chat(" > Ganador: {}".format(winner))
-
-        self.update_chat(" > Los dibujos ganadores fueron actualizados")
+        self.update_chat(" ~ Fin de la partida ~ \n > Ganador: {}\n"
+                         " > Los dibujos ganadores fueron actualizados".format(winner))
         self.button_start.hide()
         self.button_save.hide()
 
@@ -325,6 +336,7 @@ class Game(QWidget):
     def drawfree(self):
         self.actual_style = 'drawfree'
         self.paint.style = 'drawfree'
+        self.paint.next_point = None
 
     def drawline(self):
         self.actual_style = 'line'
@@ -497,7 +509,7 @@ class PaintView(QGraphicsView):
         QGraphicsView.__init__(self, parent)
 
         self.client = client
-        self.painter = True
+        self.painter = False
         self.pause = False
 
         self.style = 'drawfree'

@@ -1,0 +1,17 @@
+ ~ Inicio de la partida ~ 
+ > Participantes:
+antonia, iv, tere
+ > Ahora dibuja iv
+ ~ Inicio de la partida ~ 
+ > Participantes:
+antonia, iv, tere
+ > Ahora dibuja antonia
+tere: hola
+ ~ Inicio de la partida ~ 
+ > Participantes:
+antonia, iv, tere
+ > Ahora dibuja antonia
+ ~ Inicio de la partida ~ 
+ > Participantes:
+antonia, iv, tere
+ > Ahora dibuja iv
