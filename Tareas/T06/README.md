@@ -47,8 +47,10 @@ Sus principales métodos son `send_chat` que determina si el mensaje es para un 
 Además cuenta con los métodos `start_round` y `end_round` que manejan las condiciones que deben restablecerse o inciarse al comenzar cada ronda para todos los jugadores. El tiempo lo lleva un *QTimer* y es manejado por `set_time` y `update_time` que toma en cuenta las pausas del juego.
 
 * **PaintView**
-Esta clase se encarga del dibujo en el juego. 
+Esta clase se encarga del dibujo en el juego. Mediante los atributos
+Los atributos `pause` y `painter` son booleanos que determinan si se puede o no dibujar. Mediante `mousePressEvent` y `mouseReleaseEvent` se hacen dibujos de líneas, curvas y polígonos, para dibujo a mano alzada también se utiliza `mouseMoveEvent`. El método `createPoly` crea el polígono pedido según número de lados, angulo inicial y radio.
 
+POr último, los métodos `draw_free`, `draw_curve`, `draw_polygon` y `draw_line` son los encargados de mostrar en las interfaces de los jugadores que no están dibujando, lo que el dibujante está haciendo en su interfaz a tiempo real.
 
 ```
 utils.py
