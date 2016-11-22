@@ -40,7 +40,20 @@ Módulo que contiene la clase **Chat** que hereda de *QWidget* y es la encargada
 ```
 juego.py
 ```
+Módulo que contiene la clase **Juego** que hereda de *QWidget* y es la encargada de las salas de juego. Muestra a los participantes (`ParticipantsTable(QTableWidget)`), el chat de juego, historial de dibujos ganadores (`DrawingsList(QListWidget)`) y la sección de dibujo (`PaintView(QGraphicsView)`). 
 
+Sus principales métodos son `send_chat` que determina si el mensaje es para un jugador o todos lo deben ver (y envía el mensaje correspondiente al servidor y `choose_painter` elige el próximo jugador a dibujar y lo hace saber al resto de los participantes.
+
+Además cuenta con los métodos `start_round` y `end_round` que manejan las condiciones que deben restablecerse o inciarse al comenzar cada ronda para todos los jugadores. El tiempo lo lleva un *QTimer* y es manejado por `set_time` y `update_time` que toma en cuenta las pausas del juego.
+
+* **PaintView**
+Esta clase se encarga del dibujo en el juego. 
+
+
+```
+utils.py
+```
+Contiene el algoritmo de similitud de palabras `similar_word(s1, s2)`. (Pretendía tener el procedimiento de guardar imagen :()
 
 ### Dibujando...
 * Grosor es entero entre 1 y 3.
