@@ -20,6 +20,26 @@ EL servidor es el único con acceso a la base de datos:
 * */games_record*: carpeta con archivos del estilo "amigo1;amigo2;....txt" que guarda el historial de juego (conversaciones, ganadores, turno de dibujar, etc.)
 
 # /client
+```
+client.py
+```
+Módulo a ejecutar por parte del usuario. Encargado de establecer conexión con el servidor, enviar mensajes e interpretar sus respuestas (mediante `handle_command`). Tiene las clases **Client** que hereda de *QObject* y **MiGUI** que hereda de *GUI*.
+
+## /client/gui
+Contiene los módulos encargados de la interfaz gráfica.
+```
+gui.py
+```
+En éste módulo está la clase **GUI** que hereda de *QMainWindow* y es principalmente la encargada de manejar el intercambio de ventanas entre el log-in (clase **LogIn** que hereda de *QWidget*), interfaz principal (clase **Programillo** que hereda de *QWidget*), chats y salas/juego. Además en `client_signals` establece las señales que permiten la interacción con el cliente y maneja los principales métodos que éste quiere ejecutar cuando recibe una respuesta del servidor.
+
+```
+chat.py
+```
+Módulo que contiene la clase **Chat** que hereda de *QWidget* y es la encargada del chat entre dos o más (si es grupal) usuarios. Sus métodos principales son `send_chat` (cuando un usuario manda un chat y permite que el socket lo envíe al servidor para el resto de sus amigos) y `add_chat` (despliega el mensaje en la interfaz -con emojis :)- para cada participante del chat).
+
+```
+juego.py
+```
 
 
 ### Dibujando...
