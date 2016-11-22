@@ -1,4 +1,26 @@
 # Tarea 6
+> Bienvenido a Programillo! Para programar este juego, las distintas clases y sus métodos, además de otras funciones, se dividen en 6 módulos:
+
+# Cliente-Servidor
+En la entrega hay dos carpetas que incluyen los programas del cliente y el servidor separadamente. Estos funcionan de forma independiente y puede ser ejecutados desde distintos computadores. Las variables de HOST y PORT se dejaron visibles para su manipulación.
+
+# /server
+```
+server.py
+```
+Módulo encargado de crear las conexiones con los sockets del cliente y manejar las respuestas que debe enviar a sus mensajes. El método `handle_command` es el encargado de decidir la respuesta que se entregará. Funciona principalmente mediante encoding y decoding de strings.
+
+EL servidor es el único con acceso a la base de datos:
+## /server/db
+* *users.txt*: contiene a todos los usuarios registrados, sus contraseñas y sal respectivas
+* *words.txt*: contiene todas las palabras del juego
+* */chats*: carpeta con archivos del estilo "amigo1;amigo2;....txt" que guarda el historial de chats
+* */friends*: carpeta que contiene archivos con el nombre de usuario y dentro de éste todos sus amigos.
+* */games*: carpeta que contiene archivos con el nombre de usuario y dentro de éste todas las salas o juegos que tiene con otros amigos (para que muestre las salas creadas al abrir su cuenta).
+* */games_record*: carpeta con archivos del estilo "amigo1;amigo2;....txt" que guarda el historial de juego (conversaciones, ganadores, turno de dibujar, etc.)
+
+# /client
+
 
 ### Dibujando...
 * Grosor es entero entre 1 y 3.
